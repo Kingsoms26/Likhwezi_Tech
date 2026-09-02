@@ -1,0 +1,44 @@
+body {
+    font-family: 'Public Sans', sans-serif;
+}
+
+/* Navbar */
+.logo {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+    margin-right: 0.5rem;
+}
+
+.company-name {
+    font-weight: 400;
+    font-size: 1.1rem;
+}
+
+/* Home Page Styles */
+/* Hero Section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.hero-content {
+    flex: 1 1 40%;
+}
+
+.hero-image {
+    flex: 1 1 50%;
+}
+
+.hero-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Services Section */
+
+
+/* Campaign Page Styles */
