@@ -1,6 +1,6 @@
 <footer>
     <!-- top section: company info + link columns (more columns to be added later) -->
-    <div>
+    <div class="footer-top px-5">
         <!-- company logo and description -->
         <div>
             <p>Likhwezi Technologies</p>
@@ -8,20 +8,20 @@
         </div>
 
         <!-- contact info -->
-        <div>
+        <div class="footer>
             <p class="footer-section-heading">Contact us</p>
             <p>Office 47, No.8 Incubation Drive, Fourways, Gauteng</p>
-            <p>+27 11 464 5083</p>
-            <p><a href="mailto:info@likhwezitech.co.za">info@likhwezitech.co.za</a></p>
+            <p><a class="footer-link" href="tel:+27114645083" data-text="+27 11 464 5083">+27 11 464 5083</a></p>
+            <p><a class="footer-link" href="mailto:info@likhwezitech.co.za" data-text="info@likhwezitech.co.za">info@likhwezitech.co.za</a></p>
         </div>
 
         <!-- Company links -->
         <div>
             <p class="footer-section-heading">Company</p>
             <ul>
-                <li><a href="../aboutUs.php">About Us</a></li>
-                <li><a href="../services.php">Services</a></li>
-                <li><a href="../partners.php">Partners</a></li>
+                <li><a class="footer-link" href="../aboutUs.php" data-text="About Us">About Us</a></li>
+                <li><a class="footer-link" href="../services.php" data-text="Services">Services</a></li>
+                <li><a class="footer-link" href="../partners.php" data-text="Partners">Partners</a></li>
             </ul>
         </div>
 
@@ -29,15 +29,15 @@
         <div>
             <p class="footer-section-heading">Community</p>
             <ul>
-                <li><a href="../cym.php">Cyber Young Minds</a></li>
-                <li><a href="../galleryEvents.php">Gallery & Events</a></li>
-                <li><a href="../campaign.php">Campaigns</a></li>
+                <li><a class="footer-link" href="../cym.php" data-text="Cyber Young Minds">Cyber Young Minds</a></li>
+                <li><a class="footer-link" href="../galleryEvents.php" data-text="Gallery & Events">Gallery & Events</a></li>
+                <li><a class="footer-link" href="../campaign.php" data-text="Campaigns">Campaigns</a></li>
             </ul>
         </div>
     </div>
 
     <!-- bottom section: copyright and legal links -->
-     <div>
-
+     <div class="footer-bottom">
+        <p>&copy; 2026 Likhwezi Technologies (Pty) Ltd. All rights reserved.  |   <a class="footer-link" href="../privacy.php" data-text="Privacy Policy">Privacy Policy</a> · <a class="footer-link" href="../terms.php" data-text="Terms of Use">Terms of Use</a></p>
      </div>
 </footer>
