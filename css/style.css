@@ -3,6 +3,9 @@ body {
 }
 
 /* Navbar */
+.nav {
+    background-color: darkblue;
+}
 .logo {
     height: 40px;
     width: 40px;

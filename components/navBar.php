@@ -1,4 +1,4 @@
-<nav>
+<nav class="navbar">
     <div class="container d-flex justify-content-between align-items-center py-1">
         <!-- Logo -->
         <div class="d-flex align-items-center">
