@@ -35,28 +35,13 @@ body {
 }
 
 /* footer */
-/*footer link animation effect*/
 .footer-link {
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-    height: 1.5em;
-    line-height: 1.5em;
-    vertical-align: bottom;
     color: inherit;
     text-decoration: none;
-    transition: transform 0.25s ease;
-}
-
-.footer-link::after {
-    content: attr(data-text);
-    position: absolute;
-    left: 0;
-    top: 100%;
 }
 
 .footer-link:hover {
-    transform: translateY(-1.5em);
+    color: #0389E1;
 }
 
 .footer-link:focus-visible {
@@ -68,6 +53,7 @@ body {
 .footer-top{
     background-color: #0F3C7A;
     color: white;
+    font-size: 12px;
 }
 
 .footer-section-heading{
@@ -75,11 +61,46 @@ body {
     color: white;
 }
 
+.footer-top ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+/*footer columns section contains the company logo and website page links*/
+.footer-columns {
+    display: grid;
+    grid-template-columns: repeat(4, 325px);
+    gap: 2rem;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+@media (max-width: 991px) {
+    .footer-columns {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575px) {
+    .footer-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
 /*footer bottom section contains the copyright information*/
 .footer-bottom{
     background-color:white;
     color: #0F3C7A;
     text-align: center;
+    font-size: 12px;
+}
+
+.logo-sm {
+    height: 25px;
+    width: 25px;
+    object-fit: contain;
+    margin-right: 0.5rem;
 }
 
 
