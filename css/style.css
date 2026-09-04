@@ -6,6 +6,7 @@ body {
 .navbar {
     background-color: #04113B;
     color: white;
+    font-size: 14px;
 }
 
 .navbar .nav-link {
@@ -30,7 +31,7 @@ body {
 
 .company-name {
     font-weight: 400;
-    font-size: 1.1rem;
+    font-size: 16px;
     line-height: 1.2;
 }
 
