@@ -41,3 +41,5 @@
         <p>&copy; 2026 Likhwezi Technologies (Pty) Ltd. All rights reserved.  |   <a class="footer-link" href="../privacy.php" data-text="Privacy Policy">Privacy Policy</a> · <a class="footer-link" href="../terms.php" data-text="Terms of Use">Terms of Use</a></p>
      </div>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

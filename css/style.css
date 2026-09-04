@@ -3,9 +3,24 @@ body {
 }
 
 /* Navbar */
-.nav {
-    background-color: darkblue;
+.navbar {
+    background-color: #04113B;
+    color: white;
 }
+
+.navbar .nav-link {
+    color: white;
+}
+
+.navbar .nav-link:hover {
+    color: #0389E1;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+    outline: none;
+}
+
 .logo {
     height: 40px;
     width: 40px;
@@ -16,6 +31,7 @@ body {
 .company-name {
     font-weight: 400;
     font-size: 1.1rem;
+    line-height: 1.2;
 }
 
 /* footer */
