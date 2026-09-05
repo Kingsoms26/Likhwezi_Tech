@@ -14,3 +14,81 @@ ______________________________
 CREATE DATABASE LikhweziTechDB;
 
 - creating the tables
+CREATE TABLE UserAccount (
+  accountID int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  createdBy int NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(255) UNIQUE NOT NULL,
+  passwordHash VARCHAR(255) NOT NULL,
+  dateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  accountStatus ENUM('active', 'suspended', 'deactivated') NOT NULL DEFAULT 'active',
+  FOREIGN KEY (createdBy) REFERENCES UserAccount (accountID) ON DELETE SET NULL,
+  INDEX idx_useraccount_status (accountStatus)
+);
+
+CREATE TABLE Admin (
+  accountID int PRIMARY KEY NOT NULL,
+  FOREIGN KEY (accountID) REFERENCES UserAccount (accountID) ON DELETE CASCADE
+);
+
+CREATE TABLE StaffMarketing (
+  accountID int PRIMARY KEY NOT NULL,
+  FOREIGN KEY (accountID) REFERENCES UserAccount (accountID) ON DELETE CASCADE
+);
+
+CREATE TABLE StaffCustomerService (
+  accountID int PRIMARY KEY NOT NULL,
+  FOREIGN KEY (accountID) REFERENCES UserAccount (accountID) ON DELETE CASCADE
+);
+
+CREATE TABLE ArchivableEntity (
+  entityID int PRIMARY KEY NOT NULL,
+  entityType ENUM('Enquiry', 'Registration', 'GalleryItem', 'Partner', 'Event', 'Campaign') NOT NULL
+);
+
+CREATE TABLE Enquiry (
+  enquiryID int PRIMARY KEY UNIQUE NOT NULL AUTO_INCREMENT,
+  handledBy int NULL,
+  name VARCHAR(255) NOT NULL,
+  companyName VARCHAR(255) NULL,
+  email VARCHAR(255) NOT NULL,
+  phoneNumber VARCHAR(30) NULL,
+  description TEXT NOT NULL,
+  meetingType ENUM('virtual', 'physical', 'none') NOT NULL DEFAULT 'none',
+  status ENUM('new', 'contacted', 'closed') NOT NULL DEFAULT 'new',
+  isArchived BOOLEAN NOT NULL DEFAULT FALSE,
+  dateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (enquiryID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE,
+  FOREIGN KEY (handledBy) REFERENCES StaffCustomerService (accountID) ON DELETE CASCADE
+);
+
+CREATE TABLE Registration (
+  registrationID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  firstName VARCHAR(100) NOT NULL,
+  lastName VARCHAR(100) NOT NULL,
+  age int NOT NULL CHECK (age>=1 AND age<=100),
+  email VARCHAR(255) NOT NULL,
+  phoneNumber VARCHAR(30) NULL,
+  programme VARCHAR(255) NOT NULL,
+  consentConfirmation BOOLEAN NOT NULL DEFAULT FALSE,
+  consentGivenAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  guardianName VARCHAR(150) NULL,
+  guardianRelationship VARCHAR(100) NULL,
+  guardianEmail VARCHAR(150) NULL,
+  guardianPhoneNumber VARCHAR(30) NULL,
+  guardianConsentConfirmation BOOLEAN NULL DEFAULT FALSE,
+  guardianConsentGivenAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  isArchived BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (registrationID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
+);
+
+CREATE TABLE Partner (
+  partnerID int PRIMARY KEY NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  logo VARCHAR(255) NOT NULL,
+  dateAdd DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  isArchived BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (partnerID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
+);
+
