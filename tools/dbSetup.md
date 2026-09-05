@@ -178,3 +178,40 @@ CREATE TABLE Donation (
   FOREIGN KEY (campaignID) REFERENCES Campaign (campaignID)
 );
 ```
+
+*********************************************************************
+DB Testing
+
+Use this to quickly check that the database is reachable and set up correctly, without leaving any test data behind.
+1. Make sure `tools/dbConnection.php` exists and has valid credentials.
+2. Save the script below anywhere in the project and open it in a browser, or run it from a terminal with `php tools/testDb.php`.
+3. Delete the script when you're done testing, it's a throwaway tool, not part of the app.
+
+```php
+<?php
+require __DIR__ . '/dbConnection.php';
+
+echo "Connected OK to database: " . $conn->query("SELECT DATABASE()")->fetch_row()[0] . "\n\n";
+
+$expected = [
+    'UserAccount','Admin','StaffMarketing','StaffCustomerService','ArchivableEntity',
+    'Enquiry','Registration','Partner','Report','Campaign','Event','GalleryItem',
+    'ArchiveLog','Donation'
+];
+
+echo "Checking tables:\n";
+foreach ($expected as $table) {
+    $found = $conn->query("SHOW TABLES LIKE '$table'")->num_rows > 0;
+    echo ($found ? "  OK      " : "  MISSING ") . $table . "\n";
+}
+
+$conn->close();
+```
+
+Note: because several tables share their primary key with `ArchivableEntity`, a row must exist in `ArchivableEntity` first before you can insert into those tables. 
+If you want to test an actual insert, wrap it in a transaction and roll it back afterward so no test data is left in the database:
+```sql
+START TRANSACTION;
+-- your test INSERT statements here
+ROLLBACK;
+```
