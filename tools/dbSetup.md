@@ -1,19 +1,37 @@
-Description: This file holds the SQL used to create the database, including the table definitions (names, columns, and relationships) and any setup statements needed to get the schema up and running.
+Database Setup
 
-Tables
-______________________________
-Example: 
-Table name
-- attributes , types
+This file holds the SQL used to create the "LikhweziTechDB" database, including the table definitions (names, columns, and relationships) and any setup statements needed to get the schema up and running.
 
+Note: This SQL is written specifically for MySQL and is not guaranteed to work on other database systems.
 
+*********************************************************************
+List of Tables
 
-SQL
-______________________________
-- creating the database
+- UserAccount
+- Admin
+- StaffMarketing
+- StaffCustomerService
+- ArchivableEntity
+- Enquiry
+- Registration
+- Partner
+- Report
+- Campaign
+- Event
+- GalleryItem
+- ArchiveLog
+- Donation
+
+*********************************************************************
+SQL Code
+
+```sql
+-- creating the database
 CREATE DATABASE LikhweziTechDB;
 
-- creating the tables
+USE LikhweziTechDB;
+
+-- creating the tables
 CREATE TABLE UserAccount (
   accountID int PRIMARY KEY AUTO_INCREMENT NOT NULL,
   createdBy int NULL,
@@ -42,7 +60,7 @@ CREATE TABLE StaffCustomerService (
 );
 
 CREATE TABLE ArchivableEntity (
-  entityID int PRIMARY KEY NOT NULL,
+  entityID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   entityType ENUM('Enquiry', 'Registration', 'GalleryItem', 'Partner', 'Event', 'Campaign') NOT NULL
 );
 
@@ -83,7 +101,7 @@ CREATE TABLE Registration (
 );
 
 CREATE TABLE Partner (
-  partnerID int PRIMARY KEY NOT NULL,
+  partnerID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   description TEXT NULL,
   logo VARCHAR(255) NOT NULL,
@@ -125,10 +143,16 @@ CREATE TABLE Event (
 
 CREATE TABLE GalleryItem (
   galleryItemID int PRIMARY KEY AUTO_INCREMENT NOT NULL,
-  eventID int NOT NULL,
+  eventID int NULL,
+  campaignID int NULL,
   image VARCHAR(500) NOT NULL,
   FOREIGN KEY (eventID) REFERENCES Event (eventID) ON DELETE CASCADE,
-  FOREIGN KEY (galleryItemID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
+  FOREIGN KEY (campaignID) REFERENCES Campaign (campaignID) ON DELETE CASCADE,
+  FOREIGN KEY (galleryItemID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE,
+  CONSTRAINT chk_galleryitem_one_parent CHECK (
+    (eventID IS NOT NULL AND campaignID IS NULL) OR
+    (eventID IS NULL AND campaignID IS NOT NULL)
+  )
 );
 
 CREATE TABLE ArchiveLog (
@@ -140,3 +164,17 @@ CREATE TABLE ArchiveLog (
   FOREIGN KEY (entityID) REFERENCES ArchivableEntity (entityID),
   FOREIGN KEY (performedBy) REFERENCES UserAccount (accountID) 
 );
+
+CREATE TABLE Donation (
+  donationID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  campaignID int NOT NULL,
+  firstName VARCHAR(100) NOT NULL,
+  lastName VARCHAR(100) NOT NULL,
+  phoneNumber VARCHAR(30) NULL,
+  email VARCHAR(255) NOT NULL,
+  donationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  amount DECIMAL(12,2) NOT NULL CHECK(amount>0),
+  paymentReference VARCHAR(255) NOT NULL UNIQUE,
+  FOREIGN KEY (campaignID) REFERENCES Campaign (campaignID)
+);
+```
