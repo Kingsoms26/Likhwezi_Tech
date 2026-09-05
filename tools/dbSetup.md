@@ -92,3 +92,51 @@ CREATE TABLE Partner (
   FOREIGN KEY (partnerID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
 );
 
+CREATE TABLE Report (
+  reportID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  generatedBy int NOT NULL,
+  reportType ENUM('enquiry', 'registration', 'event', 'campaign', 'useraccount') NOT NULL,
+  dateGenerated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (generatedBy) REFERENCES Admin (accountID)
+);
+
+CREATE TABLE Campaign (
+  campaignID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  createdBy int NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  goal DECIMAL(12, 2) NOT NULL,
+  status ENUM('draft', 'active', 'closed') NOT NULL DEFAULT 'draft',
+  isArchived BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (createdBy) REFERENCES StaffMarketing (accountID),
+  FOREIGN KEY (campaignID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
+);
+
+CREATE TABLE Event (
+  eventID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  createdBy int NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  eventDate DATE NULL,
+  isArchived BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (createdBy) REFERENCES StaffMarketing (accountID),
+  FOREIGN KEY (eventID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
+);
+
+CREATE TABLE GalleryItem (
+  galleryItemID int PRIMARY KEY AUTO_INCREMENT NOT NULL,
+  eventID int NOT NULL,
+  image VARCHAR(500) NOT NULL,
+  FOREIGN KEY (eventID) REFERENCES Event (eventID) ON DELETE CASCADE,
+  FOREIGN KEY (galleryItemID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
+);
+
+CREATE TABLE ArchiveLog (
+  archiveID int PRIMARY KEY AUTO_INCREMENT,
+  entityID int NOT NULL,
+  performedBy int NOT NULL,
+  action ENUM('archived', 'restored'),
+  timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (entityID) REFERENCES ArchivableEntity (entityID),
+  FOREIGN KEY (performedBy) REFERENCES UserAccount (accountID) 
+);
