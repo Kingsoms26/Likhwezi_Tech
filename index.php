@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include 'tools/dbConnection.php';
+    include __DIR__ . '/tools/dbConnection.php';
 ?>
 
 <!DOCTYPE html>
@@ -101,12 +101,16 @@
             <div class="section-title py-2">Our Partners</div>
             <div class="partner-container d-flex justify-content-center gap-4">
                 <?php
-                    $result = $conn->query("SELECT logo FROM Partner WHERE isArchived = FALSE LIMIT 4");
                     $count = 0;
-                    while ($row = $result->fetch_assoc()) {
-                        $logo = htmlspecialchars($row['logo']);
-                        echo "<img src=\"images/partners/{$logo}\" alt=\"Partner logo\" class=\"partner-logo\">";
-                        $count++;
+                    if (isset($conn) && $conn instanceof mysqli && !$conn->connect_errno) {
+                        $result = $conn->query("SELECT logo FROM Partner WHERE isArchived = FALSE LIMIT 4");
+                        if ($result) {
+                            while ($row = $result->fetch_assoc()) {
+                                $logo = htmlspecialchars($row['logo']);
+                                echo "<img src=\"images/partners/{$logo}\" alt=\"Partner logo\" class=\"partner-logo\">";
+                                $count++;
+                            }
+                        }
                     }
                     for ($i = $count; $i < 4; $i++) {
                         echo '<div class="partner-placeholder"></div>';
