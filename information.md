@@ -5,8 +5,9 @@ ______________________________
 - Cyber Young Minds -- Thando
 - Home  --  Somila
 - Partner  -- Mutshidzi
-- Contact us  -- TBA
+- Contact us  -- Thami
 - About us  -- Thami 
+- Privacy Policy  --  TBA
 
 
 Essential Components * Everyone will use this, sits within the components folder *

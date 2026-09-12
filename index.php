@@ -27,7 +27,7 @@
             <div class="hero-image"> 
                 
                 <!-- Still to be decided -->
-                <img src="images/placeholder.webp" alt="Hero Image">
+                <img src="images/about-us.png" alt="Hero Image">
             </div>
         </section>
 

@@ -47,8 +47,8 @@
     </div>
 
     <!-- bottom section: copyright and legal links -->
-     <div class="footer-bottom font-small">
-        <p>&copy; 2026 Likhwezi Technologies (Pty) Ltd. All rights reserved.  |   <a class="footer-link" href="../privacy.php">Privacy Policy</a> · <a class="footer-link" href="../terms.php">Terms of Use</a></p>
+     <div class="footer-bottom font-small pt-2">
+        <p>&copy; 2026 Likhwezi Technologies (Pty) Ltd. All rights reserved.        |       <a class="footer-link" href="../privacy.php">Privacy Policy</a> · <a class="footer-link" href="../terms.php">Terms of Use</a></p>
      </div>
 </footer>
 
