@@ -28,9 +28,9 @@
             <div>
                 <p class="footer-section-heading">Company</p>
                 <ul>
-                    <li><a class="footer-link" href="../aboutUs.php">About Us</a></li>
-                    <li><a class="footer-link" href="../services.php">Services</a></li>
-                    <li><a class="footer-link" href="../partners.php">Partners</a></li>
+                    <li><a class="footer-link" href="aboutUs.php">About Us</a></li>
+                    <li><a class="footer-link" href="services.php">Services</a></li>
+                    <li><a class="footer-link" href="partners.php">Partners</a></li>
                 </ul>
             </div>
 
@@ -38,9 +38,9 @@
             <div>
                 <p class="footer-section-heading">Community</p>
                 <ul>
-                    <li><a class="footer-link" href="../cym.php">Cyber Young Minds</a></li>
-                    <li><a class="footer-link" href="../galleryEvents.php">Gallery & Events</a></li>
-                    <li><a class="footer-link" href="../campaign.php">Campaigns</a></li>
+                    <li><a class="footer-link" href="cym.php">Cyber Young Minds</a></li>
+                    <li><a class="footer-link" href="galleryEvents.php">Gallery & Events</a></li>
+                    <li><a class="footer-link" href="campaign.php">Campaigns</a></li>
                 </ul>
             </div>
         </div>

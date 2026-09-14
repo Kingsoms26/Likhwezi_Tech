@@ -34,7 +34,7 @@
         <hr>
 
         <!-- services section -->
-        <section class="section-container d-flex flex-column align-items-center py-3 mx-10">
+        <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
             <div class="section-title py-2">Client Solutions</div>
             
             <!-- services cards -->
@@ -80,7 +80,7 @@
         <hr>
 
         <!-- About Us Section -->
-        <section class="section-container d-flex flex-column align-items-center py-3 mx-10">
+        <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
             <div class="section-title py-2">About Us</div>
             <div class="about-container d-flex align-items-stretch gap-4 pt-4">
                 <div class="about-content d-flex flex-column gap-2">
@@ -97,7 +97,7 @@
         <hr>
 
         <!-- partner section -->
-        <section class="section-container d-flex flex-column align-items-center py-3 mx-10">
+        <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
             <div class="section-title py-2">Our Partners</div>
             <div class="partner-container d-flex justify-content-center gap-4">
                 <?php
