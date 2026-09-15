@@ -375,8 +375,6 @@ body {
     }
 }
 
-/* Campaign Page Styles */
-
 /* Gallery & Events page */
 .gallery-hero {
     display: grid;
@@ -697,6 +695,8 @@ body.gallery-modal-open {
     }
 }
 
+
+
 /* Campaigns page */
 .campaign-section {
     display: grid;
@@ -709,52 +709,66 @@ body.gallery-modal-open {
 
 .campaign-card {
     min-width: 0;
-    padding: 18px;
     border: 1px solid #ddd;
     border-radius: 10px;
     background-color: #fff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .campaign-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.11);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px #04113B;
 }
 
-.campaign-card .campaign-image {
-    width: calc(100% + 36px);
-    margin: -18px -18px 14px;
+.campaign-image {
+    width: 100%;
     aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background-color: #E9ECEF;
+}
+
+.campaign-image img {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
 }
 
-.campaign-card h3 {
+.campaign-card:hover .campaign-image img {
+    transform: scale(1.04);
+}
+
+.campaign-content {
+    padding: 18px;
+}
+
+.campaign-content h3 {
     margin: 0 0 7px;
     color: #04113B;
     font-size: 18px;
     line-height: 1.25;
 }
 
-.campaign-card > p {
+.campaign-content > p {
     margin: 0 0 14px;
     color: #555;
     font-size: 14px;
     line-height: 1.5;
 }
 
-.campaign-card > p.campaign-stats {
+.campaign-stats {
     margin: 0 0 8px;
     color: #777;
     font-size: 13px;
 }
 
-.campaign-card .progress {
+.campaign-content .progress {
     height: 8px;
 }
 
-.campaign-card .progress-bar {
+.campaign-content .progress-bar {
     background-color: #0F3C7A;
 }
 
@@ -771,5 +785,3 @@ body.gallery-modal-open {
         grid-template-columns: 1fr;
     }
 }
-
-/* Gallery & Events page styles end */

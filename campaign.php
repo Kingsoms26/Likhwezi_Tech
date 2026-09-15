@@ -75,12 +75,16 @@
                     ?>
 
                     <div class="campaign-card">
-                        <img src="<?= htmlspecialchars($campaignImage) ?>" alt="<?= htmlspecialchars($campaign['name']) ?>" class="campaign-image">
-                        <h3><?= htmlspecialchars($campaign['name']) ?></h3>
-                        <p><?= htmlspecialchars($campaign['description']) ?></p>
-                        <p class="campaign-stats">R<?= number_format($raised, 2) ?> raised of R<?= number_format($goal, 2) ?></p>
-                        <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="<?= round($percent) ?>" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: <?= $percent ?>%"></div>
+                        <div class="campaign-image">
+                            <img src="<?= htmlspecialchars($campaignImage) ?>" alt="<?= htmlspecialchars($campaign['name']) ?>">
+                        </div>
+                        <div class="campaign-content">
+                            <h3><?= htmlspecialchars($campaign['name']) ?></h3>
+                            <p><?= htmlspecialchars($campaign['description']) ?></p>
+                            <p class="campaign-stats">R<?= number_format($raised, 2) ?> raised of R<?= number_format($goal, 2) ?></p>
+                            <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="<?= round($percent) ?>" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" style="width: <?= $percent ?>%"></div>
+                            </div>
                         </div>
                     </div>
                 <?php endwhile; ?>
@@ -90,12 +94,44 @@
                 <!--<p>No campaigns available at the moment.</p>-->
                 
                 <div class="campaign-card">
-                    <img src="images/placeholder.webp" alt="Donate a scissor" class="campaign-image">
-                    <h3>Donate a scissor</h3>
-                    <p>A bunch of random stuff</p>
-                    <p class="campaign-stats">R250.00 raised of R1000.00</p>
-                    <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar" style="width: 25%"></div>
+                    <div class="campaign-image">
+                        <img src="images/placeholder.webp" alt="Donate a scissor">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Donate a scissor</h3>
+                        <p>A bunch of random stuff</p>
+                        <p class="campaign-stats">R250.00 raised of R1000.00</p>
+                        <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="campaign-card">
+                    <div class="campaign-image">
+                        <img src="images/placeholder.webp" alt="Donate a scissor">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Donate a scissor</h3>
+                        <p>A bunch of random stuff</p>
+                        <p class="campaign-stats">R250.00 raised of R1000.00</p>
+                        <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="campaign-card">
+                    <div class="campaign-image">
+                        <img src="images/placeholder.webp" alt="Donate a scissor">
+                    </div>
+                    <div class="campaign-content">
+                        <h3>Donate a scissor</h3>
+                        <p>A bunch of random stuff</p>
+                        <p class="campaign-stats">R250.00 raised of R1000.00</p>
+                        <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: 25%"></div>
+                        </div>
                     </div>
                 </div>
 
