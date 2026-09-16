@@ -9,7 +9,28 @@
     if ($conn && !$conn->connect_error) {
         $dbAvailable = true;
 
-        $sql = "SELECT * FROM Campaign WHERE isArchived = FALSE";
+        $sql = "SELECT
+                c.campaignID,
+                c.name,
+                c.description,
+                c.goal,
+                COALESCE((
+                    SELECT gi.image
+                    FROM GalleryItem gi
+                    WHERE gi.campaignID = c.campaignID
+                    ORDER BY gi.galleryItemID ASC
+                    LIMIT 1
+                ), 'images/placeholder.webp') AS campaignImage,
+                COALESCE((
+                    SELECT SUM(d.amount)
+                    FROM Donation d
+                    WHERE d.campaignID = c.campaignID
+                ), 0) AS raised
+            FROM Campaign c
+            WHERE c.isArchived = FALSE
+            ORDER BY c.campaignID DESC
+        ";
+
         $result = $conn->query($sql);
     }
 
@@ -106,31 +127,8 @@
                 <?php while ($campaign = $result->fetch_assoc()): ?>
 
                     <?php
-                    $campaignImage = 'images/placeholder.webp';
-                    $imageStmt = $conn->prepare(
-                        "SELECT image FROM GalleryItem WHERE campaignID = ? ORDER BY galleryItemID ASC LIMIT 1"
-                    );
-                    if ($imageStmt) {
-                        $imageStmt->bind_param("i", $campaign['campaignID']);
-                        $imageStmt->execute();
-                        $imageItem = $imageStmt->get_result()->fetch_assoc();
-                        if ($imageItem && !empty($imageItem['image'])) {
-                            $campaignImage = $imageItem['image'];
-                        }
-                        $imageStmt->close();
-                    }
-
-                    $raised = 0;
-                    $donationStmt = $conn->prepare(
-                        "SELECT COALESCE(SUM(amount), 0) AS raised FROM Donation WHERE campaignID = ?"
-                    );
-                    if ($donationStmt) {
-                        $donationStmt->bind_param("i", $campaign['campaignID']);
-                        $donationStmt->execute();
-                        $raised = (float) $donationStmt->get_result()->fetch_assoc()['raised'];
-                        $donationStmt->close();
-                    }
-
+                    $campaignImage = !empty($campaign['campaignImage']) ? $campaign['campaignImage'] : 'images/placeholder.webp';
+                    $raised = isset($campaign['raised']) ? (float) $campaign['raised'] : 0;
                     $goal = (float) $campaign['goal'];
                     $percent = $goal > 0 ? min(100, ($raised / $goal) * 100) : 0;
                     ?>
@@ -220,6 +218,7 @@
             </div>
         <?php endif; ?>
 
+        <!-- Campaign Modal -->
         <div class="modal fade" id="campaignModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -228,7 +227,9 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <img id="campaignModalImage" src="images/placeholder.webp" alt="Campaign image" class="img-fluid mb-3 rounded">
+                        <div class="campaign-modal-image-wrap mb-3">
+                            <img id="campaignModalImage" src="images/placeholder.webp" alt="Campaign image" class="campaign-modal-image">
+                        </div>
                         <div class="progress" role="progressbar" aria-label="Campaign progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: 25%"></div>
                         </div>
@@ -242,6 +243,7 @@
             </div>
         </div>
 
+        <!-- Donation Modal -->
         <div class="modal fade" id="donationModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -277,10 +279,6 @@
                                 <label class="form-label">Choose an amount</label>
                                 <div class="d-flex flex-wrap gap-2 mb-2">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="presetAmount" id="amount50" value="50">
-                                        <label class="form-check-label" for="amount50">R50</label>
-                                    </div>
-                                    <div class="form-check">
                                         <input class="form-check-input" type="radio" name="presetAmount" id="amount100" value="100">
                                         <label class="form-check-label" for="amount100">R100</label>
                                     </div>
@@ -297,11 +295,11 @@
                                         <label class="form-check-label" for="amountCustom">Custom</label>
                                     </div>
                                 </div>
-                                <input type="number" class="form-control" id="customAmount" name="customAmount" min="1" step="0.01" placeholder="Enter your own amount" disabled>
+                                <input type="number" class="form-control d-none" id="customAmount" name="customAmount" min="1" step="0.01" placeholder="Enter your own amount" disabled>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-outline-dark px-10" data-bs-dismiss="modal">Cancel</button>
                             <button type="submit" name="donation_submit" value="1" class="btn btn-primary">Donate now</button>
                         </div>
                     </form>
@@ -326,7 +324,7 @@
                 card.addEventListener('click', function() {
                     const campaignName = card.dataset.name || 'Campaign Details';
                     campaignModalTitle.textContent = campaignName;
-                    donationModalTitle.textContent = 'Donate to ' + campaignName;
+                    donationModalTitle.textContent = campaignName;
                     campaignModalImage.src = card.dataset.image || 'images/placeholder.webp';
                     campaignModalImage.alt = campaignName;
                     campaignModalStats.textContent = card.dataset.stats || '';
@@ -350,6 +348,7 @@
                 radio.addEventListener('change', function() {
                     const isCustom = this.value === 'custom';
                     customAmountInput.disabled = !isCustom;
+                    customAmountInput.classList.toggle('d-none', !isCustom);
                     if (!isCustom) {
                         customAmountInput.value = '';
                     }

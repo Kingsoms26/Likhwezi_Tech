@@ -1,5 +1,6 @@
 Pages
 ______________________________
+phase 1
 - Campaign -- TBA
 - Gallery & Event  -- Tshepo
 - Cyber Young Minds -- Thando
@@ -8,6 +9,9 @@ ______________________________
 - Contact us  -- TBA
 - About us  -- Thami 
 
+phase 2
+- services.php
+- 
 
 Essential Components * Everyone will use this, sits within the components folder *
 ______________________________
