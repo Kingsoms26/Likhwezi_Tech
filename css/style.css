@@ -469,3 +469,34 @@ body {
         margin-left: calc(72px + 1.5rem);
     }
 }
+.partners-hero-section {
+    width: 100%;
+    padding-left: var(--section-gutter);
+    padding-right: var(--section-gutter);
+    padding-top: 56px;
+    padding-bottom: 24px;
+    box-sizing: border-box;
+}
+
+.partners-hero-content {
+    max-width: 600px;
+    text-align: left;
+}
+
+.partners-hero-content h1 {
+    font-size: 32px;
+    color: #0F3C7A;
+    margin-bottom: 0.75rem;
+}
+
+.partners-hero-content p {
+    color: #555555;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+@media (max-width: 575px) {
+    .partners-hero-content h1 {
+        font-size: 26px;
+    }
+}
