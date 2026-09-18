@@ -12,14 +12,19 @@
         <!-- navigation bar -->
         <?php include 'components/navBar.php'; ?>
 
+        <!-- partners hero -->
+        <section class="partners-hero-section">
+            <div class="partners-hero-content">
+                <h1>Our Partners</h1>
+                <p>
+                    Likhwezi Technologies works alongside a network of organisations who share our
+                    commitment to delivering real business value through data.
+                </p>
+            </div>
+        </section>
+
         <!-- partners section -->
         <section class="section-container d-flex flex-column align-items-center py-3 mx-10">
-            <div class="section-title py-2">Our Partners</div>
-            <p class="text-center px-3" style="max-width: 700px;">
-                Likhwezi Technologies works alongside a network of organisations who share our
-                commitment to delivering real business value through data.
-            </p>
-
             <div class="partners-list">
                 <?php
                     $result = $conn->query(
