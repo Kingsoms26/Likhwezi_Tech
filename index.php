@@ -35,10 +35,10 @@
 
         <!-- services section -->
         <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
-            <div class="section-title py-2">Client Solutions</div>
+            <div class="section-title pt-3 pb-5">Client Solutions</div>
             
             <!-- services cards -->
-            <div class=" service-container d-flex flex-wrap justify-content-center gap-3 py-4">
+            <div class=" service-container d-flex flex-wrap justify-content-center gap-5 py-10">
                 <div class="card">
                     <div class="card-body">
                         <div class="service-title">Enterprise Architecture</div>
@@ -118,8 +118,9 @@
                 ?>
             </div>
             <div class="partner-actions align-self-stretch">
-                <button class="btn btn-sm mt-3">Explore our Partners</button>
+                <a href="partners.php" class="btn btn-sm mt-3">Explore our Partners</a>
             </div>
+            <div><p></p></div>
         </section>
 
         <!-- footer -->

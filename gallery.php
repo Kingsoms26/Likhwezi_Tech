@@ -3,14 +3,9 @@ $pageTitle = "Gallery & Events";
 
 $dbAvailable = false;
 $events = null;
-$page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
-$eventsPerPage = 6;
-$totalEvents = 0;
-$totalPages = 1;
 
 /*
- * Use the database when the team's connection file exists.
- * Otherwise, keep the page working with placeholder events.
+use database when contents are available
  */
 $dbConnectionFile = __DIR__ . '/tools/dbConnection.php';
 
@@ -20,37 +15,31 @@ if (file_exists($dbConnectionFile)) {
     if (isset($conn) && $conn instanceof mysqli && !$conn->connect_errno) {
         $dbAvailable = true;
 
-        $countResult = $conn->query(
-            "SELECT COUNT(*) AS total
-             FROM Event
-             WHERE isArchived = FALSE"
-        );
-
-        if ($countResult) {
-            $totalEvents = (int) $countResult->fetch_assoc()['total'];
-        }
-
-        $totalPages = max(1, (int) ceil($totalEvents / $eventsPerPage));
-
-        if ($page > $totalPages) {
-            $page = $totalPages;
-        }
-
-        $offset = ($page - 1) * $eventsPerPage;
-
         $eventStmt = $conn->prepare(
             "SELECT eventID, name, description, eventDate
              FROM Event
              WHERE isArchived = FALSE
-             ORDER BY eventDate DESC, eventID DESC
-             LIMIT ? OFFSET ?"
+             ORDER BY eventDate ASC, eventID ASC"
         );
 
         if ($eventStmt) {
-            $eventStmt->bind_param("ii", $eventsPerPage, $offset);
             $eventStmt->execute();
             $events = $eventStmt->get_result();
         }
+    }
+}
+
+$currentEvents = [];
+$upcomingEvents = [];
+
+if ($events) {
+    while ($event = $events->fetch_assoc()) {
+        if (!empty($event['eventDate']) && strtotime($event['eventDate']) <= strtotime('today')) {
+            if (count($currentEvents) < 3) { $currentEvents[] = $event; }
+        } else {
+            if (count($upcomingEvents) < 3) { $upcomingEvents[] = $event; }
+        }
+        if (count($currentEvents) >= 3 && count($upcomingEvents) >= 3) { break; }
     }
 }
 ?>
@@ -72,10 +61,7 @@ if (file_exists($dbConnectionFile)) {
             <section class="gallery-hero">
 
                 <div class="gallery-hero-content">
-
-                    <p class="gallery-hero-eyebrow">Our Events & Activities</p>
-
-                    <h1>Gallery & Events</h1>
+<h1>Gallery & Events</h1>
 
                     <p>
                         Explore moments from our events, workshops and activities.
@@ -92,257 +78,94 @@ if (file_exists($dbConnectionFile)) {
 
             </section>
 
-
             <!-- event cards -->
             <section class="gallery-section">
-
                 <div class="gallery-heading">
-                    <h2>Our Events</h2>
-                    <p>
-                        Select an event to view more information and a larger
-                        image. Six events are displayed on each page.
-                    </p>
+                    <div>
+                        <h2>Our Events</h2>
+                        <p>Select an event to view more information</p>
+                    </div>
+                    <a href="previous-events.php" class="btn btn-primary">View Previous Events Collection</a>
                 </div>
 
-                <div class="gallery-grid">
-
-<?php if ($dbAvailable && $events && $events->num_rows > 0): ?>
-
-                    <?php while ($event = $events->fetch_assoc()): ?>
-
-                        <?php
-                        $eventImage = 'images/placeholder.webp';
-
-                        $galleryStmt = $conn->prepare(
-                            "SELECT image
-                             FROM GalleryItem
-                             WHERE eventID = ?
-                             ORDER BY galleryItemID ASC
-                             LIMIT 1"
-                        );
-
-                        if ($galleryStmt) {
-                            $galleryStmt->bind_param("i", $event['eventID']);
-                            $galleryStmt->execute();
-
-                            $galleryResult = $galleryStmt->get_result();
-                            $galleryItem = $galleryResult->fetch_assoc();
-
-                            if ($galleryItem && !empty($galleryItem['image'])) {
-                                $eventImage = $galleryItem['image'];
-                            }
-
-                            $galleryStmt->close();
-                        }
-
-                        $eventTitle = htmlspecialchars(
-                            $event['name'],
-                            ENT_QUOTES,
-                            'UTF-8'
-                        );
-
-                        $eventDescription = htmlspecialchars(
-                            $event['description'] ?? 'No description available.',
-                            ENT_QUOTES,
-                            'UTF-8'
-                        );
-
-                        $eventDate = $event['eventDate']
-                            ? date('d F Y', strtotime($event['eventDate']))
-                            : 'Date to be announced';
-
-                        $eventDateAttribute = htmlspecialchars(
-                            $eventDate,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        );
-
-                        $eventImageAttribute = htmlspecialchars(
-                            $eventImage,
-                            ENT_QUOTES,
-                            'UTF-8'
-                        );
-                        ?>
-
-                        <article
-                            class="event-card"
-                            data-title="<?= $eventTitle ?>"
-                            data-date="<?= $eventDateAttribute ?>"
-                            data-image="<?= $eventImageAttribute ?>"
-                            data-description="<?= $eventDescription ?>"
-                        >
-
-                            <button
-                                type="button"
-                                class="event-card-button"
-                                aria-label="View <?= $eventTitle ?>"
-                            >
-
-                                <div class="event-image">
-                                    <img
-                                        src="<?= $eventImageAttribute ?>"
-                                        alt="<?= $eventTitle ?>"
-                                    >
-                                </div>
-
-                                <div class="event-content">
-                                    <h3><?= $eventTitle ?></h3>
-
-                                    <p class="event-date">
-                                        <?= $eventDateAttribute ?>
-                                    </p>
-
-                                    <p class="event-short-description">
-                                        <?= $eventDescription ?>
-                                    </p>
-
-                                    <span class="event-card-link">
-                                        View event details
-                                    </span>
-                                </div>
-
-                            </button>
-
-                        </article>
-
-                    <?php endwhile; ?>
-
-<?php else: ?>
-
-                    <!-- Temporary placeholders shown until database events are available -->
-
-                    <article
-                        class="event-card"
-                        data-title="Business Strategy Workshop"
-                        data-date="15 August 2026"
-                        data-image="images/placeholder.webp"
-                        data-description="Placeholder event used while the database connection and event records are being set up."
-                    >
-
-                        <button
-                            type="button"
-                            class="event-card-button"
-                            aria-label="View Business Strategy Workshop"
-                        >
-
-                            <div class="event-image">
-                                <img
-                                    src="images/placeholder.webp"
-                                    alt="Business Strategy Workshop placeholder"
-                                >
-                            </div>
-
+<?php
+function renderEventCards($events, $dbAvailable, $conn) {
+    foreach ($events as $event) {
+        $eventImage = 'images/placeholder.webp';
+        if ($dbAvailable && !empty($event['eventID'])) {
+            $galleryStmt = $conn->prepare("SELECT image FROM GalleryItem WHERE eventID = ? ORDER BY galleryItemID ASC LIMIT 1");
+            if ($galleryStmt) {
+                $galleryStmt->bind_param("i", $event['eventID']);
+                $galleryStmt->execute();
+                $galleryItem = $galleryStmt->get_result()->fetch_assoc();
+                if ($galleryItem && !empty($galleryItem['image'])) { $eventImage = $galleryItem['image']; }
+                $galleryStmt->close();
+            }
+        }
+        $eventTitle = htmlspecialchars($event['name'], ENT_QUOTES, 'UTF-8');
+        $eventDescription = htmlspecialchars($event['description'] ?? 'No description available.', ENT_QUOTES, 'UTF-8');
+        $eventDate = !empty($event['eventDate']) ? date('d F Y', strtotime($event['eventDate'])) : 'Date to be announced';
+        $eventDateAttribute = htmlspecialchars($eventDate, ENT_QUOTES, 'UTF-8');
+        $eventImageAttribute = htmlspecialchars($eventImage, ENT_QUOTES, 'UTF-8');
+?>
+                    <article class="event-card" data-title="<?= $eventTitle ?>" data-date="<?= $eventDateAttribute ?>" data-image="<?= $eventImageAttribute ?>" data-description="<?= $eventDescription ?>">
+                        <button type="button" class="event-card-button" aria-label="View <?= $eventTitle ?>">
+                            <div class="event-image"><img src="<?= $eventImageAttribute ?>" alt="<?= $eventTitle ?>"></div>
                             <div class="event-content">
-                                <h3>Business Strategy Workshop</h3>
-
-                                <p class="event-date">
-                                    15 August 2026
-                                </p>
-
-                                <p class="event-short-description">
-                                    Placeholder event used while the database
-                                    content is being set up.
-                                </p>
-
-                                <span class="event-card-link">
-                                    View event details
-                                </span>
+                                <h3><?= $eventTitle ?></h3>
+                                <p ><?= $eventDateAttribute ?></p>
+                                <p ><?= $eventDescription ?></p>
+                                <span class="event-card-link">View event details</span>
                             </div>
-
                         </button>
-
                     </article>
+<?php
+    }
+}
 
+$placeholderCurrent = [
+    ['name'=>'Business Strategy Workshop','description'=>'Placeholder event','eventDate'=>'2026-09-15'],
+    ['name'=>'Business Strategy Workshop','description'=>'Placeholder event','eventDate'=>'2026-09-15'],
+    ['name'=>'Business Strategy Workshop','description'=>'Placeholder event','eventDate'=>'2026-09-15']
 
-                    <article
-                        class="event-card"
-                        data-title="Industry Conference"
-                        data-date="22 August 2026"
-                        data-image="images/placeholder.webp"
-                        data-description="Placeholder event used while the database connection and event records are being set up."
-                    >
+];
+$placeholderUpcoming = [
+    ['name'=>'Business Strategy Workshop','description'=>'Placeholder event','eventDate'=>'2026-09-15'],
+    ['name'=>'Business Strategy Workshop','description'=>'Placeholder event','eventDate'=>'2026-09-15'],
+    ['name'=>'Business Strategy Workshop','description'=>'Placeholder event','eventDate'=>'2026-09-15']
+];
+?>
 
-                        <button
-                            type="button"
-                            class="event-card-button"
-                            aria-label="View Industry Conference"
-                        >
-
-                            <div class="event-image">
-                                <img
-                                    src="images/placeholder.webp"
-                                    alt="Industry Conference placeholder"
-                                >
-                            </div>
-
-                            <div class="event-content">
-                                <h3>Industry Conference</h3>
-
-                                <p class="event-date">
-                                    22 August 2026
-                                </p>
-
-                                <p class="event-short-description">
-                                    Placeholder event used while the database
-                                    content is being set up.
-                                </p>
-
-                                <span class="event-card-link">
-                                    View event details
-                                </span>
-                            </div>
-
-                        </button>
-
-                    </article>
-
-<?php endif; ?>
-
+                <div class="gallery-event-section">
+                    <div class="gallery-event-section-heading">
+                        <span class="gallery-section-icon" aria-hidden="true">▣</span>
+                        <div>
+                            <h3 class="gallery-event-section-title">Current Events</h3>
+                        </div>
+                        <span class="gallery-section-line" aria-hidden="true"></span>
+                    </div>
+                    <div class="gallery-grid">
+<?php renderEventCards(count($currentEvents) ? $currentEvents : $placeholderCurrent, $dbAvailable, $conn ?? null); ?>
+                    </div>
                 </div>
 
+                <div class="gallery-event-section">
+                    <div class="gallery-event-section-heading">
+                        <span class="gallery-section-icon" aria-hidden="true">▣</span>
+                        <div>
+                            <h3 class="gallery-event-section-title">Upcoming Events</h3>
+                        </div>
+                        <span class="gallery-section-line" aria-hidden="true"></span>
+                    </div>
+                    <div class="gallery-grid">
+<?php renderEventCards(count($upcomingEvents) ? $upcomingEvents : $placeholderUpcoming, $dbAvailable, $conn ?? null); ?>
+                    </div>
 
-                <!-- pagination framework -->
-<?php if ($dbAvailable && $totalEvents > $eventsPerPage): ?>
-
-                <nav class="gallery-pagination" aria-label="Gallery pages">
-
-                    <?php if ($page > 1): ?>
-                        <a
-                            href="?page=<?= $page - 1 ?>"
-                            class="gallery-page-link"
-                            aria-label="Previous page"
-                        >
-                            &laquo;
-                        </a>
-                    <?php endif; ?>
-
-                    <?php for ($pageNumber = 1; $pageNumber <= $totalPages; $pageNumber++): ?>
-
-                        <a
-                            href="?page=<?= $pageNumber ?>"
-                            class="gallery-page-link <?= $pageNumber === $page ? 'active' : '' ?>"
-                            <?= $pageNumber === $page ? 'aria-current="page"' : '' ?>
-                        >
-                            <?= $pageNumber ?>
-                        </a>
-
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <a
-                            href="?page=<?= $page + 1 ?>"
-                            class="gallery-page-link"
-                            aria-label="Next page"
-                        >
-                            &raquo;
-                        </a>
-                    <?php endif; ?>
-
-                </nav>
-
-<?php endif; ?>
-
-
+                    <div class="gallery-archive">
+                        <h3>Explore More Events Current/Upcoming Events</h3>
+                        <a href="all-events.php" class="btn btn-primary">View More Events</a>
+                    </div>
+                </div>
             </section>
 
         </main>
@@ -353,23 +176,19 @@ if (file_exists($dbConnectionFile)) {
 
             <div class="gallery-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
 
-                <button type="button" class="gallery-modal-close" id="closeEventModal" aria-label="Close event details">
-                    &times;
-                </button>
+                <button type="button" class="btn-close gallery-modal-close" id="closeEventModal" aria-label="Close event details"></button>
 
                 <img id="modalImage" class="gallery-modal-image" src="images/placeholder.webp" alt="">
 
                 <div class="gallery-modal-body">
-                    <p class="gallery-modal-eyebrow">Event Details</p>
-                    <h2 id="modalTitle"></h2>
-                    <p id="modalMeta" class="gallery-modal-meta"></p>
+<h2 id="modalTitle"></h2>
+                    <p id="modalMeta" ></p>
                     <p id="modalDescription"></p>
                 </div>
 
             </div>
 
         </div>
-
 
         <script>
             document.addEventListener('DOMContentLoaded', function () {
