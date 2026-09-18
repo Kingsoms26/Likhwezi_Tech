@@ -1,6 +1,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php global $pageTitle; ?>
+
     <title><?= isset($pageTitle) ? htmlspecialchars($pageTitle) . ' | Likhwezi Technologies' : 'Likhwezi Technologies' ?></title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">

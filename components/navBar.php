@@ -1,11 +1,16 @@
 <nav class="navbar navbar-expand-md navbar-dark">
     <div class="container-fluid px-3 d-flex justify-content-between align-items-center py-1 px-1">
         <!-- Logo -->
+         <?php global $pageLogo, $pageLogoAlt, $navTitle, $navSubtitle; ?>
+    
         <div class="d-flex align-items-center">
-            <img src="images/placeholder.webp" alt="Logo" class="logo">
+            <img src="<?= isset($pageLogo) ? htmlspecialchars($pageLogo) : 'images/placeholder.webp' ?>" alt="<?= isset($pageLogoAlt) ? htmlspecialchars($pageLogoAlt) : 'Logo' ?>" class="logo">
             <div class="d-flex flex-column justify-content-center">
-                <p class="company-name mb-0">Likhwezi</p>
-                <p class="company-name mb-0">Technologies</p>
+                <div class="d-flex flex-column justify-content-center">
+    <p class="company-name mb-0"><?= isset($navTitle) ? htmlspecialchars($navTitle) : "Likhwezi" ?></p>
+    <p class="company-name mb-0"><?= isset($navSubtitle) ? htmlspecialchars($navSubtitle) : "Technologies" ?></p>
+</div>
+
             </div>
         </div>
 
