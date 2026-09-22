@@ -3,7 +3,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$pageTitle = "Likhwezi | Cyber Young Minds";
+$pageTitle = "Cyber Young Minds";
 $navTitle = "Cyber Young Minds";
 $navSubtitle = "by Likhwezi Technologies";
 $pageLogo = "images/WhatsApp Image 2026-09-02 at 19.19.46.jpeg";
@@ -25,66 +25,71 @@ function normalise_phone(string $input): ?string {
 
     <section class="cym-hero">
         <div class="hero-text">
-<h1 class="slogan">Building the minds that build the future</h1>
-<p>Coding, Robotics, and AI,taught by the people who do it for a living. No experience needed, no laptop needed, nothing to pay</p>
-    <a href="#modal-overlay" class="btn-cymRegister register-btn">Register</a>
-      </div>
-      <div class="hero-carousel">
-        
-      </div>
-</section>
+            <h1 class="slogan">Building the minds that build the future</h1>
+            <p>Coding, Robotics, and AI, taught by the people who do it for a living. No experience needed, no laptop needed, nothing to pay.</p>
+            <a href="#modal-overlay" class="btn-cymRegister register-btn">Register</a>
+        </div>
+        <div class="hero-carousel">
 
-<section class="banner" aria-label="Coding and technology programmes banner">
-    <div class="banner-track" aria-label="Coding, Artificial Intelligence, Robotics and Hackathons">
-        <div class="banner-group">
-            <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
-            <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
-            <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
         </div>
-        <div class="banner-group" aria-hidden="true">
-            <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
-            <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
-            <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
-        </div>
-    </div>
-</section>
+    </section>
 
-<section class="cym-overview" id="overview">
-    <div class="overview-row overview-intro">
-        <div class="cym-info">
-            <h3>Most Young people meet technology as something that happens to them. We think they should meet it as something they can take apart and participate in</h3>
-            <p>Cyber Young Minds runs programme catered to the youth, with programmees in coding, robotics, and AI for learners, their teachers, and anyone in the community who wants to start, It's all funded by Likhwezi Technologies' consultancy work and by sponsors, which is why it costs partcipants nothing</p>
-        </div>
-        <div class="cym-stats">
-            <div class="stat-row"><h6>4</h6><span>Programmes to participate in</span></div>
-            <div class="stat-row"><h6>255</h6><span>Registered participants</span></div>
-            <div class="stat-row"><h6>R0</h6><span>Charged to participants</span></div>
-            <div class="cym-buttons">
-                <a href="" class="btn-cym">Go to Cyber Young Minds</a>
-                <a href="#modal-overlay" class="btn-cymRegister register-btn">Register</a>
+    <section class="banner" aria-label="Coding and technology programmes banner">
+        <div class="banner-track" aria-label="Coding, Artificial Intelligence, Robotics and Hackathons">
+            <div class="banner-group">
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+            </div>
+            <div class="banner-group" aria-hidden="true">
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
+                <p>Coding | Artificial Intelligence | Robotics | Hackathons</p>
             </div>
         </div>
-    </div>
-<hr style="border: 1px solid white; margin: 2rem 0;">
-    <div class="overview-row overview-registration">
-        <div class="cym-info">
-                <h3>Register for program or event</h3>
-                <p>The programme runs its own site, with the full calendar, venues and the registration form. It takes only two minutes and there's nothing to pay</p>
+    </section>
+
+    <section class="cym-overview" id="overview">
+        <div class="overview-row overview-intro">
+            <div class="cym-info">
+                <h3>Most young people meet technology as something that happens to them. We think they should meet it as something they can take apart and participate in.</h3>
+                <p>Cyber Young Minds runs programmes catered to the youth, in coding, robotics, and AI for learners, their teachers, and anyone in the community who wants to start. It's all funded by Likhwezi Technologies' consultancy work and by sponsors, which is why it costs participants nothing.</p>
+            </div>
+            <div class="cym-stats">
+                <div class="stat-row"><h6>4</h6><span>Programmes to participate in</span></div>
+                <div class="stat-row"><h6>255</h6><span>Registered participants</span></div>
+                <div class="stat-row"><h6>R0</h6><span>Charged to participants</span></div>
+                <div class="cym-buttons">
+                    <a href="" class="btn-cym">Go to Cyber Young Minds</a>
+                    <a href="#modal-overlay" class="btn-cymRegister register-btn">Register</a>
+                </div>
+            </div>
         </div>
 
-        <div class="info-card">
-            <p class="link">cyberyoungminds.co.za</p>
-            <h6>What you'll find there</h6>
-            <ul>
-                <li>Registrations for all programmes</li>
-                <li>Session times and dates</li>
-                <li>Photos and recaps of previous sessions</li>
-                <li>Contact Details</li>
-            </ul>
-        </div>
-    </div>
+        <hr style="border: 1px solid white; margin: 2rem 0;">
 
-</section>
+        <div class="overview-row overview-registration">
+            <div class="cym-info">
+                <h3>Register for a programme or event</h3>
+                <p>The programme runs its own site, with the full calendar, venues and the registration form. It takes only two minutes and there's nothing to pay.</p>
+            </div>
+
+            <div class="info-card">
+                <p class="link">cyberyoungminds.co.za</p>
+                <h6>What you'll find there</h6>
+                <ul>
+                    <li>Registrations for all programmes</li>
+                    <li>Session times and dates</li>
+                    <li>Photos and recaps of previous sessions</li>
+                    <li>Contact Details</li>
+                </ul>
+            </div>
+        </div>
+    </section>
 
 <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="register-title">
     <div class="modal-box" id="register">

@@ -1,5 +1,14 @@
 :root {
     --section-gutter: max(140px, 7%);
+
+    /* Site palette — taken from the home page; use these on every page */
+    --color-navy: #04113B;
+    --color-primary: #0F3C7A;
+    --color-accent: #0389E1;
+    --color-text: #333333;
+    --color-muted: #6B7280;
+    --color-border: #E2E5EA;
+    --color-surface: #F4F6F9;
 }
 
 @media (max-width: 991px) {
@@ -161,12 +170,11 @@ body {
     margin-right: 0.5rem;
 }
 
-
-
 /* Home Page Styles */
 
 .section-title {
     font-size: 20px;
+    font-weight: 400;
     color: #0F3C7A;
     text-align: left;
     padding-left: var(--section-gutter);
@@ -233,8 +241,6 @@ body {
     padding-right: var(--section-gutter);
     box-sizing: border-box;
 }
-
-
 
 .card {
     flex: 1 1 300px;
@@ -309,7 +315,7 @@ body {
     height: 100%;
     min-height: 300px;
     object-fit: cover;
-    object-position: center;
+    object-position: top;
     display: block;
 }
 
@@ -381,6 +387,41 @@ body {
     }
 }
 
+/* =========================================
+   Shared inner-page layout
+   Every page follows the home page pattern: a .hero at the top,
+   <hr> between sections, and .page-section blocks on the same gutter.
+   ========================================= */
+
+/* Hero without an image — keeps the text column from stretching full width */
+.hero-text-only .hero-content {
+    max-width: 720px;
+}
+
+.page-section {
+    width: 100%;
+    padding: 1.5rem var(--section-gutter) 3rem;
+    box-sizing: border-box;
+}
+
+/* .section-title already carries the gutter on the home page; inside a
+   .page-section the section itself provides it */
+.page-section .section-title {
+    padding-left: 0;
+    margin: 0 0 1.5rem;
+    font-weight: 400;
+    line-height: 1.3;
+}
+
+.section-intro {
+    max-width: 720px;
+    margin: -0.75rem 0 2rem;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* Shared inner-page layout end */
+
 /* Partners Page — card-grid version (kept for reference / unused now that
    the list layout below is in use; harmless to leave in place) */
 .partners-grid {
@@ -402,44 +443,10 @@ body {
     margin-bottom: 1rem;
 }
 
-/* Partners Page — hero-style title (left-aligned) */
-.partners-hero-section {
-    width: 100%;
-    padding-left: var(--section-gutter);
-    padding-right: var(--section-gutter);
-    padding-top: 56px;
-    padding-bottom: 8px;
-    box-sizing: border-box;
-}
-
-.partners-hero-content {
-    max-width: 600px;
-    text-align: left;
-}
-
-.partners-hero-content h1 {
-    font-size: 32px;
-    color: #0F3C7A;
-    margin-bottom: 0.75rem;
-}
-
-.partners-hero-content p {
-    color: #555555;
-    font-size: 15px;
-    line-height: 1.6;
-}
-
-@media (max-width: 575px) {
-    .partners-hero-content h1 {
-        font-size: 26px;
-    }
-}
-
 /* Partners Page — list layout */
 .partners-list {
     width: 100%;
     max-width: 900px;
-    margin: 0.5rem auto 0;
 }
 
 .partner-row {
@@ -447,7 +454,7 @@ body {
     align-items: center;
     gap: 1.5rem;
     padding: 1.25rem 0;
-    border-bottom: 1px solid #E2E5EA;
+    border-bottom: 1px solid var(--color-border);
 }
 
 .partner-row:last-child {
@@ -480,7 +487,7 @@ body {
 .partner-name {
     font-weight: 600;
     font-size: 16px;
-    color: #04113B;
+    color: var(--color-primary);
     margin-bottom: 2px;
 }
 
@@ -518,42 +525,9 @@ body {
 
 /* Gallery & Events page */
 
-.gallery-hero {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    min-height: 360px;
-    border-bottom: 1px solid #ddd;
-}
-
-.gallery-hero-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 56px var(--section-gutter);
-}
-
-.gallery-hero-content h1 {
-    margin: 0 0 18px;
-    color: #04113B;
-    font-size: clamp(2.2rem, 4vw, 3.75rem);
-    line-height: 1.05;
-}
-
-.gallery-hero-image {
-    min-height: 360px;
-    overflow: hidden;
-}
-
-.gallery-hero-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
 .gallery-section {
     width: 100%;
-    padding: 56px var(--section-gutter) 64px;
+    padding: 1.5rem var(--section-gutter) 3rem;
     box-sizing: border-box;
 }
 
@@ -567,50 +541,14 @@ body {
 
 .gallery-heading h2 {
     margin: 0 0 8px;
-    color: #04113B;
-    font-size: 28px;
+    color: var(--color-primary);
+    font-size: 20px;
+    font-weight: 400;
 }
 
 .gallery-heading p {
     margin: 0;
-}
-
-.gallery-event-section {
-    margin-top: 42px;
-}
-
-.gallery-event-section-heading {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 20px;
-}
-
-.gallery-section-icon {
-    display: inline-flex;
-    width: 38px;
-    height: 38px;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    border-radius: 50%;
-    background-color: #EAF4FC;
-    color: #0F3C7A;
-    font-size: 18px;
-}
-
-.gallery-event-section-heading h3 {
-    margin: 0;
-    color: #0F3C7A;
-    font-size: 22px;
-    line-height: 1.2;
-}
-
-.gallery-section-line {
-    height: 1px;
-    flex: 1;
-    min-width: 30px;
-    background-color: #9CCBF0;
+    color: var(--color-text);
 }
 
 .gallery-grid {
@@ -621,8 +559,8 @@ body {
 
 .event-card {
     min-width: 0;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
     background-color: #fff;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -642,6 +580,9 @@ body {
     color: inherit;
     text-align: left;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .event-image {
@@ -664,12 +605,15 @@ body {
 }
 
 .event-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     padding: 18px;
 }
 
 .event-content h3 {
     margin: 0 0 8px;
-    color: #04113B;
+    color: var(--color-primary);
     font-size: 18px;
     line-height: 1.25;
 }
@@ -682,31 +626,44 @@ body {
     margin-bottom: 14px;
 }
 
+.event-content .event-date {
+    margin-bottom: 6px;
+    color: var(--color-accent);
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.event-content .event-description {
+    color: var(--color-text);
+    font-size: 14px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.gallery-empty {
+    margin: 0;
+    padding: 32px;
+    border: 1px dashed var(--color-border);
+    border-radius: 8px;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    text-align: center;
+}
+
 .event-card-link {
-    color: #0F3C7A;
+    margin-top: auto;
+    color: var(--color-accent);
     font-weight: 600;
 }
 
 .event-card-button:focus-visible {
     outline: 3px solid rgba(3, 137, 225, 0.35);
     outline-offset: -3px;
-}
-
-.gallery-archive {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid #ddd;
-    text-align: center;
-}
-
-.gallery-archive h3 {
-    margin: 0 0 8px;
-    color: #04113B;
-    font-size: 22px;
-}
-
-.gallery-archive p {
-    margin-bottom: 18px;
 }
 
 .gallery-pagination {
@@ -739,7 +696,7 @@ body {
     width: min(850px, 100%);
     max-height: 90vh;
     overflow-y: auto;
-    border-radius: 10px;
+    border-radius: 8px;
     background-color: #fff;
     box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
 }
@@ -757,7 +714,7 @@ body {
 
 .gallery-modal-body h2 {
     margin: 0 0 10px;
-    color: #04113B;
+    color: var(--color-primary);
     font-size: 30px;
 }
 
@@ -788,35 +745,11 @@ body.gallery-modal-open {
         flex-direction: column;
     }
 
-    .gallery-hero {
-        grid-template-columns: 1fr;
-    }
-
-    .gallery-hero-content {
-        padding-top: 44px;
-        padding-bottom: 44px;
-    }
-
-    .gallery-hero-image {
-        min-height: 260px;
-    }
 }
 
 @media (max-width: 575px) {
     .gallery-grid {
         grid-template-columns: 1fr;
-    }
-
-    .gallery-event-section {
-        margin-top: 34px;
-    }
-
-    .gallery-event-section-heading {
-        gap: 10px;
-    }
-
-    .gallery-section-line {
-        min-width: 20px;
     }
 
     .gallery-modal {
@@ -838,18 +771,20 @@ body.gallery-modal-open {
 .campaign-section {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 50px;
+    gap: 24px;
     width: 100%;
-    padding: 56px var(--section-gutter) 64px;
+    padding: 1.5rem var(--section-gutter) 3rem;
     box-sizing: border-box;
 }
 
 .campaign-card {
     min-width: 0;
-    border: 1px solid #ddd;
-    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
     background-color: #fff;
     overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -883,21 +818,21 @@ body.gallery-modal-open {
 
 .campaign-content h3 {
     margin: 0 0 7px;
-    color: #04113B;
+    color: var(--color-primary);
     font-size: 18px;
     line-height: 1.25;
 }
 
 .campaign-content > p {
     margin: 0 0 14px;
-    color: #555;
+    color: var(--color-text);
     font-size: 14px;
     line-height: 1.5;
 }
 
 .campaign-stats {
     margin: 0 0 8px;
-    color: #777;
+    color: var(--color-muted);
     font-size: 13px;
 }
 
@@ -906,7 +841,50 @@ body.gallery-modal-open {
 }
 
 .campaign-content .progress-bar {
-    background-color: #0F3C7A;
+    background-color: var(--color-accent);
+}
+
+.campaign-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    padding: 32px var(--section-gutter) 0;
+}
+
+.campaign-filter-search {
+    display: flex;
+    flex: 1 1 320px;
+    gap: 8px;
+    max-width: 520px;
+}
+
+.campaign-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.campaign-filter-count {
+    margin: 16px 0 0;
+    padding: 0 var(--section-gutter);
+    color: var(--color-muted);
+    font-size: 13px;
+}
+
+.campaign-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 40px 0;
+    text-align: center;
+    color: var(--color-text);
+}
+
+.campaign-view-all {
+    display: flex;
+    justify-content: center;
+    padding: 0 var(--section-gutter) 64px;
+    margin-top: -24px;
 }
 
 .campaign-modal-image-wrap {
@@ -954,7 +932,6 @@ body.gallery-modal-open {
 
 /* Campaigns page styles end */
 
-
 /* =========================================
    Contact Us & About Us pages
    ========================================= */
@@ -962,21 +939,6 @@ body.gallery-modal-open {
 /* =========================================
    Contact Us Page Styles
    ========================================= */
-
-
-.contact-page {
-    background-color: #ffffff;
-    color: #04113B;
-}
-
-/* Keeps contact-page typography consistent. */
-.contact-page h1 {
-    font-size: 32px;
-}
-
-.contact-page h2 {
-    font-size: 24px;
-}
 
 .contact-page p,
 .contact-page label,
@@ -987,77 +949,19 @@ body.gallery-modal-open {
     font-size: 16px;
 }
 
-/*
-   Shared top-hero controls for About Us and Contact Us.
-   Change these values to adjust both pages consistently.
-*/
-.page-hero {
-    --hero-box-padding-top: 1rem;
-    --hero-box-padding-bottom: 1rem;
-    --hero-heading-size: 32px;
-    --hero-heading-description-gap: 0.5rem;
-    --hero-description-size: 16px;
-    --hero-description-max-width: 720px;
-
-    padding-top: var(--hero-box-padding-top);
-    padding-bottom: var(--hero-box-padding-bottom);
-    background-color: #ffffff;
-    color: #01040e;
-}
-
-/* Main heading control shared by both top sections. */
-.page-hero-title {
-    margin-bottom: var(--hero-heading-description-gap);
-    font-size: var(--hero-heading-size);
-}
-
-/* Description control shared by both top sections. */
-.page-hero-description {
-    max-width: var(--hero-description-max-width);
-    margin-top: 0;
-    color: #090909;
-    font-size: var(--hero-description-size);
-    line-height: 1.7;
-}
-
-/* Keeps the About Us hero name available for page-specific future changes. */
-.about-introduction {
-    color: #010309;
-}
-
-/* Keeps the Contact Us hero name available for page-specific future changes. */
-.contact-hero {
-    color: #01040e;
-}
-
-.contact-divider {
-    border: 0;
-    border-top: 1px solid #000000;
-    opacity: 1;
-    margin: 0;
-}
-
-
 /* =========================================
    Contact Enquiry Form
    ========================================= */
-.contact-form-section {
-    background-color: #ffffff;
+/*Keeps the form a readable width, aligned with the section heading.*/
+.contact-form-wrap {
+    max-width: 720px;
 }
-
-
-/*Form heading.*/
-.contact-form-section h2 {
-    color: #060708;
-}
-
 
 /*Form labels.*/
 .contact-form-section .form-label {
-    color: #010207;
+    color: var(--color-navy);
     font-weight: 500;
 }
-
 
 /*Text inputs and dropdowns.*/
 .contact-form-section .form-control,
@@ -1073,33 +977,16 @@ body.gallery-modal-open {
     opacity: 1;
 }
 
-
 /*Custom focus effect for text inputs,textarea and dropdowns.*/
 .contact-form-section .form-control:focus,
 .contact-form-section .form-select:focus {
-    border-color: #0389E1;
+    border-color: var(--color-accent);
     box-shadow: 0 0 0 0.2rem rgba(3, 137, 225, 0.2);
 }
-
 
 /*Allows the enquiry textarea to resize vertically.*/
 .contact-form-section textarea {
     resize: vertical;
-}
-
-
-/*Submit button.*/
-.contact-form-section .btn-primary {
-    background-color: #0F3C7A;
-    border-color: #0F3C7A;
-}
-
-
-/*Submit button hover and focus state.*/
-.contact-form-section .btn-primary:hover,
-.contact-form-section .btn-primary:focus {
-    background-color: #0389E1;
-    border-color: #0389E1;
 }
 
 /* =========================================
@@ -1171,8 +1058,8 @@ body.gallery-modal-open {
     overflow-y: auto;
     padding: 2rem;
     background-color: #ffffff;
-    color: #04113B;
-    border-radius: 0.5rem;
+    color: var(--color-text);
+    border-radius: 8px;
     box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25);
     transform: translateY(-1rem);
     transition: transform 0.2s ease;
@@ -1206,13 +1093,13 @@ body.gallery-modal-open {
 /* Styles the privacy modal heading. */
 .contact-modal-box h2 {
     margin: 0 2rem 1.25rem 0;
-    color: #0F3C7A;
+    color: var(--color-primary);
     font-size: 1.5rem;
 }
 
 /* Improves readability of the privacy notice. */
 .privacy-modal-content {
-    color: #08090a;
+    color: var(--color-text);
     line-height: 1.6;
 }
 
@@ -1251,23 +1138,10 @@ body.gallery-modal-open {
    Connect With Us Section
    ========================================= */
 
-.connect-section {
-    background-color: #ffffff;
-    color: #040406;
-}
-
-
-/*Social media introduction text.*/
-.connect-section p {
-    color: #040505;
-}
-
-
 /*Keeps the social media icons aligned and responsive.*/
 .social-links {
     flex-wrap: wrap;
 }
-
 
 /* =========================================
    Social Media Icons
@@ -1278,8 +1152,8 @@ body.gallery-modal-open {
     align-items: center;
     justify-content: center;
 
-    width: 4rem;
-    height: 4rem;
+    width: 3.25rem;
+    height: 3.25rem;
 
     border-radius: 50%;
 
@@ -1288,44 +1162,18 @@ body.gallery-modal-open {
 
     transition:
         transform 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        background-color 0.2s ease;
 }
 
-/*Instagram*/
-.social-icon-link.instagram {
-    background: linear-gradient(
-        45deg,
-        #FEDA75 0%,
-        #FA7E1E 25%,
-        #D62976 50%,
-        #962FBF 75%,
-        #4F5BD5 100%
-    );
-}
-/*Facebook*/
-.social-icon-link.facebook {
-    background-color: #1877F2;
-}
-/*LinkedIn*/
-.social-icon-link.linkedin {
-    background-color: #0A66C2;
-}
-/*YouTube*/
-.social-icon-link.youtube {
-    background-color: #FF0000;
-}
-/*X / Twitter*/
-.social-icon-link.x-twitter {
-    background-color: #000000;
-}
-/*TikTok*/
-.social-icon-link.tiktok {
-    background-color: #000000;
+/*All platforms share the site colours so the icons sit with the rest of the page.*/
+.social-icon-link {
+    background-color: var(--color-primary);
 }
 
 /*Icon size.*/
 .social-icon-link i {
-    font-size: 2rem;
+    font-size: 1.5rem;
     line-height: 1;
 }
 
@@ -1333,6 +1181,7 @@ body.gallery-modal-open {
 .social-icon-link:hover,
 .social-icon-link:focus-visible {
     color: #ffffff;
+    background-color: var(--color-accent);
 
     transform: translateY(-3px);
 
@@ -1344,7 +1193,6 @@ body.gallery-modal-open {
 .social-icon-link:focus {
     outline: none;
 }
-
 
 /*Keyboard focus indicator.*/
 .social-icon-link:focus-visible {
@@ -1371,12 +1219,12 @@ body.gallery-modal-open {
 @media (max-width: 575px) {
 
     .social-icon-link {
-        width: 3.75rem;
-        height: 3.75rem;
+        width: 3rem;
+        height: 3rem;
     }
 
     .social-icon-link i {
-        font-size: 1.85rem;
+        font-size: 1.35rem;
     }
 }
 
@@ -1384,166 +1232,58 @@ body.gallery-modal-open {
    About Us Page Styles
    ========================================= */
 
-
-.about-page {
-    background-color: #ffffff;
-    color: #04113B;
-}
-
-/* Keeps about-page typography consistent with the requested design scale. */
-.about-page h1 {
-    /* Overrides Bootstrap display sizing so the main heading remains 32px. */
-    font-size: 32px !important;
-}
-
-.about-page h2 {
-    /* Keeps all About Us section headings consistently at 24px. */
-    font-size: 24px !important;
-}
-
 .about-page p {
-    font-size: 16px;
+    line-height: 1.6;
 }
 
-/*Introductory About Us section.*/
-.about-introduction {
-    background-color: #ffffff;
-    color: #010309;
-}
-
-.about-divider {
-    border: 0;
-    border-top: 1px solid #000000;
-    opacity: 1;
-    margin: 0;
-}
-
-/*Company history section.*/
-.company-history {
-    background-color: #ffffff;
-    color: #03050c;
-}
-
-
-/*Company history heading.*/
-.company-history h2 {
-    color: #080809;
-}
-
-
-/*Company history paragraphs.*/
-.company-history p {
-    color: #040506;
-    line-height: 1.7;
-}
-
-
-/*Company history image.*/
-.about-history-image {
-    display: block;
-    width: auto;
-    max-width: 100%;
-    max-height: 380px;
-
-    object-fit: contain;
-    object-position: center;
-
-    border-radius: 8px;
-    margin: 0 auto;
-}
-
-/* Places the About Us image below the three article-style cards. */
-.about-history-image-wrap {
-    max-width: 900px;
-    margin: 3rem auto 0;
-}
-
-/*card layout for the story, mission, and vision. */
+/* Story / Mission / Vision — same blue cards as the home page services */
 .about-values-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    /* Adds clear visual separation between Our Story, Mission, and Vision. */
-    gap: 5rem;
-    max-width: 1020px;
-    margin: 0 auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
 }
 
-/* Styles each About Us module. */
 .about-value-card {
-    position: relative;
-    z-index: 1;
-    overflow: hidden;
-
-    background-color: #ffffff;
+    background-color: var(--color-accent);
+    color: white;
     border-radius: 8px;
-    box-shadow: 0 0.25rem 1rem rgba(7, 39, 155, 0.1);
-    border-top: 4px solid #0F3C7A;
-
-    transform: scale(1);
-    transform-origin: center center;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Enlarges an About Us card. */
 .about-value-card:hover,
 .about-value-card:focus-within {
-    z-index: 20;
-    transform: scale(1.04);
-    box-shadow: 0 0.75rem 1.5rem rgba(4, 17, 59, 0.24);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.11);
 }
 
-/*card text. */
 .about-value-card-body {
-    padding: 1.25rem;
-    column-count: 1;
-}
-
-.about-value-card h2 {
-    margin-bottom: 1rem;
-    color: #0F3C7A;
-    text-align: center;
+    padding: 30px;
 }
 
 .about-value-card p {
-    color: #040506;
-    line-height: 1.75;
+    color: white;
+    font-size: 14px;
+    font-weight: 300;
 }
 
-.about-card-kicker {
-    margin-bottom: 0.75rem;
-    color: #0389E1 !important;
-    font-size: 0.8rem !important;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+/* Company image underneath the three cards */
+.about-history-image-wrap {
+    margin-top: 2.5rem;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
-/* Adds divider spacing before the Our Approach section. */
-.about-approach-divider {
-    max-width: 900px;
-    margin: 3rem auto 0;
+.about-history-image {
+    display: block;
+    width: 100%;
+    max-height: 380px;
+    object-fit: cover;
+    object-position: top;
 }
 
-/* Styles the interactive values row and its selected state. */
-.our-approach {
-    max-width: 1100px;
-    margin: 3rem auto 0;
-    text-align: center;
-}
-
-.our-approach h2 {
-    margin-bottom: 0.75rem;
-    color: #000000;
-}
-
-.our-approach-intro {
-    max-width: 760px;
-    margin: 0 auto 1.5rem;
-}
-
+/* Our Approach — interactive values row */
 .approach-letters {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
     gap: 1.1rem;
 }
@@ -1555,10 +1295,10 @@ body.gallery-modal-open {
     width: 3rem;
     height: 3rem;
     padding: 0;
-    border: 2px solid #0F3C7A;
+    border: 2px solid var(--color-primary);
     border-radius: 50%;
     background-color: #ffffff;
-    color: #0F3C7A;
+    color: var(--color-primary);
     font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
@@ -1568,7 +1308,7 @@ body.gallery-modal-open {
 .approach-letter:hover,
 .approach-letter:focus-visible,
 .approach-letter.is-active {
-    background-color: #0F3C7A;
+    background-color: var(--color-primary);
     color: #ffffff;
     transform: translateY(-2px);
 }
@@ -1576,244 +1316,104 @@ body.gallery-modal-open {
 .approach-description {
     max-width: 760px;
     min-height: 7rem;
-    margin: 1.5rem auto 0;
+    margin-top: 1.5rem;
     padding: 1.25rem 1.5rem;
-    border-left: 4px solid #0389E1;
-    background-color: #f5f8fc;
-    text-align: left;
+    border-left: 4px solid var(--color-accent);
+    border-radius: 0 8px 8px 0;
+    background-color: var(--color-surface);
+    color: var(--color-text);
 }
 
 .approach-description-title {
     margin-bottom: 0.35rem;
-    color: #0F3C7A !important;
+    color: var(--color-primary);
     font-weight: 700;
 }
 
-
 /* =========================================
    Meet Our Team
+   Same card treatment as the event and campaign cards.
    ========================================= */
-
-/*Team section.*/
-.meet-team {
-    position: relative;
-    overflow: visible;
-
-    background-color: #ffffff;
-    color: #07080a;
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
 }
 
-
-/*Styles the introduction below the Meet Our Team heading.*/
-.meet-team > .container > .row:first-child p {
-    color: #060708;
-    line-height: 1.7;
-}
-
-
-/*Prevents row containers from clipping enlarged team cards.*/
-.meet-team .row {
-    overflow: visible;
-}
-
-
-/*Prevents Bootstrap columns from clipping enlarged team cards.*/
-.meet-team .col-12,
-.meet-team .col-md-4 {
-    position: relative;
-    z-index: 1;
-    overflow: visible;
-}
-
-/*Adds extra space between the two team-member rows.*/
-.meet-team .row + .row {
-    margin-top: 2.5rem;
-}
-
-/* =========================================
-   Team Member Cards
-   ========================================= */
-
-/*Creates compact team-member modules.*/
-:root {
-    --team-card-width: 280px;
-}
-
-/*Team member card.*/
 .team-member-card {
-    position: relative;
-    z-index: 1;
-
-    width: 100%;
-    max-width: var(--team-card-width);
-    min-height: 100%;
-
-    margin-right: auto;
-    margin-left: auto;
-
-    overflow: hidden;
-
-    background-color: #ffffff;
-
-    border: none;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-
-    box-shadow:
-        0 0.25rem 1rem rgba(7, 39, 155, 0.1);
-
-    transform: scale(1);
-    transform-origin: center center;
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/*Displays staff images in a reduced portrait format.*/
+.team-member-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.11);
+}
+
+/* Portraits keep the top of the photo (faces) in view when cropped */
 .team-member-image {
     display: block;
-
     width: 100%;
-
-    aspect-ratio: 5 / 6;
-
+    aspect-ratio: 4 / 3;
     object-fit: cover;
-    object-position: center;
+    object-position: top;
+    background-color: #E9ECEF;
 }
 
-/*Adds consistent spacing inside each team-member card.*/
-.team-member-card .card-body {
-    padding: 1rem;
+.team-member-body {
+    padding: 18px;
 }
 
-/*Team member names.*/
 .team-member-card h3 {
-    margin-bottom: 0.5rem;
-
-    color: #0F3C7A;
-
-    font-size: 1.1rem;
+    margin: 0 0 4px;
+    color: var(--color-primary);
+    font-size: 18px;
+    line-height: 1.25;
 }
 
-/*Team member roles.*/
 .team-member-role {
-    margin-bottom: 0.75rem;
-
-    color: #0389E1;
-
-    font-size: 0.95rem;
-    font-weight: 600;
+    margin: 0;
+    color: var(--color-accent);
+    font-size: 14px;
+    font-weight: 500;
 }
 
-/*Team member descriptions.*/
-.team-member-card .card-text {
-    margin-bottom: 0;
-
-    color: #090909;
-
-    font-size: 0.9rem;
-    line-height: 1.5;
-}
-
-/*Enlarges the selected team-member card when the user hovers over it.*/
-.team-member-card:hover,
-.team-member-card:focus-within {
-    z-index: 20;
-
-    transform: scale(1.08);
-
-    box-shadow:
-        0 0.75rem 1.5rem rgba(4, 17, 59, 0.24);
-}
-
-/* =========================================
-   Responsive Team Module Behaviour
-   ========================================= */
-
-/*Applies the normal hover enlargement on tablets and larger screens.*/
-@media (min-width: 768px) {
-
-    .team-member-card:hover,
-    .team-member-card:focus-within {
-        transform: scale(1.08);
-    }
-}
-
-/*Adjusts the card width and hover effect on smaller screens.*/
-@media (max-width: 767.98px) {
-
-    :root {
-        --team-card-width: 300px;
-    }
-
-    .team-member-card {
-        max-width: var(--team-card-width);
-    }
-
-    /*Uses a smaller zoom effect on mobile devices.*/
-    .team-member-card:hover,
-    .team-member-card:focus-within {
-        transform: scale(1.03);
-    }
-}
-
-/*Prevents hover enlargement on touch devices.*/
-@media (hover: none) {
-
-    .team-member-card:hover {
-        transform: none;
-
-        box-shadow:
-            0 0.25rem 1rem rgba(4, 17, 59, 0.1);
-    }
-}
-
-/*Removes animation for reduced motion.*/
 @media (prefers-reduced-motion: reduce) {
-
     .team-member-card {
         transition: none;
     }
 
-    .team-member-card:hover,
-    .team-member-card:focus-within {
+    .team-member-card:hover {
         transform: none;
     }
 }
 
-/* =========================================
-   Small Mobile Screens
-   ========================================= */
-
-@media (max-width: 575px) {
-
-    /* Stacks the About Us article cards on narrow screens. */
+/* Tablets and phones */
+@media (max-width: 991px) {
     .about-values-grid {
         grid-template-columns: 1fr;
     }
 
-    /*Reduces the height of the history image on very small screens.*/
+    .team-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 575px) {
+    .team-grid {
+        grid-template-columns: 1fr;
+    }
+
     .about-history-image {
-        max-height: 360px;
-    }
-
-    :root {
-        --team-card-width: 280px;
-    }
-
-    /*Keeps the team images in a reduced portrait ratio.*/
-    .team-member-image {
-        aspect-ratio: 5 / 6;
-    }
-
-    /*Reduces the space between the two team-member rows.*/
-    .meet-team .row + .row {
-        margin-top: 2rem;
+        max-height: 260px;
     }
 }
 
 /* Contact Us & About Us pages styles end */
-
 
 /* =========================================
    Cyber Young Minds page
@@ -1924,7 +1524,7 @@ button.btn-cym:disabled {
     min-width: 100%;
     padding: 0.8rem 0;
     will-change: transform;
-    animation: banner-scroll 20s linear infinite;
+    animation: banner-scroll 34s linear infinite;
 }
 
 .banner-group{
@@ -1942,8 +1542,9 @@ button.btn-cym:disabled {
     padding-right: 2.5rem;
 }
 
-.banner-group:last-child p:last-child {
-    padding-right: 0;
+/* Pause so visitors can read it */
+.banner:hover .banner-track {
+    animation-play-state: paused;
 }
 
 @keyframes banner-scroll{
@@ -2026,7 +1627,7 @@ button.btn-cym:disabled {
 
 /* The light info card */
 .info-card{
-    background: #FFFFFF2B 17%;
+    background: rgba(255, 255, 255, 0.17);
     border-radius: 1rem;
     padding: 1.5rem;
     color: white;
@@ -2059,10 +1660,10 @@ button.btn-cym:disabled {
     }
 }
 
-/* Accessibility: reduced motion */
+/* Accessibility: reduced motion — keep the ribbon moving, but slowly */
 @media (prefers-reduced-motion: reduce){
     .banner-track{
-        animation: none;
+        animation-duration: 90s;
     }
 }
 
@@ -2120,7 +1721,7 @@ button.btn-cym:disabled {
 
 .cym-register input::placeholder{
     color: rgb(3, 19, 60);
-    opacity: 0.4make;
+    opacity: 0.4;
 }
 
 .cym-register input:focus::placeholder{

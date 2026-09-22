@@ -10,17 +10,18 @@ phase 1
 - About us  -- Thami 
 
 phase 2
-- services.php
-- privacy policy
-- marketing dashboard
-- customer service dashboard
-- admin dashboard
-- enquiry page and logic
+- services.php  -- Somila
+- privacy policy -- kinda done 
+- marketing dashboard -- Thando
+- customer service dashboard -- Thami
+- admin dashboard -- Tshepo
+- enquiry page and logic  -- Mitshidzi
 
 Essential Components * Everyone will use this, sits within the components folder *
 ______________________________
 -  Navigation Bar
 -  Header for links
+-  Privacy Policy
 
 
 Flow

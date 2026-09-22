@@ -42,67 +42,43 @@ $pageTitle = 'About Us';
             <!-- divider between sections. --> 
              <hr class="about-divider">
 
-            <!-- Company story, mission, and vision cards. -->
+            <!-- Interactive company story, mission, and vision section. -->
             <section class="company-history py-5">
                 <div class="container">
 
-                    <!-- Places the three article-style modules in one responsive row. -->
-                    <div class="about-values-grid">
+                    <!-- Keeps the interactive values on the left and the image on the right. -->
+                    <div class="about-history-content">
 
-                        <!-- Our Story article card. -->
-                        <article class="about-value-card">
-                            <div class="about-value-card-body">
-                                <h2>Our Story</h2>
-                                <p>
-                                    Likhwezi Consulting is a 100% black-owned professional services consultancy 
-                                    with a focus on enterprise data systems, and related methods and practices
-                                </p>
-                               
-                                <p class="mb-0">
-                                    We develop bespoke business solutions tailored to the unique needs of our clients.
-                                </p>
+                        <!-- Lets visitors select which company value to read. -->
+                        <section class="about-values" aria-labelledby="aboutValuesTitle">
+                            <h2 id="aboutValuesTitle">The values of Likhwezi Technologies</h2>
+
+                            <!-- Uses buttons so the section can be operated with a keyboard. -->
+                            <div class="about-value-controls" role="tablist" aria-label="Company information">
+                                <button type="button" class="about-value-button is-active" role="tab" aria-selected="true" aria-controls="aboutValueDescription" data-about-value="story">Our Story</button>
+                                <button type="button" class="about-value-button" role="tab" aria-selected="false" aria-controls="aboutValueDescription" data-about-value="mission">Mission</button>
+                                <button type="button" class="about-value-button" role="tab" aria-selected="false" aria-controls="aboutValueDescription" data-about-value="vision">Vision</button>
                             </div>
-                        </article>
 
-                        <!-- Mission article card. -->
-                        <article class="about-value-card">
-                            <div class="about-value-card-body">
-                                <h2>Mission</h2>
-                                <p class="mb-0">
-                                    Our mission is to help private and public sector organisations realise
-                                    and deliver business value through data insights.
-                                </p>
+                            <!-- Displays the selected company information below the buttons. -->
+                            <div class="about-value-description" id="aboutValueDescription" role="tabpanel" tabindex="0">
+                                <p class="about-value-description-title" id="aboutValueDescriptionTitle">Our Story</p>
+                                <div id="aboutValueDescriptionText">
+                                    <p>Likhwezi Consulting is a 100% black-owned professional services consultancy with a focus on enterprise data systems, and related methods and practices.</p>
+                                    <p class="mb-0">We develop bespoke business solutions tailored to the unique needs of our clients.</p>
+                                </div>
                             </div>
-                        </article>
 
-                        <!-- Vision article card. -->
-                        <article class="about-value-card">
-                            <div class="about-value-card-body">
-                                <h2>Vision</h2>
-                                <p>
-                                    Develop Likhwezi Consulting as a global market leader in the design,
-                                    development, and delivery of business and data management systems.
-                                </p>
-                                <p>
-                                    To be a trusted advisor and partner of choice for businesses in the private
-                                    and public sectors.
-                                </p>
-                                <p class="mb-0">
-                                    Ensure that business and data management education is accessible to the youth
-                                    of Africa and use it to alleviate skills shortages and youth unemployment.
-                                </p>
-                            </div>
-                        </article>
+                        </section>
 
-                    </div>
-
-                    <!--company image underneath all three cards. -->
-                    <div class="about-history-image-wrap">
-                        <img
-                            src="images/about-us.png"
-                            class="img-fluid about-history-image"
-                            alt="Likhwezi Technologies team"
-                        >
+                        <!-- Places the About Us image next to the interactive values. -->
+                        <div class="about-history-image-wrap">
+                            <img
+                                src="images/about-us.png"
+                                class="img-fluid about-history-image"
+                                alt="Likhwezi Technologies team"
+                            >
+                        </div>
                     </div>
 
                     <!--divider separating the image from Our Approach. -->
@@ -439,6 +415,57 @@ $pageTitle = 'About Us';
             const approachLetters = document.querySelectorAll('.approach-letter');
             const approachDescriptionTitle = document.getElementById('approachDescriptionTitle');
             const approachDescriptionText = document.getElementById('approachDescriptionText');
+
+            // Stores the descriptions for the interactive story, mission, and vision section.
+            const aboutValueDetails = {
+                story: {
+                    title: 'Our Story',
+                    description: [
+                        'Likhwezi Consulting is a 100% black-owned professional services consultancy with a focus on enterprise data systems, and related methods and practices.',
+                        'We develop bespoke business solutions tailored to the unique needs of our clients.'
+                    ]
+                },
+                mission: {
+                    title: 'Mission',
+                    description: [
+                        'Our mission is to help private and public sector organisations realise and deliver business value through data insights.'
+                    ]
+                },
+                vision: {
+                    title: 'Vision',
+                    description: [
+                        'Develop Likhwezi Consulting as a global market leader in the design, development, and delivery of business and data management systems.',
+                        'To be a trusted advisor and partner of choice for businesses in the private and public sectors.',
+                        'Ensure that business and data management education is accessible to the youth of Africa and use it to alleviate skills shortages and youth unemployment.'
+                    ]
+                }
+            };
+
+            // Gets the company value controls and description elements.
+            const aboutValueButtons = document.querySelectorAll('.about-value-button');
+            const aboutValueDescriptionTitle = document.getElementById('aboutValueDescriptionTitle');
+            const aboutValueDescriptionText = document.getElementById('aboutValueDescriptionText');
+
+            // Updates the description when a visitor selects a company value.
+            aboutValueButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const selectedValue = aboutValueDetails[button.dataset.aboutValue];
+
+                    // Updates the selected state and accessible tab status.
+                    aboutValueButtons.forEach((item) => {
+                        item.classList.remove('is-active');
+                        item.setAttribute('aria-selected', 'false');
+                    });
+                    button.classList.add('is-active');
+                    button.setAttribute('aria-selected', 'true');
+
+                    // Displays each paragraph belonging to the selected company value.
+                    aboutValueDescriptionTitle.textContent = selectedValue.title;
+                    aboutValueDescriptionText.innerHTML = selectedValue.description
+                        .map((paragraph) => `<p>${paragraph}</p>`)
+                        .join('');
+                });
+            });
 
             // Updates the description when a visitor selects an approach step.
             approachLetters.forEach((letter) => {

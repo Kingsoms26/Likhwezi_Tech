@@ -34,34 +34,25 @@ function normalise_phone(string $input): ?string {
 
         <main class="contact-page">
 
-            <section class="contact-hero page-hero">
-                <div class="container">
-
-                    <h1 class="page-hero-title fw-bold">
-                        Contact Us
-                    </h1>
-
-                    <p class="page-hero-description">
-                        Get in touch with Likhwezi Technologies to discuss your
-                        consulting needs and discover how we can assist your organisation.
-                    </p>
-
+            <!-- hero section -->
+            <section class="hero hero-text-only">
+                <div class="hero-content d-grid gap-3 row-gap-3">
+                    <div class="p-1">
+                        <h1>Contact Us</h1>
+                        <p>Get in touch with Likhwezi Technologies to discuss your consulting needs and discover how we can assist your organisation.</p>
+                    </div>
                 </div>
             </section>
 
-            <hr class="contact-divider">
+            <hr>
 
-            <section class="contact-form-section py-5">
-                <div class="container">
+            <section class="page-section contact-form-section">
 
-                    <!-- Keeps the form centred and readable on larger screens. -->
-                    <div class="row justify-content-center">
-                        <div class="col-12 col-lg-8">
+                <!-- Form heading. -->
+                <h2 class="section-title">Send us an enquiry</h2>
 
-                            <!-- Form heading. -->
-                            <h2 class="h3 mb-4">
-                                Send us an enquiry
-                            </h2>
+                        <!-- Keeps the form readable on larger screens. -->
+                        <div class="contact-form-wrap">
 
                             <!--
                                 The form currently submits back to contact.php.
@@ -259,9 +250,7 @@ function normalise_phone(string $input): ?string {
                             </form>
 
                         </div>
-                    </div>
 
-                </div>
             </section>
 
             <!-- Privacy Notice and Consent modal. -->
@@ -325,19 +314,17 @@ function normalise_phone(string $input): ?string {
             </div>
 
             <!--divider between sections. -->
-            <hr class="contact-divider">
+            <hr>
 
             <!-- Connect With Us section. -->
-            <section class="connect-section py-5">
-                <div class="container text-center">
+            <section class="page-section connect-section">
+                <div>
 
                     <!-- Social media section heading. -->
-                    <h2 class="h3 mb-3">
-                        Connect with us
-                    </h2>
+                    <h2 class="section-title">Connect with us</h2>
 
                     <!-- Social media section introduction. -->
-                    <p class="mb-4">
+                    <p class="section-intro">
                         Follow Likhwezi Technologies on social media for updates,
                         insights, and company news.
                     </p>
@@ -345,7 +332,7 @@ function normalise_phone(string $input): ?string {
                     <!--
                         Social media links.
                     -->
-                    <div class="social-links d-flex justify-content-center gap-3">
+                    <div class="social-links d-flex gap-3">
 
                         <!-- Instagram -->
                         <a
