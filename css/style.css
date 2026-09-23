@@ -1,5 +1,8 @@
 :root {
-    --section-gutter: max(140px, 7%);
+    /* Content sits in a centred column no wider than --content-max; on smaller
+       screens the gutter takes over. Text inside the column stays left-aligned. */
+    --content-max: 1200px;
+    --section-gutter: max(140px, 7%, calc((100% - var(--content-max)) / 2));
 
     /* Site palette — taken from the home page; use these on every page */
     --color-navy: #04113B;
@@ -137,10 +140,14 @@ body {
 /*footer columns section contains the company logo and website page links*/
 .footer-columns {
     display: grid;
-    grid-template-columns: repeat(4, 325px);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 2rem;
-    max-width: 1300px;
-    margin: 0 auto;
+}
+
+/* Same gutter as the page sections so the footer lines up with the content */
+.footer-top {
+    padding-left: var(--section-gutter);
+    padding-right: var(--section-gutter);
 }
 
 @media (max-width: 991px) {
@@ -325,7 +332,7 @@ body {
     padding-left: var(--section-gutter);
     padding-right: var(--section-gutter);
     box-sizing: border-box;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
 }
 
 .partner-logo,
@@ -446,7 +453,7 @@ body {
 /* Partners Page — list layout */
 .partners-list {
     width: 100%;
-    max-width: 900px;
+    max-width: 1000px;
 }
 
 .partner-row {
@@ -1236,39 +1243,64 @@ body.gallery-modal-open {
     line-height: 1.6;
 }
 
-/* Story / Mission / Vision — same blue cards as the home page services */
-.about-values-grid {
+/* Story / Mission / Vision tabs on the left, company image on the right */
+.about-history-content {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: center;
 }
 
-.about-value-card {
-    background-color: var(--color-accent);
-    color: white;
-    border-radius: 8px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.about-value-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
-.about-value-card:hover,
-.about-value-card:focus-within {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.11);
+/* Outlined buttons that fill navy when selected */
+.about-value-button {
+    padding: 8px 20px;
+    border: 2px solid var(--color-primary);
+    border-radius: 6px;
+    background-color: #ffffff;
+    color: var(--color-primary);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.about-value-card-body {
-    padding: 30px;
+.about-value-button:hover,
+.about-value-button:focus-visible,
+.about-value-button.is-active {
+    background-color: var(--color-primary);
+    color: #ffffff;
 }
 
-.about-value-card p {
-    color: white;
-    font-size: 14px;
-    font-weight: 300;
+/* Light panel with a blue edge; min-height stops the image
+   jumping when a shorter value is selected */
+.about-value-description {
+    min-height: 13rem;
+    margin-top: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 4px solid var(--color-accent);
+    border-radius: 0 8px 8px 0;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font-size: 15px;
 }
 
-/* Company image underneath the three cards */
+.about-value-description-title {
+    margin-bottom: 0.35rem;
+    color: var(--color-primary);
+    font-weight: 700;
+}
+
+.about-value-description p:last-child {
+    margin-bottom: 0;
+}
+
 .about-history-image-wrap {
-    margin-top: 2.5rem;
     border-radius: 8px;
     overflow: hidden;
 }
@@ -1276,68 +1308,21 @@ body.gallery-modal-open {
 .about-history-image {
     display: block;
     width: 100%;
-    max-height: 380px;
+    max-height: 340px;
     object-fit: cover;
     object-position: top;
-}
-
-/* Our Approach — interactive values row */
-.approach-letters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.1rem;
-}
-
-.approach-letter {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 3rem;
-    height: 3rem;
-    padding: 0;
-    border: 2px solid var(--color-primary);
-    border-radius: 50%;
-    background-color: #ffffff;
-    color: var(--color-primary);
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
-}
-
-.approach-letter:hover,
-.approach-letter:focus-visible,
-.approach-letter.is-active {
-    background-color: var(--color-primary);
-    color: #ffffff;
-    transform: translateY(-2px);
-}
-
-.approach-description {
-    max-width: 760px;
-    min-height: 7rem;
-    margin-top: 1.5rem;
-    padding: 1.25rem 1.5rem;
-    border-left: 4px solid var(--color-accent);
-    border-radius: 0 8px 8px 0;
-    background-color: var(--color-surface);
-    color: var(--color-text);
-}
-
-.approach-description-title {
-    margin-bottom: 0.35rem;
-    color: var(--color-primary);
-    font-weight: 700;
 }
 
 /* =========================================
    Meet Our Team
    Same card treatment as the event and campaign cards.
    ========================================= */
+/* Fixed-width cards keep them slim; the row is centred in the column */
 .team-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 24px;
+    grid-template-columns: repeat(3, 260px);
+    justify-content: center;
+    gap: 56px 80px;
 }
 
 .team-member-card {
@@ -1359,27 +1344,35 @@ body.gallery-modal-open {
     display: block;
     width: 100%;
     aspect-ratio: 4 / 3;
+    max-height: 200px;
     object-fit: cover;
     object-position: top;
     background-color: #E9ECEF;
 }
 
 .team-member-body {
-    padding: 18px;
+    padding: 14px 16px 16px;
 }
 
 .team-member-card h3 {
     margin: 0 0 4px;
     color: var(--color-primary);
-    font-size: 18px;
+    font-size: 16px;
     line-height: 1.25;
 }
 
 .team-member-role {
     margin: 0;
     color: var(--color-accent);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
+}
+
+.team-member-bio {
+    margin: 8px 0 0;
+    color: var(--color-muted);
+    font-size: 13px;
+    line-height: 1.5;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1394,20 +1387,29 @@ body.gallery-modal-open {
 
 /* Tablets and phones */
 @media (max-width: 991px) {
-    .about-values-grid {
+    .about-history-content {
         grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .about-value-description {
+        min-height: 0;
     }
 
     .team-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, 260px);
+    }
+}
+
+/* Two 260px cards no longer fit below 768px, so stack them */
+@media (max-width: 767px) {
+    .team-grid {
+        grid-template-columns: minmax(0, 300px);
+        gap: 32px;
     }
 }
 
 @media (max-width: 575px) {
-    .team-grid {
-        grid-template-columns: 1fr;
-    }
-
     .about-history-image {
         max-height: 260px;
     }

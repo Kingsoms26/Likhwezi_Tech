@@ -99,7 +99,7 @@
         <!-- partner section -->
         <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
             <div class="section-title py-2">Our Partners</div>
-            <div class="partner-container d-flex justify-content-center gap-4">
+            <div class="partner-container d-flex justify-content-start gap-4">
                 <?php
                     $count = 0;
                     if (isset($conn) && $conn instanceof mysqli && !$conn->connect_errno) {

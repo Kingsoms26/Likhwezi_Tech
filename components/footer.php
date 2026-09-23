@@ -1,6 +1,6 @@
 <footer>
     <!-- top section: company info + link columns (more columns to be added later) -->
-    <div class="footer-top px-5 py-3">
+    <div class="footer-top py-3">
         <div class="footer-columns">
             <!-- company logo and description -->
             <div>
