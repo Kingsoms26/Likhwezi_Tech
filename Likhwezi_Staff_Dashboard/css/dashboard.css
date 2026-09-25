@@ -1,0 +1,500 @@
+/*
+ * Naming:
+ *     dashboard-* = shared dashboard structure
+ *     sidebar-*   = left navigation
+ *     panel-*     = panel parts
+ *     progress-*  = progress-bar parts
+ *
+ * Role-specific changes should be scoped:
+ *     .marketing-dashboard .dashboard-card { ... }
+ *     .customer-service-dashboard .dashboard-card { ... }
+ *
+ * Keep public website CSS separate from this file.
+ */
+
+/* Main dashboard colours and reusable values. */
+
+:root {
+    --header-bg: #07163f;
+    --page-bg: #f5f8fd;
+    --surface: #ffffff;
+    --sidebar-border: #cfd6e2;
+    --border: #d2d8e2;
+    --text: #141a26;
+    --muted: #687286;
+    --accent: #2f66d3;
+    --accent-strong: #1e4fb3;
+    --accent-soft: #eaf1ff;
+    --track: #dbe7f8;
+}
+
+/* Basic reset for predictable sizing. */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+}
+
+a {
+    font: inherit;
+}
+
+/* Top header: logo/company name on the left, logged-in name on the right. */
+
+.dashboard-header {
+    height: 72px;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--header-bg);
+    color: #fff;
+}
+
+/* Header branding: logo and company name. */
+
+.dashboard-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.dashboard-brand img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Name or username shown at the top-right of the header. */
+
+.dashboard-user {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+/* Overall content area containing sidebar and main content. */
+
+.dashboard-body {
+    display: flex;
+    min-height: calc(100vh - 72px);
+}
+
+/* Left dashboard navigation. */
+
+.dashboard-sidebar {
+    width: 190px;
+    flex: 0 0 190px;
+    background: var(--surface);
+    border-right: 1px solid var(--sidebar-border);
+}
+
+.dashboard-sidebar nav {
+    padding: 28px 0;
+}
+
+.sidebar-section + .sidebar-section {
+    margin-top: 20px;
+}
+
+/* One navigation item in the sidebar. */
+
+.sidebar-link {
+    display: block;
+    padding: 12px 18px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 17px;
+    line-height: 1.2;
+}
+
+.sidebar-link:hover {
+    background: var(--accent-soft);
+}
+
+/* Currently selected navigation item. */
+
+.sidebar-link.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Main page content area. */
+
+.dashboard-main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px 34px 44px;
+}
+
+.dashboard-heading h1 {
+    margin: 0 0 28px;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+/* Grid containing the small statistic cards. */
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    margin-bottom: 34px;
+}
+
+/* Reusable statistic card. */
+
+.dashboard-card {
+    min-height: 140px;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 14px;
+}
+
+.dashboard-card h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+/* Large number/value inside a card. */
+
+.dashboard-card-value {
+    margin-bottom: 7px;
+    font-size: 35px;
+    line-height: 1.05;
+    font-weight: 600;
+}
+
+/* Supporting text below a card value. */
+
+.dashboard-card-meta {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+/* Places two large panels beside each other. */
+
+.dashboard-two-column {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-bottom: 34px;
+}
+
+/* Reusable large content section. */
+
+.dashboard-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent-soft);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* Panel title row and optional action button. */
+
+.panel-header {
+    min-height: 60px;
+    padding: 0 18px 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+/* Action button inside a panel header. */
+
+.panel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 35px;
+    padding: 6px 13px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.panel-button:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+/* Main content area inside a panel. */
+
+.panel-body {
+    padding: 0px;
+}
+
+/* Standard inner spacing for panels that need it. */
+
+.panel-padding {
+    padding: 20px;
+}
+
+/* Temporary preview-only summary block. */
+
+/* Summary block inside a panel. */
+.panel-summary {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Temporary preview-only large value. */
+
+/* Large value inside a summary block. */
+.summary-value {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.panel-summary p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* Allows wide tables to scroll on smaller screens. */
+
+.dashboard-table-wrap {
+    overflow-x: auto;
+}
+
+/* Shared dashboard table styling. */
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/*
+ * TH and TD share the same cell spacing, border and alignment.
+ * They are grouped here intentionally to avoid repeating those rules.
+ */
+.dashboard-table th,
+.dashboard-table td {
+    padding: 13px 12px;
+    border-top: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+}
+
+/*
+ * Headings need their own colour, size and weight, so these properties
+ * apply only to TH elements.
+ */
+.dashboard-table th {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* Interest/category heading row. */
+
+/* Interest/category label and percentage row. */
+.interest-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.interest-item{
+    margin-bottom: 8px;
+}
+/* One complete progress-bar item. */
+
+.progress-item {
+    margin-bottom: 14px;
+}
+
+.progress-item:last-child {
+    margin-bottom: 5px;
+}
+
+/* Label and percentage/value above the progress bar. */
+
+.progress-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.progress-heading span:last-child {
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* Full background track of a progress bar. */
+
+.progress-track {
+    height: 7px;
+    overflow: hidden;
+    background: var(--track);
+    border-radius: 999px;
+}
+
+/* Filled portion of a progress bar. */
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+}
+
+/* Campaign row. */
+
+/* One campaign row. */
+.campaign-row {
+    margin-bottom: 26px;
+}
+
+.campaign-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Campaign row heading. */
+
+/* Campaign name and progress percentage. */
+.campaign-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.campaign-header span:last-child {
+    color: var(--muted);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Tablet layout. */
+
+@media (max-width: 1000px) {
+    .dashboard-sidebar {
+        width: 165px;
+        flex-basis: 165px;
+    }
+
+    .dashboard-main {
+        padding: 24px;
+    }
+
+    .dashboard-cards,
+    .dashboard-two-column {
+        gap: 20px;
+    }
+}
+
+/* Small-screen/mobile layout. */
+
+@media (max-width: 780px) {
+    .dashboard-header {
+        padding: 0 18px;
+    }
+
+    .dashboard-brand span {
+        font-size: 14px;
+    }
+
+    .dashboard-body {
+        display: block;
+    }
+
+    .dashboard-sidebar {
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--sidebar-border);
+    }
+
+    .dashboard-sidebar nav {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto;
+        padding: 8px;
+    }
+
+    .sidebar-section {
+        display: contents;
+    }
+
+    .sidebar-link {
+        white-space: nowrap;
+        padding: 11px 13px;
+        border-radius: 7px;
+    }
+
+    .dashboard-cards,
+    .dashboard-two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .campaign-header {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .campaign-header span:last-child {
+        white-space: normal;
+    }
+}
+
+/* Role-specific scope examples.
+   These can stay in this shared CSS file without changing other dashboards. */
+
+/* Example: Admin-only styling for cards. */
+
+.admin-dashboard .dashboard-card {
+}
+
+/* Example: Customer Service-only card styling. */
+
+.customer-service-dashboard .dashboard-card {
+    /* Customer Service-specific card styling can go here. */
+}
+
+/* Example: Marketing-only campaign styling. */
+
+.marketing-dashboard .dashboard-card {
+    /* Marketing-specific card styling can go here. */
+}
