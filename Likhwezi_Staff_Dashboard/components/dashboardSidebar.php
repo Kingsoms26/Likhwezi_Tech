@@ -5,7 +5,7 @@
         </a>
 
         <div class="sidebar-section">
-            <a class="sidebar-link <?= $activePage === 'enquiries' ? 'active' : '' ?>" href="#">
+            <a class="sidebar-link <?= $activePage === 'enquiries' ? 'active' : '' ?>" href="manageEnquiries.php">
                 Enquiries
             </a>
             <a class="sidebar-link <?= $activePage === 'registrations' ? 'active' : '' ?>" href="#">

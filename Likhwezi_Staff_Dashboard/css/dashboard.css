@@ -498,3 +498,56 @@ a {
 .marketing-dashboard .dashboard-card {
     /* Marketing-specific card styling can go here. */
 }
+
+ss/* Contact cell: name on top, details stacked underneath. */
+.enquiries-panel .enquiry-contact strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.enquiries-panel .enquiry-contact span {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* Status dropdown inside a table row. */
+.enquiry-status-select {
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+}
+
+/* Archive / Restore button, styled to match .panel-button. */
+.enquiry-action-button {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.enquiry-action-button:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+/* Archived rows are muted so they read as inactive. */
+.enquiry-row-archived td {
+    color: var(--muted);
+    background: var(--page-bg);
+}
+
+/* Shown when there are no enquiries. */
+.enquiries-empty {
+    padding: 28px 12px;
+    text-align: center;
+    color: var(--muted);
+}
