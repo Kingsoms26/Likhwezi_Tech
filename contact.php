@@ -1,25 +1,16 @@
 <?php
 session_start();
 include 'tools/dbConnection.php';
+require 'tools/enquirySubmit.php';
 $pageTitle = 'Contact Us';
 
-// Normalises South African mobile numbers before they are stored or validated.
-function normalise_phone(string $input): ?string {
-    // Removes spaces, brackets, hyphens, and any other non-digit characters.
-    $digits = preg_replace('/\D/', '', $input);
+$errors = [];
+$success = false;
 
-    // Converts the international +27 format to the local 0 format.
-    if (str_starts_with($digits, '27')) {
-        $digits = '0' . substr($digits, 2);
-    }
-
-    // Converts the international 0027 format to the local 0 format.
-    if (str_starts_with($digits, '0027')) {
-        $digits = '0' . substr($digits, 4);
-    }
-
-    // Accepts only a South African number beginning with 0 and containing 10 digits.
-    return preg_match('/^0[1-8]\d{8}$/', $digits) ? $digits : null;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $result = submitEnquiry($conn, $_POST);
+    $success = $result['success'];
+    $errors = $result['errors'];
 }
 ?>
 
@@ -62,13 +53,22 @@ function normalise_phone(string $input): ?string {
                             <h2 class="h3 mb-4">
                                 Send us an enquiry
                             </h2>
+                            <?php if ($success): ?>
+    <p style="color: #1A7F37; font-weight: 600;">
+        Thanks — your enquiry has been received. We'll be in touch soon.
+    </p>
+<?php else: ?>
+    <?php foreach ($errors as $error): ?>
+        <p style="color: #C0392B;"><?= htmlspecialchars($error) ?></p>
+    <?php endforeach; ?>
+<?php endif; ?>
 
                             <!--
                                 The form currently submits back to contact.php.
                                 Server-side validation and database insertion
                                 will be added to the submission workflow.
                             -->
-                            <form
+                            <?php if (!$success): ?> <form
                                 method="post"
                                 action="contact.php"
                             >
@@ -256,7 +256,7 @@ function normalise_phone(string $input): ?string {
                                     Submit enquiry
                                 </button>
 
-                            </form>
+                            </form> <?php endif; ?>
 
                         </div>
                     </div>
