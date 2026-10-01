@@ -498,3 +498,745 @@ a {
 .marketing-dashboard .dashboard-card {
     /* Marketing-specific card styling can go here. */
 }
+
+/* =====================================================================
+ * REGISTRATIONS PAGE
+ * ===================================================================== */
+
+/* Page-only colours for destructive actions and status flags. */
+
+.registrations-page {
+    --danger: #b42318;
+    --danger-soft: #fdecea;
+    --success: #1d7a46;
+    --success-soft: #e7f5ec;
+}
+
+/* Text kept for screen readers only (e.g. "View Lindiwe Dlamini"). */
+
+.registrations-page .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Visible keyboard focus for everything interactive on the page. */
+
+.registrations-page a:focus-visible,
+.registrations-page button:focus-visible,
+.registrations-page input:focus-visible,
+.registrations-page select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* One-time message after archive/restore. */
+
+.page-notice {
+    margin-bottom: 24px;
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 15px;
+}
+
+.page-notice-success {
+    border-left-color: var(--success);
+}
+
+.page-notice-error {
+    border-left-color: var(--danger);
+}
+
+/* Button variants used with .panel-button. */
+
+.registrations-page .button-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+}
+
+.registrations-page .button-primary:hover {
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+    color: #fff;
+}
+
+.registrations-page .button-danger {
+    border-color: var(--danger);
+    background: var(--danger);
+    color: #fff;
+    cursor: pointer;
+}
+
+.registrations-page .button-danger:hover {
+    background: #912018;
+    color: #fff;
+}
+
+/* Active | Archived switch in the panel header. */
+
+.view-toggle {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
+}
+
+.view-toggle a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 13px;
+    border-radius: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.view-toggle a:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.view-toggle a:hover .view-count {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.view-toggle a.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--border);
+}
+
+.view-count {
+    min-width: 22px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Filter bar: search takes the extra width, other fields stay compact. */
+
+.registration-filters {
+    display: grid;
+    grid-template-columns: minmax(180px, 2fr) repeat(4, minmax(130px, 1fr)) auto;
+    gap: 14px;
+    align-items: end;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    background: #fafcff;
+}
+
+.filter-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.filter-field input,
+.filter-field select {
+    width: 100%;
+    min-height: 37px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-actions .panel-button {
+    min-height: 37px;
+    white-space: nowrap;
+}
+
+/* Table spacing: roomier cells, everything centred vertically in the row. */
+
+.registrations-table {
+    min-width: 760px;
+}
+
+.registrations-table th,
+.registrations-table td {
+    padding: 16px 18px;
+    vertical-align: middle;
+}
+
+.registrations-table th {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    background: #fafcff;
+}
+
+/* First column lines up with the panel title. */
+
+.registrations-table th:first-child,
+.registrations-table td:first-child {
+    padding-left: 22px;
+}
+
+.registrations-table th:last-child,
+.registrations-table td:last-child {
+    padding-right: 22px;
+}
+
+/*
+ * Column widths (set on <colgroup> in registrations.php). The actions
+ * column shrinks to fit its buttons; the rest share the remaining space.
+ */
+
+.registrations-table .col-name      { width: 26%; }
+.registrations-table .col-programme { width: 22%; }
+.registrations-table .col-age       { width: 13%; }
+.registrations-table .col-date      { width: 15%; }
+.registrations-table .col-media     { width: 14%; }
+.registrations-table .col-actions   { width: 1%; }
+
+.registrations-table tbody tr:hover {
+    background: var(--page-bg);
+}
+
+.registrant-name {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.registrant-age,
+.registrant-date,
+.registrant-media {
+    white-space: nowrap;
+}
+
+/* Minors need guardian consent, so they are marked in the list. */
+
+.minor-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff4dc;
+    color: #8a5a00;
+    font-size: 12px;
+    font-weight: 600;
+    vertical-align: 1px;
+}
+
+/* Media consent: Yes/No wording carries the meaning, the dot supports it. */
+
+.media-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.media-flag::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.media-yes::before {
+    background: var(--success);
+}
+
+.media-no {
+    color: var(--muted);
+}
+
+.media-no::before {
+    border: 1px solid var(--muted);
+}
+
+/* Sortable column headings. */
+
+.sort-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);       /* same blue as the Apply filters button */
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sort-link:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Current sort column: darker blue so it reads as selected. */
+
+.sort-link.sort-asc,
+.sort-link.sort-desc {
+    color: var(--accent-strong);
+}
+
+/* Up/down pair: faint on unsorted columns, one arrow solid on the sorted one. */
+
+.sort-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sort-icon::before,
+.sort-icon::after {
+    content: "";
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    opacity: 0.35;
+}
+
+.sort-icon::before {
+    border-bottom: 4px solid currentColor;
+}
+
+.sort-icon::after {
+    border-top: 4px solid currentColor;
+}
+
+.sort-asc .sort-icon::before,
+.sort-desc .sort-icon::after {
+    opacity: 1;
+}
+
+.sort-asc .sort-icon::after,
+.sort-desc .sort-icon::before {
+    opacity: 0.15;
+}
+
+/* Row actions. */
+
+.table-actions {
+    text-align: right !important;
+    white-space: nowrap;
+}
+
+.table-action {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.table-action + .table-action {
+    margin-left: 8px;
+}
+
+/* View / Restore: same blue fill as Apply filters on hover. */
+
+.table-action:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Archive: red at rest, solid red on hover. */
+
+.table-action-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.table-action-danger:hover {
+    border-color: var(--danger);
+    background: var(--danger);
+    color: #fff;
+}
+
+/* Shown when there are no rows to list. */
+
+.empty-state {
+    padding: 48px 22px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.empty-state p {
+    margin: 0 0 14px;
+}
+
+/*
+ * While new results load, the table fades slightly. The short delay means
+ * fast responses swap in with no visible flicker.
+ */
+
+.registrations-results .dashboard-table-wrap,
+.registrations-results .empty-state {
+    transition: opacity 0.15s ease 0.12s;
+}
+
+.registrations-results.is-loading .dashboard-table-wrap,
+.registrations-results.is-loading .empty-state {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.registrations-results.is-loading {
+    cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .registrations-results .dashboard-table-wrap,
+    .registrations-results .empty-state {
+        transition: none;
+    }
+}
+
+/* Page links under the table. */
+
+.registration-pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+}
+
+.registration-pagination .panel-button {
+    min-width: 35px;
+}
+
+.registration-pagination .panel-button.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+/* Page links: same blue fill as Apply filters on hover. */
+
+.registration-pagination .panel-button:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+/* ---------------------------------------------------------------------
+ * Modals (Bootstrap)
+ * Bootstrap handles opening, closing, backdrop, focus and scrolling.
+ * These rules only restyle it to match the dashboard panels, and are
+ * scoped to .registration-modal so other Bootstrap modals are untouched.
+ * --------------------------------------------------------------------- */
+
+.registration-detail-modal .modal-dialog {
+    max-width: 620px;
+}
+
+.registration-confirm-modal .modal-dialog {
+    max-width: 440px;
+}
+
+.registration-modal .modal-content {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.registration-modal .modal-header {
+    min-height: 60px;
+    padding: 0 18px 0 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.registration-modal .modal-title {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.registration-modal .btn-close:focus {
+    box-shadow: 0 0 0 2px var(--accent-soft), 0 0 0 4px var(--accent);
+}
+
+.registration-modal .modal-body {
+    padding: 6px 22px;
+}
+
+.registration-modal .modal-footer {
+    gap: 8px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+}
+
+/* Bootstrap adds margins between footer items; the gap above replaces them. */
+.registration-modal .modal-footer > * {
+    margin: 0;
+}
+
+.registration-modal .modal-footer .panel-button {
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.confirm-message {
+    margin: 16px 0;
+    line-height: 1.5;
+}
+
+/* Darker backdrop in the header colour (Bootstrap adds .modal-backdrop to <body>). */
+.modal-backdrop.show {
+    opacity: 1;
+    background: rgba(7, 22, 63, 0.45);
+}
+
+/* Detail modal sections: label column + value column. */
+
+.detail-section {
+    padding: 16px 0;
+}
+
+.detail-section + .detail-section {
+    border-top: 1px solid var(--border);
+}
+
+.detail-section h3 {
+    margin: 0 0 10px;
+    color: var(--accent-strong);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.detail-list {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.detail-list dt {
+    color: var(--muted);
+    font-weight: 400; /* Bootstrap's reset makes <dt> bold */
+}
+
+.detail-list dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.detail-list dd.is-empty {
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Guardian details are the extra obligation for minors, so they stand out. */
+
+.detail-guardian {
+    margin: 0 -22px;
+    padding: 16px 22px;
+    background: #fffaf0;
+}
+
+.detail-section[hidden] {
+    display: none;
+}
+
+/* Registrations page: tablet. */
+
+@media (max-width: 1200px) {
+    .registration-filters {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filter-search {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Registrations page: mobile. */
+
+@media (max-width: 780px) {
+    .registrations-panel .panel-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 18px;
+    }
+
+    .registration-filters {
+        grid-template-columns: 1fr 1fr;
+        padding: 16px 18px;
+    }
+
+    .filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .detail-list {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .detail-list dd {
+        margin-bottom: 8px;
+    }
+
+    .registration-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+
+/* =====================================================================
+ * CUSTOMER SERVICE DASHBOARD
+ *
+ * customerServiceDashboard.php. Scoped to .customer-service-dashboard so
+ * no other page is affected. Some of these mirror the Registrations page
+ * styles; they can be merged when the pages are standardised.
+ * ===================================================================== */
+
+.customer-service-dashboard {
+    --status-new-bg: #eaf1ff;
+    --status-new-text: #1e4fb3;
+    --status-contacted-bg: #fff4dc;
+    --status-contacted-text: #8a5a00;
+    --status-closed-bg: #e7f5ec;
+    --status-closed-text: #1d7a46;
+}
+
+/* Panel header buttons: blue fill on hover, like Apply filters. */
+
+.customer-service-dashboard .panel-button:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+.customer-service-dashboard a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Snapshot tables: same heading colour and spacing as the Registrations table. */
+
+.snapshot-table th,
+.snapshot-table td {
+    padding: 14px 18px;
+    vertical-align: middle;
+}
+
+.snapshot-table th {
+    background: #fafcff;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.snapshot-table th:first-child,
+.snapshot-table td:first-child {
+    padding-left: 22px;
+}
+
+.snapshot-table th:last-child,
+.snapshot-table td:last-child {
+    padding-right: 22px;
+}
+
+.snapshot-table tbody tr:hover {
+    background: var(--page-bg);
+}
+
+.snapshot-name {
+    display: block;
+    font-weight: 600;
+}
+
+/* Company name under the enquirer's name. */
+
+.snapshot-sub {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.snapshot-nowrap {
+    white-space: nowrap;
+}
+
+/* Enquiry status badges. The word carries the meaning; colour supports it. */
+
+.status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-new {
+    background: var(--status-new-bg);
+    color: var(--status-new-text);
+}
+
+.status-contacted {
+    background: var(--status-contacted-bg);
+    color: var(--status-contacted-text);
+}
+
+.status-closed {
+    background: var(--status-closed-bg);
+    color: var(--status-closed-text);
+}
+
+.customer-service-dashboard .minor-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff4dc;
+    color: #8a5a00;
+    font-size: 12px;
+    font-weight: 600;
+    vertical-align: 1px;
+}
+
+/* Shown in place of a table when there is nothing to list. */
+
+.dashboard-empty {
+    padding: 40px 22px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.dashboard-empty p {
+    margin: 0;
+}
+
+@media (max-width: 780px) {
+    .customer-service-dashboard .panel-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 18px;
+    }
+}
