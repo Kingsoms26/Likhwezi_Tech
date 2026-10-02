@@ -1240,3 +1240,224 @@ a {
         padding: 12px 18px;
     }
 }
+
+
+/*
+   ACCOUNTS PAGE
+   Uses the shared Registrations layout above.
+   Only account-specific badges and the single summary card need styles.
+   ============================================================== */
+
+.accounts-summary {
+    grid-template-columns: minmax(230px, 320px);
+}
+
+.account-role,
+.account-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.role-admin {
+    background: #d0deff;
+    color: #214fa8;
+}
+
+.role-marketing {
+    background: #e5f6f6;
+    color: #0e6b6e;
+}
+
+.role-customer-service {
+    background: #fae7d1;
+    color: #855516;
+}
+
+.status-active {
+    background: #d4f1de;
+    color: #125d27;
+}
+
+.status-suspended {
+    background: #ffd9d9;
+    color: #8a0000;
+}
+
+.status-deactivated {
+    background: #eceef2;
+    color: #292a2e;
+}
+
+
+/*
+   ACCOUNTS MODALS AND PAGE NOTICES
+   Bootstrap provides the modal behaviour; these rules keep its
+   appearance aligned with the existing dashboard theme.
+   ============================================================== */
+
+.page-notice {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.page-notice-success {
+    background: #eaf7ef;
+    border-color: #b9dfc5;
+    color: #216a36;
+}
+
+.page-notice-error {
+    background: #fff0f0;
+    border-color: #e5bcbc;
+    color: #8b2c2c;
+}
+
+/* Bootstrap backdrop styling is shared with the Registration page. */
+
+.account-modal-dialog {
+    max-width: 580px;
+}
+
+.account-modal .modal-body {
+    padding: 20px 22px;
+}
+
+.account-modal-intro {
+    margin-bottom: 20px;
+}
+
+.account-modal-kicker {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--accent-strong);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.account-modal .modal-help {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.account-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.account-form-field {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.account-form-field-full {
+    grid-column: 1 / -1;
+}
+
+.account-form-field label {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.account-form-field input,
+.account-form-field select {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+}
+
+.account-form-field input:focus,
+.account-form-field select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.account-form-field small {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.account-managed-name {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface-soft);
+}
+
+.account-managed-name span {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.account-managed-name strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.account-modal .modal-footer {
+    padding: 14px 22px;
+}
+
+.account-modal .modal-footer > * {
+    margin: 0;
+}
+
+.account-modal-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+.account-modal-primary:hover {
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .account-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .account-form-field-full {
+        grid-column: auto;
+    }
+
+    .account-modal .modal-body {
+        padding: 18px;
+    }
+
+    .account-modal .modal-footer {
+        padding: 12px 18px;
+    }
+}
