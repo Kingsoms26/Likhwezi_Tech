@@ -1,0 +1,37 @@
+<!-- navBar.php is the navigation bar for the public pages
+ contains the logo, company name and the page links
+-->
+<nav class="navbar navbar-expand-md navbar-dark">
+    <div class="container-fluid px-3 d-flex justify-content-between align-items-center py-1 px-1">
+        <?php global $pageLogo, $pageLogoAlt, $navTitle, $navSubtitle; ?>
+
+        <!-- logo -->
+        <div class="d-flex align-items-center">
+            <img src="<?= isset($pageLogo) ? htmlspecialchars($pageLogo) : 'assets/images/logo/logo-branding.webp' ?>" alt="<?= isset($pageLogoAlt) ? htmlspecialchars($pageLogoAlt) : 'Logo' ?>" class="logo" width="40" height="40">
+            <div class="d-flex flex-column justify-content-center">
+                <div class="d-flex flex-column justify-content-center">
+                    <p class="company-name mb-0"><?= isset($navTitle) ? htmlspecialchars($navTitle) : "Likhwezi" ?></p>
+                    <!-- a page's own subtitle like the one on cym.php is shown smaller than the name -->
+                    <p class="company-name mb-0<?= isset($navSubtitle) ? ' company-subtitle' : '' ?>"><?= isset($navSubtitle) ? htmlspecialchars($navSubtitle) : "Technologies" ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- menu button on small screens -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- navigation links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="about.php">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="services.php">Services</a></li>
+                <li class="nav-item"><a class="nav-link" href="gallery.php">Gallery & Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="partners.php">Partners</a></li>
+                <li class="nav-item"><a class="nav-link" href="contact.php">Contact Us</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

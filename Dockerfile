@@ -3,7 +3,7 @@ FROM php:8.2-apache
 RUN apt-get update \
     && apt-get install -y ca-certificates \
     && docker-php-ext-install pdo pdo_mysql mysqli \
-    && a2enmod rewrite \
+    && a2enmod rewrite expires deflate \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /var/www/html/

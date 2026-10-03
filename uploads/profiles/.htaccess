@@ -1,0 +1,17 @@
+# Profile photos only: never execute anything uploaded here.
+Options -Indexes -ExecCGI
+
+# Stop PHP (and other script) files from being run or even served.
+<FilesMatch "(?i)\.(php\d?|phtml|phar|pht|cgi|pl|py|sh|shtml)$">
+    Require all denied
+</FilesMatch>
+
+# Belt and braces: detach the PHP handler for this folder.
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+RemoveHandler .php .phtml .phar
+RemoveType .php .phtml .phar

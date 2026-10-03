@@ -1,0 +1,42 @@
+# Site-wide settings: send files compressed, let browsers keep them, and keep private files private.
+# Each block only runs when its Apache module is enabled (see the Dockerfile).
+
+# ---- Keep private files private ----
+# Credentials (.env), team notes (.md), database scripts (.sql) and certificates are not for visitors.
+Options -Indexes
+<FilesMatch "(?i)(^\.|\.(md|sql|pem|log)$|^Dockerfile$)">
+    Require all denied
+</FilesMatch>
+
+# ---- Compress text files before sending them ----
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---- Let browsers keep files instead of downloading them on every page ----
+<IfModule mod_expires.c>
+    ExpiresActive On
+
+    # Stylesheets are linked with ?v=<last modified time>, so an edited file gets a new address and is fetched fresh.
+    ExpiresByType text/css "access plus 1 year"
+
+    # Images keep their names when replaced, so they are kept for 30 days. Give a changed image a new name to show it sooner.
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/gif "access plus 30 days"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^Likhwezi_Staff_Dashboard/?(.*)$ staff/$1 [R=301,L]
+    RewriteRule ^logout\.php$ staff/logout.php [R=301,L]
+
+    # Any address that isn't a real file or folder shows the site's own "Page not found" page (404.php sends the 404 status).
+    # A rewrite is used instead of ErrorDocument because it works whether the site sits at the domain root or in a subfolder.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ 404.php [L]
+</IfModule>

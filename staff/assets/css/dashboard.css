@@ -1,0 +1,4445 @@
+/*
+ * Naming:
+ *     dashboard-* = shared dashboard structure
+ *     sidebar-*   = left navigation
+ *     panel-*     = panel parts
+ *     progress-*  = progress-bar parts
+ *
+ * Role-specific changes should be scoped:
+ *     .marketing-dashboard .dashboard-card { ... }
+ *     .customer-service-dashboard .dashboard-card { ... }
+ *
+ * Keep public website CSS separate from this file.
+ */
+
+/* Main dashboard colours and reusable values. */
+
+:root {
+    /* Matches the public site navbar (components/navBar.php). */
+    --header-bg: #04113B;
+    --header-height: 64px;
+    --page-bg: #f5f8fd;
+    --surface: #ffffff;
+    --sidebar-border: #cfd6e2;
+    --border: #d2d8e2;
+    --text: #141a26;
+    --muted: #687286;
+    --accent: #2f66d3;
+    --accent-strong: #1e4fb3;
+    --accent-soft: #eaf1ff;
+    --track: #dbe7f8;
+}
+
+/* Basic reset for predictable sizing. */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--page-bg);
+    color: var(--text);
+}
+
+a {
+    font: inherit;
+}
+
+/* Top header: logo/company name on the left, logged-in name on the right.
+   Styled like the public site navbar. Stays at the top while the page scrolls. */
+
+.dashboard-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: var(--header-height);
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--header-bg);
+    color: #fff;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 14px;
+}
+
+/* Header branding: logo and two-line company name, as in the site navbar. */
+
+.dashboard-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* Negative margin cancels the hover padding so the logo sits 16px in, like the navbar. */
+    margin-left: -4px;
+    padding: 4px 8px 4px 4px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* The brand is the sidebar toggle. */
+
+.dashboard-brand:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-brand:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+.dashboard-brand img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
+.dashboard-brand .company-name {
+    display: flex;
+    flex-direction: column;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+/* Right side of the header: notifications and profile button. */
+
+.dashboard-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Round icon button (notifications). */
+
+.header-icon-button {
+    position: relative;
+    width: 42px;
+    height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #fff;
+    cursor: pointer;
+}
+
+.header-icon-button:hover,
+.dashboard-profile:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.header-icon-button:focus-visible,
+.dashboard-profile:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* Unread count on the notifications button. */
+
+.notification-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #e5484d;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+}
+
+/* A short pulse when a new notification arrives without a reload. */
+.notification-badge.is-new {
+    animation: notification-pulse 0.6s ease-out 2;
+}
+
+@keyframes notification-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(229, 72, 77, 0.55); transform: scale(1); }
+    40%  { transform: scale(1.18); }
+    100% { box-shadow: 0 0 0 8px rgba(229, 72, 77, 0); transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .notification-badge.is-new {
+        animation: none;
+    }
+}
+
+/* Dropdown anchored under the notifications button. */
+
+.dashboard-notifications {
+    position: relative;
+}
+
+.notifications-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 20;
+    width: 300px;
+    max-height: 360px;
+    overflow-y: auto;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(7, 22, 63, 0.15);
+}
+
+.notifications-empty {
+    margin: 0;
+    padding: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Heading row: label on the left, "Clear all" on the right. */
+
+.notifications-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin: 12px 14px 6px;
+}
+
+.notifications-heading {
+    margin: 0;
+}
+
+.notifications-clear {
+    padding: 2px 6px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.notifications-clear:hover {
+    background: var(--accent-soft);
+}
+
+.notifications-clear:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.notifications-list {
+    margin: 0;
+    padding: 0 0 6px;
+    list-style: none;
+}
+
+/* The coloured left edge shows urgency: danger, warning or info. */
+
+.notification-item {
+    border-left: 3px solid var(--accent);
+}
+
+.notification-warning {
+    border-left-color: #d98e04;
+}
+
+.notification-danger {
+    border-left-color: #e5484d;
+}
+
+.notification-body {
+    display: block;
+    width: 100%;
+    padding: 9px 14px;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.notification-body:hover {
+    background: var(--accent-soft);
+}
+
+.notification-title {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.notification-detail {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* Profile button: avatar and name; opens the settings popover. */
+
+.dashboard-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 12px 4px 4px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+
+.profile-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Name or username shown next to the avatar. */
+
+.dashboard-user {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Overall content area containing sidebar and main content. */
+
+.dashboard-body {
+    display: flex;
+    min-height: calc(100vh - var(--header-height));
+}
+
+/* Left dashboard navigation. */
+
+.dashboard-sidebar {
+    --sidebar-width: 250px;
+    width: var(--sidebar-width);
+    flex: 0 0 var(--sidebar-width);
+    background: var(--surface);
+    border-right: 1px solid var(--sidebar-border);
+    transition: margin-left 0.2s ease, visibility 0s;
+
+    /* Frozen under the header while the page scrolls; scrolls itself if the links don't fit. */
+    position: sticky;
+    top: var(--header-height);
+    align-self: flex-start;
+    height: calc(100vh - var(--header-height));
+    overflow-y: auto;
+
+    /* Still scrolls on short screens, but without a visible scrollbar. */
+    scrollbar-width: none;
+}
+
+.dashboard-sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Desktop: the logo collapses the sidebar off to the left. */
+
+@media (min-width: 781px) {
+    .sidebar-collapsed .dashboard-sidebar {
+        margin-left: calc(-1 * var(--sidebar-width));
+        visibility: hidden;
+        transition: margin-left 0.2s ease, visibility 0s 0.2s;
+    }
+}
+
+/* Only used on mobile (see the small-screen layout below). */
+
+.sidebar-backdrop {
+    display: none;
+}
+
+.dashboard-sidebar nav {
+    padding: 20px 14px 28px;
+    font-family: "Public Sans", Arial, Helvetica, sans-serif;
+}
+
+.sidebar-section {
+    margin-top: 22px;
+}
+
+/* Small uppercase label above each group of links. */
+
+.sidebar-heading {
+    margin: 0 0 6px;
+    padding: 0 6px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* One navigation item: icon tile, label, optional count badge. */
+
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 6px;
+    border-radius: 10px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.sidebar-link + .sidebar-link {
+    margin-top: 2px;
+}
+
+.sidebar-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: #f0f3f8;
+    color: #4a5468;
+    font-size: 17px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sidebar-label {
+    flex: 1;
+    min-width: 0;
+}
+
+.sidebar-badge {
+    min-width: 26px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.sidebar-link:hover {
+    background: #f5f7fb;
+    color: var(--text);
+}
+
+.sidebar-link:hover .sidebar-icon {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+.sidebar-link:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+}
+
+/* Currently selected navigation item. */
+
+.sidebar-link.active {
+    background: #f2f5fa;
+    font-weight: 700;
+}
+
+.sidebar-link.active .sidebar-icon {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Main page content area. */
+
+.dashboard-main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px 34px 44px;
+}
+
+.dashboard-heading h1 {
+    margin: 0 0 28px;
+    font-size: 27px;
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+/* Grid containing the small statistic cards. */
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 28px;
+    margin-bottom: 34px;
+}
+
+/* Reusable statistic card. */
+
+.dashboard-card {
+    min-height: 140px;
+    padding: 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 14px;
+}
+
+.dashboard-card h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    line-height: 1.2;
+    font-weight: 500;
+}
+
+/* Large number/value inside a card. */
+
+.dashboard-card-value {
+    margin-bottom: 7px;
+    font-size: 35px;
+    line-height: 1.05;
+    font-weight: 600;
+}
+
+/* A card that opens another page (see $cardLink in components/dashboardCard.php). */
+
+.dashboard-card-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dashboard-card-link h2 {
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 5px;
+    transition: text-decoration-color 0.15s ease;
+}
+
+.dashboard-card-link:hover h2,
+.dashboard-card-link:focus-visible h2 {
+    text-decoration-color: var(--accent);
+}
+
+.dashboard-card-link:hover,
+.dashboard-card-link:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 4px 14px rgba(47, 102, 211, 0.12);
+}
+
+/* Supporting text below a card value. */
+
+.dashboard-card-meta {
+    margin: 0;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+/* Places two large panels beside each other. */
+
+.dashboard-two-column {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px;
+    margin-bottom: 34px;
+}
+
+/* Reusable large content section. */
+
+.dashboard-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent-soft);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+/* Panel title row and optional action button. */
+
+.panel-header {
+    min-height: 60px;
+    padding: 0 18px 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+/* Action button inside a panel header. */
+
+.panel-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 35px;
+    padding: 6px 13px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.panel-button:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+/* Main content area inside a panel. */
+
+.panel-body {
+    padding: 0px;
+}
+
+/* Standard inner spacing for panels that need it. */
+
+.panel-padding {
+    padding: 20px;
+}
+
+/* Temporary preview-only summary block. */
+
+/* Summary block inside a panel. */
+.panel-summary {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Temporary preview-only large value. */
+
+/* Large value inside a summary block. */
+.summary-value {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.panel-summary p {
+    margin: 7px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* Allows wide tables to scroll on smaller screens. */
+
+.dashboard-table-wrap {
+    overflow-x: auto;
+}
+
+/* Shared dashboard table styling. */
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/*
+ * TH and TD share the same cell spacing, border and alignment.
+ * They are grouped here intentionally to avoid repeating those rules.
+ */
+.dashboard-table th,
+.dashboard-table td {
+    padding: 13px 12px;
+    border-top: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+}
+
+/*
+ * Headings need their own colour, size and weight, so these properties
+ * apply only to TH elements.
+ */
+.dashboard-table th {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* Interest/category heading row. */
+
+/* Interest/category label and percentage row. */
+.interest-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: var(--muted);
+}
+
+.interest-item{
+    margin-bottom: 8px;
+}
+/* One complete progress-bar item. */
+
+.progress-item {
+    margin-bottom: 14px;
+}
+
+.progress-item:last-child {
+    margin-bottom: 5px;
+}
+
+/* Label and percentage/value above the progress bar. */
+
+.progress-heading {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.progress-heading span:last-child {
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* Full background track of a progress bar. */
+
+.progress-track {
+    height: 7px;
+    overflow: hidden;
+    background: var(--track);
+    border-radius: 999px;
+}
+
+/* Filled portion of a progress bar. */
+
+.progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+}
+
+/* Campaign row. */
+
+/* One campaign row. */
+.campaign-row {
+    margin-bottom: 26px;
+}
+
+.campaign-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Campaign row heading. */
+
+/* Campaign name and progress percentage. */
+.campaign-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    align-items: baseline;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.campaign-header span:last-child {
+    color: var(--muted);
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* Tablet layout. */
+
+@media (max-width: 1000px) {
+    .dashboard-sidebar {
+        --sidebar-width: 220px;
+    }
+
+    .dashboard-main {
+        padding: 24px;
+    }
+
+    .dashboard-cards,
+    .dashboard-two-column {
+        gap: 20px;
+    }
+}
+
+/* Small-screen/mobile layout. */
+
+@media (max-width: 780px) {
+    .dashboard-user {
+        display: none;
+    }
+
+    .dashboard-profile {
+        padding: 4px;
+    }
+
+    .dashboard-body {
+        display: block;
+    }
+
+    /* Sidebar slides in from the left over the page; closed by default. */
+    .dashboard-sidebar {
+        position: fixed;
+        top: var(--header-height);
+        bottom: 0;
+        left: 0;
+        z-index: 35;
+        width: 260px;
+        height: auto;
+        /* Undo the desktop flex-start; otherwise it shrinks to its links instead of reaching the bottom. */
+        align-self: stretch;
+        max-width: 80vw;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        visibility: hidden;
+        transition: transform 0.2s ease, visibility 0s 0.2s;
+    }
+
+    .sidebar-open .dashboard-sidebar {
+        transform: none;
+        visibility: visible;
+        box-shadow: 8px 0 30px rgba(7, 22, 63, 0.18);
+        transition: transform 0.2s ease;
+    }
+
+    .sidebar-open .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: var(--header-height) 0 0;
+        z-index: 34;
+        background: rgba(7, 22, 63, 0.35);
+    }
+
+    .dashboard-cards,
+    .dashboard-two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .campaign-header {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .campaign-header span:last-child {
+        white-space: normal;
+    }
+}
+
+/* Role-specific scope examples.
+   These can stay in this shared CSS file without changing other dashboards. */
+
+/* Example: Admin-only styling for cards. */
+
+.admin-dashboard .dashboard-card {
+}
+
+/* Example: Customer Service-only card styling. */
+
+.customer-service-dashboard .dashboard-card {
+    /* Customer Service-specific card styling can go here. */
+}
+
+/* Example: Marketing-only campaign styling. */
+
+.marketing-dashboard .dashboard-card {
+    /* Marketing-specific card styling can go here. */
+}
+
+/* ------------------------------------------------------------------
+ * MANAGE PARTNERS PAGE
+ * ------------------------------------------------------------------ */
+
+/* Success / error messages shown above page content. */
+
+.dashboard-alert {
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    border: 1px solid;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.dashboard-alert ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.alert-success {
+    background: #ecf8f0;
+    border-color: #b9e2c6;
+    color: #1d6b3a;
+}
+
+.alert-error {
+    background: #fdeeee;
+    border-color: #f1c2c2;
+    color: #a12828;
+}
+
+/* Shared form styling, reusable by other CRUD pages. */
+
+.dashboard-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-field label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.field-hint {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.form-field input[type="text"],
+.form-field input[type="url"],
+.form-field input[type="email"],
+.form-field input[type="tel"],
+.form-field input[type="password"],
+.form-field select,
+.form-field textarea {
+    width: 100%;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    font: inherit;
+    font-size: 14px;
+    color: var(--text);
+    background: #fff;
+}
+
+.form-field textarea {
+    resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+    outline: 2px solid var(--accent-soft);
+    border-color: var(--accent);
+}
+
+.form-field input[type="file"] {
+    font-size: 13px;
+}
+
+.form-button {
+    align-self: flex-start;
+    min-height: 38px;
+    padding: 8px 18px;
+    border: 0;
+    border-radius: 7px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.form-button:hover {
+    background: var(--accent-strong);
+}
+
+/* Logos: preview in the edit form, thumbnail in the table. */
+
+.partner-logo-preview {
+    max-width: 140px;
+    max-height: 70px;
+    object-fit: contain;
+    padding: 6px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #fff;
+}
+
+.partner-logo-thumb {
+    width: 56px;
+    height: 36px;
+    object-fit: contain;
+}
+
+/* Partner table content. */
+
+.partners-table td {
+    vertical-align: middle;
+}
+
+.partner-name {
+    font-weight: 500;
+}
+
+.partner-link {
+    font-size: 13px;
+    color: var(--accent);
+}
+
+.partners-table tr.is-archived .partner-logo-thumb,
+.partners-table tr.is-archived .partner-name {
+    opacity: 0.55;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-active {
+    background: #e3f5ea;
+    color: #1d6b3a;
+}
+
+.status-archived {
+    background: #eef0f4;
+    color: var(--muted);
+}
+
+/* Edit / Archive buttons sit side by side. */
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.table-actions form {
+    margin: 0;
+}
+
+button.panel-button {
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.panel-button.button-danger:hover {
+    border-color: #c0392b;
+    color: #c0392b;
+}
+
+/* Logos are not portraits: square corners and no cropping in the preview. */
+
+.logo-dropzone .photo-dropzone-preview img {
+    width: 160px;
+    height: 90px;
+    border-radius: 7px;
+    object-fit: contain;
+    background: #fff;
+}
+
+.panel-empty {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Hidden visually but still read by screen readers. */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ---- Partner ordering (manageContent.php?tab=partners) ---- */
+
+/* Buttons on the right of a panel header. */
+
+.panel-header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+/* "Order changed  Undo  Save order", shown only after a change. */
+
+.partner-order-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-right: 10px;
+    border-right: 1px solid var(--border);
+}
+
+.partner-order-bar[hidden] {
+    display: none;
+}
+
+.partner-order-status {
+    color: #8a5a00;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.partner-order-hint {
+    padding-bottom: 0;
+    font-size: 13px;
+}
+
+.partner-order-heading {
+    width: 1%;
+    white-space: nowrap;
+}
+
+/* Handle, position number and up/down arrows. */
+
+.partner-order-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.drag-handle {
+    display: inline-flex;
+    padding: 4px 2px;
+    border-radius: 5px;
+    color: var(--muted);
+    cursor: grab;
+    touch-action: none;
+}
+
+.drag-handle:hover {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+.partner-position {
+    min-width: 1.6em;
+    font-weight: 600;
+    text-align: center;
+}
+
+.order-move-buttons {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-move {
+    display: inline-flex;
+    padding: 1px 3px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.order-move:hover:not(:disabled),
+.order-move:focus-visible {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+.order-move:disabled {
+    opacity: 0.3;
+    cursor: default;
+}
+
+/* The row being dragged. */
+
+.partners-table tr.is-dragging {
+    opacity: 0.55;
+    background: var(--accent-soft);
+    cursor: grabbing;
+}
+
+/* ---- Dialog (popover form over a dimmed page) ----
+ * Uses the same surface, border and shadow as the header popovers. */
+
+.dashboard-dialog {
+    width: min(540px, calc(100vw - 32px));
+    max-height: calc(100vh - 48px);
+    padding: 0;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent-soft);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 20px 50px rgba(7, 22, 63, 0.25);
+}
+
+.dashboard-dialog[open] {
+    animation: popover-in 0.14s ease-out;
+}
+
+.dashboard-dialog::backdrop {
+    background: rgba(7, 22, 63, 0.45);
+}
+
+/* Header, scrolling body and footer; the form fills the dialog. */
+
+.dashboard-dialog > form {
+    max-height: calc(100vh - 52px);
+    gap: 0;
+}
+
+.dialog-header {
+    min-height: 60px;
+    padding: 0 12px 0 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+}
+
+.dialog-header h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.dialog-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 22px;
+    overflow-y: auto;
+}
+
+.dialog-errors .dashboard-alert {
+    margin-bottom: 0;
+}
+
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    background: var(--page-bg);
+}
+
+.dialog-footer .form-button {
+    align-self: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dashboard-dialog[open] {
+        animation: none;
+    }
+}
+
+@media (max-width: 780px) {
+    .partner-order-bar {
+        padding-right: 0;
+        border-right: 0;
+    }
+}
+
+/* ------------------------------------------------------------------
+ * PROFILE PAGES
+ * (profile.php)
+ * ------------------------------------------------------------------ */
+
+/* Summary panel on the left, forms stacked on the right. */
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
+    margin-bottom: 28px;
+}
+
+.profile-forms {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* Two fields side by side (first and last name, role and status). */
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.form-field select:disabled {
+    background: var(--page-bg);
+    color: var(--muted);
+}
+
+/* Photo, name and role at the top of the summary panel. */
+
+.profile-identity {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.profile-photo {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+.profile-name {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.profile-role {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* Read-only label/value list. */
+
+.detail-list {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px 16px;
+    margin: 0 0 16px;
+    font-size: 14px;
+}
+
+.detail-list dt {
+    color: var(--muted);
+}
+
+.detail-list dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+/* Extra account statuses (status-active and status-archived are above). */
+
+.status-suspended {
+    background: #fff4e0;
+    color: #8a5a00;
+}
+
+.status-deactivated {
+    background: #eef0f4;
+    color: var(--muted);
+}
+
+/* Short explanatory text inside a panel. */
+
+.panel-intro {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.panel-alert {
+    padding-bottom: 0;
+}
+
+.panel-alert .dashboard-alert {
+    margin-bottom: 0;
+}
+
+/* Single centred panel (forced password change). */
+
+.narrow-panel {
+    max-width: 520px;
+}
+
+.back-link {
+    margin: 0 0 16px;
+    font-size: 14px;
+}
+
+.back-link a {
+    color: var(--accent);
+}
+
+/* Temporary password shown once after a reset. */
+
+.temporary-password p {
+    margin: 0 0 10px;
+}
+
+.temporary-password code {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    user-select: all;
+}
+
+@media (max-width: 1000px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 560px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ------------------------------------------------------------------
+ * PROFILE MENU (components/profileMenu.php)
+ * Settings menu and profile popover under the profile button.
+ * ------------------------------------------------------------------ */
+
+.profile-menu {
+    position: relative;
+}
+
+/* Shared popover card, matching the notifications dropdown. */
+
+.header-popover {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 30;
+    max-width: calc(100vw - 32px);
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(7, 22, 63, 0.15);
+    animation: popover-in 0.14s ease-out;
+}
+
+/* Small arrow pointing up at the avatar. */
+
+.header-popover::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    right: 22px;
+    width: 10px;
+    height: 10px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
+    transform: rotate(45deg);
+}
+
+@keyframes popover-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .header-popover {
+        animation: none;
+    }
+
+    .dashboard-sidebar,
+    .sidebar-open .dashboard-sidebar,
+    .sidebar-collapsed .dashboard-sidebar {
+        transition: none;
+    }
+}
+
+/* Settings menu. */
+
+.settings-menu {
+    width: 260px;
+    padding: 8px;
+}
+
+.popover-identity {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 8px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.popover-name {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.popover-muted {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.popover-label {
+    margin: 10px 8px 4px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/* Menu rows: links and buttons look the same. */
+
+.popover-item {
+    display: block;
+    width: 100%;
+    padding: 9px 10px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.popover-item:hover,
+.popover-item:focus-visible {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    outline: none;
+}
+
+.popover-item-danger {
+    margin-top: 4px;
+    color: #c0392b;
+}
+
+.popover-item-danger:hover,
+.popover-item-danger:focus-visible {
+    background: #fdecea;
+    color: #a52a1e;
+}
+
+/* Profile popover. */
+
+.profile-popover {
+    width: 360px;
+}
+
+.profile-popover-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.profile-popover-header h2 {
+    flex: 1;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.popover-icon-button {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.popover-icon-button:hover,
+.popover-icon-button:focus-visible {
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    outline: none;
+}
+
+.profile-popover-body {
+    max-height: min(60vh, 460px);
+    overflow-y: auto;
+    padding: 18px;
+}
+
+.profile-popover-body .profile-identity {
+    margin-bottom: 16px;
+}
+
+.profile-popover-body .profile-role {
+    margin-bottom: 6px;
+}
+
+.profile-popover-body .detail-list {
+    margin: 0;
+}
+
+.profile-popover-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--border);
+}
+
+.profile-popover-footer .form-button {
+    text-decoration: none;
+}
+
+.popover-link {
+    color: var(--accent);
+    font-size: 14px;
+}
+
+/* ------------------------------------------------------------------
+ * PASSWORD CHANGE REMINDER (components/passwordReminder.php)
+ * Countdown to the next 6-monthly password change.
+ * Status classes: password-ok, password-soon, password-overdue.
+ * ------------------------------------------------------------------ */
+
+.password-soon {
+    --reminder-colour: #b26a00;
+    --reminder-bg: #fff4e0;
+    --reminder-border: #f2d49b;
+}
+
+.password-overdue {
+    --reminder-colour: #a12828;
+    --reminder-bg: #fdeeee;
+    --reminder-border: #f1c2c2;
+}
+
+.password-reminder {
+    margin: 0;
+    padding: 10px 14px;
+    border: 1px solid var(--reminder-border, var(--border));
+    border-radius: 8px;
+    background: var(--reminder-bg, var(--page-bg));
+    color: var(--reminder-colour, var(--text));
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profile-popover-body .password-reminder {
+    margin-top: 18px;
+}
+
+/* Dot on the profile avatar while a change is due soon or overdue. */
+
+.dashboard-profile {
+    position: relative;
+}
+
+.profile-alert-dot {
+    position: absolute;
+    top: 3px;
+    left: 32px;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--header-bg);
+    border-radius: 50%;
+    background: var(--reminder-colour);
+}
+
+/* ------------------------------------------------------------------
+ * PHOTO DROP ZONE (components/photoDropzone.php)
+ * Dashed drag-and-drop area with a "Choose image" button and preview.
+ * ------------------------------------------------------------------ */
+
+.photo-dropzone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 230px;
+    padding: 28px 20px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    text-align: center;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.photo-dropzone.is-dragging {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.photo-dropzone:focus-within {
+    border-color: var(--accent);
+}
+
+/* The real file input stays in the form but is visually hidden. */
+
+.photo-dropzone-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.photo-dropzone-empty,
+.photo-dropzone-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.photo-dropzone-empty[hidden],
+.photo-dropzone-preview[hidden] {
+    display: none;
+}
+
+.photo-dropzone-empty p,
+.photo-dropzone-preview p {
+    margin: 0;
+}
+
+/* Round upload icon. */
+
+.photo-dropzone-icon {
+    width: 64px;
+    height: 64px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    color: var(--accent);
+    transition: transform 0.15s ease;
+}
+
+.photo-dropzone.is-dragging .photo-dropzone-icon {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+/* Pill button; a <label> so it opens the file picker without script. */
+
+.photo-dropzone-button {
+    display: inline-block;
+    padding: 8px 20px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.photo-dropzone-button:hover {
+    background: var(--accent-strong);
+}
+
+.photo-dropzone-input:focus-visible + .photo-dropzone-empty .photo-dropzone-button {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Preview of the chosen image. */
+
+.photo-dropzone-preview img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+.photo-dropzone-filename {
+    max-width: 100%;
+    color: var(--muted);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.photo-dropzone-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.photo-dropzone-remove {
+    padding: 8px 20px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.photo-dropzone-remove:hover {
+    border-color: #c0392b;
+    color: #c0392b;
+}
+
+.photo-dropzone-error {
+    margin: 0;
+    color: #a12828;
+    font-size: 13px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .photo-dropzone,
+    .photo-dropzone-icon {
+        transition: none;
+    }
+}
+
+/* ---------- Enquiries page (from origin/feature/enquiries-dashboard) ---------- */
+
+/* Contact cell: name on top, details stacked underneath. */
+.enquiry-contact {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.enquiries-panel .enquiry-contact strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.enquiries-panel .enquiry-contact span {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* Status dropdown inside a table row. */
+.enquiry-status-select {
+    padding: 6px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+}
+
+/* Archive / Restore button, styled to match .panel-button. */
+.enquiry-action-button {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.enquiry-action-button:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+/* Archived rows are muted so they read as inactive. */
+/* Contact links look like the text around them until hovered. */
+.enquiries-panel .enquiry-contact a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.enquiries-panel .enquiry-contact a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+/* View and Archive / Restore side by side. */
+.enquiry-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Full enquiry message in the details dialog; keeps the client's line breaks. */
+.enquiry-message {
+    margin: 0;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--page-bg);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+
+.enquiry-dialog .detail-list {
+    margin-bottom: 0;
+}
+
+.enquiry-row-archived td {
+    color: var(--muted);
+    background: var(--page-bg);
+}
+
+/* Up to five summary cards here, so let them wrap instead of a fixed 3 columns. */
+.enquiries-page .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+/* Unclaimed / My Enquiries / All Enquiries stacked with a gap. */
+.enquiries-page .enquiries-panel + .enquiries-panel {
+    margin-top: 28px;
+}
+
+.enquiries-new-card,
+.enquiries-mine-card {
+    border-top-color: var(--accent-strong);
+}
+
+.enquiry-handler {
+    white-space: nowrap;
+}
+
+/* Back link and Show archived above the list on closedEnquiries.php. */
+.enquiries-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+/* "Back to Enquiries" on closedEnquiries.php. */
+.enquiries-back-link {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-size: 14px;
+}
+
+.enquiries-back-link:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+}
+
+.enquiry-handler.is-unclaimed {
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Claim is the main action on an unclaimed row, so it is filled. */
+.enquiry-claim {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+.enquiry-claim:hover {
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
+    color: #fff;
+}
+
+/* Shown when there are no enquiries. */
+.enquiries-empty {
+    padding: 28px 12px;
+    text-align: center;
+    color: var(--muted);
+}
+
+/* ---------- Enquiries: card layout (all screen sizes) ----------
+ * Every enquiry is a card instead of a table row: cards sit side by side on
+ * wide screens and stack on phones. Colours and font follow the public site
+ * (navy #04113B, deep blue #0F3C7A, bright blue #0389E1, Public Sans).
+ */
+
+.enquiries-page,
+.dashboard-main:has(.enquiries-page) .dashboard-heading h1 {
+    font-family: 'Public Sans', sans-serif;
+}
+
+.dashboard-main:has(.enquiries-page) .dashboard-heading h1 {
+    font-weight: 600;
+    color: #04113B;
+}
+
+/* Summary cards: narrow enough minimum that all of them stay on one row until phone size. */
+.enquiries-page .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 18px;
+}
+
+.enquiries-page .dashboard-card {
+    min-height: 0;
+    padding: 18px 20px;
+    border-radius: 12px;
+}
+
+.enquiries-page .dashboard-card h2 {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0F3C7A;
+}
+
+.enquiries-page .dashboard-card-value {
+    margin-bottom: 4px;
+    font-size: 32px;
+    color: #04113B;
+}
+
+.enquiries-page .dashboard-card-meta {
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+/* Sections: a heading above a grid of cards, not a boxed table. */
+.enquiries-page .enquiries-panel {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.enquiries-page .enquiries-panel + .enquiries-panel {
+    margin-top: 34px;
+}
+
+.enquiries-page .panel-header {
+    min-height: 0;
+    padding: 0 0 14px;
+    border-bottom: 0;
+}
+
+.enquiries-page .panel-header h2 {
+    font-size: 19px;
+    font-weight: 600;
+    color: #0F3C7A;
+}
+
+.enquiries-page .dashboard-table-wrap {
+    overflow: visible;
+}
+
+/* Table -> cards. */
+.enquiries-table {
+    display: block;
+}
+
+.enquiries-table thead {
+    display: none;
+}
+
+.enquiries-table tbody {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+}
+
+/* The "nothing to show" row spans the whole grid. */
+.enquiries-table tbody > tr:not(.enquiry-row) {
+    display: block;
+    grid-column: 1 / -1;
+}
+
+.enquiries-table .enquiries-empty {
+    display: block;
+    padding: 22px 16px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    font-size: 14px;
+}
+
+.enquiries-table .enquiry-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    /* The empty 1fr row keeps actions at the bottom when cards in a row differ in height. */
+    grid-template-rows: auto auto auto auto 1fr auto;
+    grid-template-areas:
+        "contact  contact"
+        "message  message"
+        "meeting  received"
+        "handler  status"
+        ".        ."
+        "actions  actions";
+    gap: 12px 14px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid #0389E1;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(4, 17, 59, 0.05);
+}
+
+/* The left edge shows the status at a glance. */
+.enquiries-table .enquiry-status-contacted { border-left-color: #d89614; }
+.enquiries-table .enquiry-status-closed    { border-left-color: #2e8b57; }
+
+.enquiries-table .enquiry-row td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.enquiries-table .enquiry-row-archived {
+    opacity: 0.7;
+}
+
+.enquiries-table .enquiry-contact       { grid-area: contact; }
+.enquiries-table .enquiry-message-cell  { grid-area: message; }
+.enquiries-table .enquiry-meeting       { grid-area: meeting; }
+.enquiries-table .enquiry-received      { grid-area: received; }
+.enquiries-table .enquiry-handler       { grid-area: handler; }
+.enquiries-table .enquiry-status-cell   { grid-area: status; }
+.enquiries-table .enquiry-actions-cell  { grid-area: actions; }
+
+.enquiries-table .enquiry-contact strong {
+    font-size: 16px;
+    color: #04113B;
+}
+
+.enquiries-table .enquiry-contact span {
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.enquiries-table .enquiry-message-cell {
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--page-bg);
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+/* Small caption above each detail, from data-label. */
+.enquiries-table [data-label]::before,
+.enquiries-table .enquiry-status-cell::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-style: normal;
+    color: var(--muted);
+}
+
+.enquiries-table .enquiry-status-cell::before {
+    content: "Status";
+}
+
+.enquiries-table .enquiry-meeting,
+.enquiries-table .enquiry-received,
+.enquiries-table .enquiry-handler {
+    font-size: 14px;
+    white-space: normal;
+}
+
+.enquiries-table .enquiry-status-select {
+    width: 100%;
+    min-height: 38px;
+    font-size: 14px;
+}
+
+/* Actions: a full-width row of evenly sized buttons. */
+.enquiries-table .enquiry-row .enquiry-actions-cell {
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.enquiries-table .enquiry-actions {
+    gap: 8px;
+}
+
+.enquiries-table .enquiry-actions > button,
+.enquiries-table .enquiry-actions > form {
+    flex: 1 1 0;
+}
+
+.enquiries-table .enquiry-action-button {
+    width: 100%;
+    min-height: 38px;
+    font-size: 14px;
+    border-radius: 8px;
+}
+
+/* Phones: tighter spacing, 2x2 summary cards, one enquiry card per row. */
+@media (max-width: 780px) {
+    .dashboard-main {
+        padding: 18px 16px 32px;
+    }
+
+    .dashboard-main:has(.enquiries-page) .dashboard-heading h1 {
+        margin-bottom: 18px;
+        font-size: 26px;
+    }
+
+    .enquiries-page .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 26px;
+    }
+
+    .enquiries-page .dashboard-card {
+        padding: 14px 16px;
+    }
+
+    .enquiries-page .dashboard-card h2 {
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .enquiries-page .dashboard-card-value {
+        font-size: 28px;
+    }
+
+    .enquiries-page .dashboard-card-meta {
+        font-size: 12px;
+    }
+
+    .enquiries-page .enquiries-panel + .enquiries-panel {
+        margin-top: 30px;
+    }
+
+    .enquiries-page .panel-header {
+        padding-bottom: 12px;
+    }
+
+    .enquiries-page .panel-header h2 {
+        font-size: 17px;
+    }
+
+    .enquiries-table tbody {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .enquiries-table .enquiry-row {
+        padding: 16px;
+    }
+
+    .enquiries-table .enquiry-status-select {
+        min-height: 40px;
+    }
+
+    .enquiries-table .enquiry-action-button {
+        min-height: 42px;
+    }
+}
+
+
+/* =====================================================================
+ * REGISTRATIONS PAGE
+ * ===================================================================== */
+
+/* Page-only colours for destructive actions and status flags. */
+
+.registrations-page,
+.registration-confirm-modal {
+    --danger: #b42318;
+    --danger-soft: #fdecea;
+    --success: #1d7a46;
+    --success-soft: #e7f5ec;
+}
+
+/* Text kept for screen readers only (e.g. "View Lindiwe Dlamini"). */
+
+.registrations-page .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Visible keyboard focus for everything interactive on the page. */
+
+.registrations-page a:focus-visible,
+.registrations-page button:focus-visible,
+.registrations-page input:focus-visible,
+.registrations-page select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* One-time message after archive/restore. */
+
+.page-notice {
+    margin-bottom: 24px;
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    background: var(--surface);
+    font-size: 15px;
+}
+
+.page-notice-success {
+    border-left-color: var(--success);
+}
+
+.page-notice-error {
+    border-left-color: var(--danger);
+}
+
+/* Button variants used with .panel-button. */
+
+.registrations-page .button-primary,
+.registration-confirm-modal .button-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+}
+
+.registrations-page .button-primary:hover,
+.registration-confirm-modal .button-primary:hover {
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+    color: #fff;
+}
+
+/* Accounts: the page's main action, in the panel header and set apart from the filters. */
+.registrations-page .accounts-add-button {
+    min-height: 38px;
+    padding: 8px 16px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(47, 102, 211, 0.25);
+}
+
+.registrations-page .button-danger,
+.registration-confirm-modal .button-danger {
+    border-color: var(--danger);
+    background: var(--danger);
+    color: #fff;
+    cursor: pointer;
+}
+
+.registrations-page .button-danger:hover,
+.registration-confirm-modal .button-danger:hover {
+    background: #912018;
+    color: #fff;
+}
+
+/* Active | Archived switch in the panel header. */
+
+.view-toggle {
+    display: flex;
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
+}
+
+.view-toggle a {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 13px;
+    border-radius: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.view-toggle a:hover {
+    background: var(--accent);
+    color: #fff;
+}
+
+.view-toggle a:hover .view-count {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.view-toggle a.active {
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--border);
+}
+
+.view-count {
+    min-width: 22px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Filter bar: search takes the extra width, other fields stay compact. */
+
+.registration-filters {
+    display: grid;
+    grid-template-columns: minmax(180px, 2fr) repeat(4, minmax(130px, 1fr)) auto;
+    gap: 14px;
+    align-items: end;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+    background: #fafcff;
+}
+
+.filter-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.filter-field input,
+.filter-field select {
+    width: 100%;
+    min-height: 37px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.filter-actions .panel-button {
+    min-height: 37px;
+    white-space: nowrap;
+}
+
+/* Table spacing: roomier cells, everything centred vertically in the row. */
+
+.registrations-table {
+    min-width: 760px;
+}
+
+.registrations-table th,
+.registrations-table td {
+    padding: 16px 18px;
+    vertical-align: middle;
+}
+
+.registrations-table th {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    background: #fafcff;
+}
+
+/* First column lines up with the panel title. */
+
+.registrations-table th:first-child,
+.registrations-table td:first-child {
+    padding-left: 22px;
+}
+
+.registrations-table th:last-child,
+.registrations-table td:last-child {
+    padding-right: 22px;
+}
+
+/*
+ * Column widths (set on <colgroup> in registrations.php). The actions
+ * column shrinks to fit its buttons; the rest share the remaining space.
+ */
+
+.registrations-table .col-name      { width: 26%; }
+.registrations-table .col-programme { width: 22%; }
+.registrations-table .col-age       { width: 13%; }
+.registrations-table .col-date      { width: 15%; }
+.registrations-table .col-media     { width: 14%; }
+.registrations-table .col-actions   { width: 1%; }
+
+.registrations-table tbody tr:hover {
+    background: var(--page-bg);
+}
+
+.registrant-name {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.registrant-age,
+.registrant-date,
+.registrant-media {
+    white-space: nowrap;
+}
+
+/* Minors need guardian consent, so they are marked in the list. */
+
+.minor-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff4dc;
+    color: #8a5a00;
+    font-size: 12px;
+    font-weight: 600;
+    vertical-align: 1px;
+}
+
+/* Media consent: Yes/No wording carries the meaning, the dot supports it. */
+
+.media-flag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.media-flag::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.media-yes::before {
+    background: var(--success);
+}
+
+.media-no {
+    color: var(--muted);
+}
+
+.media-no::before {
+    border: 1px solid var(--muted);
+}
+
+/* Sortable column headings. */
+
+.sort-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);       /* same blue as the Apply filters button */
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sort-link:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* Current sort column: darker blue so it reads as selected. */
+
+.sort-link.sort-asc,
+.sort-link.sort-desc {
+    color: var(--accent-strong);
+}
+
+/* Up/down pair: faint on unsorted columns, one arrow solid on the sorted one. */
+
+.sort-icon {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sort-icon::before,
+.sort-icon::after {
+    content: "";
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    opacity: 0.35;
+}
+
+.sort-icon::before {
+    border-bottom: 4px solid currentColor;
+}
+
+.sort-icon::after {
+    border-top: 4px solid currentColor;
+}
+
+.sort-asc .sort-icon::before,
+.sort-desc .sort-icon::after {
+    opacity: 1;
+}
+
+.sort-asc .sort-icon::after,
+.sort-desc .sort-icon::before {
+    opacity: 0.15;
+}
+
+/* Row actions. */
+
+.registrations-results .table-actions {
+    text-align: right !important;
+    white-space: nowrap;
+}
+
+.table-action {
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.table-action + .table-action {
+    margin-left: 8px;
+}
+
+/* View / Restore: same blue fill as Apply filters on hover. */
+
+.table-action:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+/* Archive: red at rest, solid red on hover. */
+
+.table-action-danger {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.table-action-danger:hover {
+    border-color: var(--danger);
+    background: var(--danger);
+    color: #fff;
+}
+
+/* Shown when there are no rows to list. */
+
+.empty-state {
+    padding: 48px 22px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.empty-state p {
+    margin: 0 0 14px;
+}
+
+/*
+ * While new results load, the table fades slightly. The short delay means
+ * fast responses swap in with no visible flicker.
+ */
+
+.registrations-results .dashboard-table-wrap,
+.registrations-results .empty-state {
+    transition: opacity 0.15s ease 0.12s;
+}
+
+.registrations-results.is-loading .dashboard-table-wrap,
+.registrations-results.is-loading .empty-state {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.registrations-results.is-loading {
+    cursor: progress;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .registrations-results .dashboard-table-wrap,
+    .registrations-results .empty-state {
+        transition: none;
+    }
+}
+
+/* Page links under the table. */
+
+.registration-pagination {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    padding: 16px 22px;
+    border-top: 1px solid var(--border);
+}
+
+.registration-pagination .panel-button {
+    min-width: 35px;
+}
+
+.registration-pagination .panel-button.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+/* Page links: same blue fill as Apply filters on hover. */
+
+.registration-pagination .panel-button:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+/* ---------------------------------------------------------------------
+ * Modals (Bootstrap)
+ * Bootstrap handles opening, closing, backdrop, focus and scrolling.
+ * These rules only restyle it to match the dashboard panels, and are
+ * scoped to .registration-modal so other Bootstrap modals are untouched.
+ * The confirm modal is also used on manageCampaigns.php.
+ * --------------------------------------------------------------------- */
+
+.registration-detail-modal .modal-dialog {
+    max-width: 620px;
+}
+
+.registration-confirm-modal .modal-dialog {
+    max-width: 440px;
+}
+
+.registration-modal .modal-content {
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    border-radius: 14px;
+    background: var(--surface);
+    color: var(--text);
+}
+
+.registration-modal .modal-header {
+    min-height: 60px;
+    padding: 0 18px 0 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.registration-modal .modal-title {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 500;
+}
+
+.registration-modal .btn-close:focus {
+    box-shadow: 0 0 0 2px var(--accent-soft), 0 0 0 4px var(--accent);
+}
+
+.registration-modal .modal-body {
+    padding: 6px 22px;
+}
+
+.registration-modal .modal-footer {
+    gap: 8px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+}
+
+/* Bootstrap adds margins between footer items; the gap above replaces them. */
+.registration-modal .modal-footer > * {
+    margin: 0;
+}
+
+.registration-modal .modal-footer .panel-button {
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.confirm-message {
+    margin: 16px 0;
+    line-height: 1.5;
+}
+
+/* Darker backdrop in the header colour (Bootstrap adds .modal-backdrop to <body>). */
+.modal-backdrop.show {
+    opacity: 1;
+    background: rgba(7, 22, 63, 0.45);
+}
+
+/* Detail modal sections: label column + value column. */
+
+.detail-section {
+    padding: 16px 0;
+}
+
+.detail-section + .detail-section {
+    border-top: 1px solid var(--border);
+}
+
+.detail-section h3 {
+    margin: 0 0 10px;
+    color: var(--accent-strong);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.registration-modal .detail-list {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.registration-modal .detail-list dt {
+    color: var(--muted);
+    font-weight: 400; /* Bootstrap's reset makes <dt> bold */
+}
+
+.registration-modal .detail-list dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.registration-modal .detail-list dd.is-empty {
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Guardian details are the extra obligation for minors, so they stand out. */
+
+.detail-guardian {
+    margin: 0 -22px;
+    padding: 16px 22px;
+    background: #fffaf0;
+}
+
+.detail-section[hidden] {
+    display: none;
+}
+
+/* Registrations page: tablet. */
+
+@media (max-width: 1200px) {
+    .registration-filters {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filter-search {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Registrations page: mobile. */
+
+@media (max-width: 780px) {
+    .registrations-panel .panel-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 18px;
+    }
+
+    .registration-filters {
+        grid-template-columns: 1fr 1fr;
+        padding: 16px 18px;
+    }
+
+    .filter-actions {
+        grid-column: 1 / -1;
+    }
+
+    .detail-list {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .detail-list dd {
+        margin-bottom: 8px;
+    }
+
+    .registration-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+
+/* =====================================================================
+ * CUSTOMER SERVICE DASHBOARD
+ *
+ * customerServiceDashboard.php. Scoped to .customer-service-dashboard so
+ * no other page is affected. Some of these mirror the Registrations page
+ * styles; they can be merged when the pages are standardised.
+ * ===================================================================== */
+
+.customer-service-dashboard {
+    --status-new-bg: #eaf1ff;
+    --status-new-text: #1e4fb3;
+    --status-contacted-bg: #fff4dc;
+    --status-contacted-text: #8a5a00;
+    --status-closed-bg: #e7f5ec;
+    --status-closed-text: #1d7a46;
+}
+
+/* Panel header buttons: blue fill on hover, like Apply filters. */
+
+.customer-service-dashboard .panel-button:hover,
+.marketing-dashboard .panel-button:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+.customer-service-dashboard a:focus-visible,
+.marketing-dashboard a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* Snapshot tables: same heading colour and spacing as the Registrations table. */
+
+.snapshot-table th,
+.snapshot-table td {
+    padding: 14px 18px;
+    vertical-align: middle;
+}
+
+.snapshot-table th {
+    background: #fafcff;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.snapshot-table th:first-child,
+.snapshot-table td:first-child {
+    padding-left: 22px;
+}
+
+.snapshot-table th:last-child,
+.snapshot-table td:last-child {
+    padding-right: 22px;
+}
+
+.snapshot-table tbody tr:hover {
+    background: var(--page-bg);
+}
+
+.snapshot-name {
+    display: block;
+    font-weight: 600;
+}
+
+/* Company name under the enquirer's name. */
+
+.snapshot-sub {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.snapshot-nowrap {
+    white-space: nowrap;
+}
+
+/* Enquiry status badges. The word carries the meaning; colour supports it. */
+
+.customer-service-dashboard .status-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.customer-service-dashboard .status-new {
+    background: var(--status-new-bg);
+    color: var(--status-new-text);
+}
+
+.customer-service-dashboard .status-contacted {
+    background: var(--status-contacted-bg);
+    color: var(--status-contacted-text);
+}
+
+.customer-service-dashboard .status-closed {
+    background: var(--status-closed-bg);
+    color: var(--status-closed-text);
+}
+
+.customer-service-dashboard .minor-badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: #fff4dc;
+    color: #8a5a00;
+    font-size: 12px;
+    font-weight: 600;
+    vertical-align: 1px;
+}
+
+/* Shown in place of a table when there is nothing to list. */
+
+.dashboard-empty {
+    padding: 40px 22px;
+    text-align: center;
+    color: var(--muted);
+}
+
+.dashboard-empty p {
+    margin: 0;
+}
+
+@media (max-width: 780px) {
+    .customer-service-dashboard .panel-header,
+    .marketing-dashboard .panel-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding: 12px 18px;
+    }
+}
+
+/* =====================================================================
+ * MARKETING DASHBOARD
+ *
+ * marketingDashboard.php. Shares the snapshot tables, empty state and
+ * panel header styles with the Customer Service dashboard above.
+ * ===================================================================== */
+
+/* Percentage above a slim bar in the Campaign Progress table. */
+
+.marketing-dashboard .campaign-progress-cell {
+    min-width: 120px;
+}
+
+.marketing-dashboard .campaign-progress-value {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* "Today", "In 3 days" etc. Today and tomorrow are highlighted. */
+
+.marketing-dashboard .when-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: var(--page-bg);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.marketing-dashboard .when-soon {
+    background: #fff4dc;
+    color: #8a5a00;
+}
+
+/* =====================================================================
+ * EVENTS AND GALLERY PAGES
+ *
+ * manageEvents.php (Gallery & Events). Same look as the Enquiries page:
+ * compact summary cards, unboxed sections, and white cards with a coloured
+ * left edge and a row of action buttons at the bottom.
+ * ===================================================================== */
+
+.manage-page,
+.dashboard-main:has(.manage-page) .dashboard-heading h1 {
+    font-family: 'Public Sans', sans-serif;
+}
+
+.dashboard-main:has(.manage-page) .dashboard-heading h1 {
+    font-weight: 600;
+    color: #04113B;
+}
+
+.manage-page .dashboard-cards {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 18px;
+}
+
+.manage-page .dashboard-card {
+    min-height: 0;
+    padding: 18px 20px;
+    border-radius: 12px;
+}
+
+.manage-page .dashboard-card h2 {
+    margin-bottom: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #0F3C7A;
+}
+
+.manage-page .dashboard-card-value {
+    margin-bottom: 4px;
+    font-size: 32px;
+    color: #04113B;
+}
+
+.manage-page .dashboard-card-meta {
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+.events-upcoming-card {
+    border-top-color: var(--accent-strong);
+}
+
+/* Sections: a heading above a grid of cards, not a boxed table. */
+
+.manage-page .manage-section {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+}
+
+.manage-page .manage-section + .manage-section {
+    margin-top: 34px;
+}
+
+.manage-page .panel-header {
+    min-height: 0;
+    padding: 0 0 14px;
+    border-bottom: 0;
+}
+
+.manage-page .panel-header h2 {
+    font-size: 19px;
+    font-weight: 600;
+    color: #0F3C7A;
+}
+
+/* Back link on the left, main action on the right. */
+
+.manage-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.manage-back-link {
+    color: var(--accent);
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.manage-back-link:hover {
+    color: var(--accent-strong);
+    text-decoration: underline;
+}
+
+.manage-empty {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 22px 16px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+}
+
+.manage-empty a {
+    color: var(--accent);
+}
+
+/* ---------- Cards ---------- */
+
+.manage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+}
+
+.manage-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 4px solid #0389E1;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(4, 17, 59, 0.05);
+}
+
+/* The left edge shows the timing at a glance. */
+.event-manage-card.timing-past { border-left-color: #2e8b57; }
+.event-manage-card.is-tbc      { border-left-color: #d89614; }
+
+.manage-card.is-archived {
+    border-left-color: var(--muted);
+    opacity: 0.7;
+}
+
+.manage-card-cover {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--page-bg);
+    color: var(--muted);
+    font-size: 13px;
+    text-decoration: none;
+}
+
+.manage-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.manage-card-title strong {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 16px;
+    color: #04113B;
+    overflow-wrap: anywhere;
+}
+
+.manage-card-title span {
+    display: block;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.manage-card-text {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: var(--page-bg);
+    font-size: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+}
+
+.manage-card-text.is-empty {
+    color: var(--muted);
+    font-style: italic;
+}
+
+.manage-card-details {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+}
+
+.manage-card-details dt {
+    margin-bottom: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.manage-card-details dd {
+    margin: 0;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+/* "Today", "In 3 days" etc. Today and tomorrow are highlighted. */
+.manage-page .when-badge {
+    display: inline-block;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: var(--page-bg);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.manage-page .when-soon {
+    background: #fff4dc;
+    color: #8a5a00;
+}
+
+/* Actions: a full-width row of evenly sized buttons, pinned to the bottom. */
+.manage-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+}
+
+.manage-card-actions > a,
+.manage-card-actions > form,
+.manage-card-actions > button {
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+}
+
+/* Active campaigns have four buttons; let them drop to a second row on narrow cards. */
+.campaign-manage-card .manage-card-actions {
+    flex-wrap: wrap;
+}
+
+.campaign-manage-card .manage-card-actions > * {
+    flex: 1 1 90px;
+}
+
+.manage-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 38px;
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.manage-action-button:hover {
+    border-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+.manage-action-button.is-danger:hover {
+    border-color: #c0392b;
+    color: #c0392b;
+}
+
+.manage-action-button:focus-visible,
+.manage-page a:focus-visible,
+.gallery-photo-delete:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.manage-card-cover:hover img {
+    opacity: 0.92;
+}
+
+/* "Still to be confirmed / A past event" choice when the date is empty. */
+.event-undated {
+    margin: 0 0 16px;
+    padding: 0;
+    border: 0;
+}
+
+.event-undated[hidden] {
+    display: none;
+}
+
+.event-undated legend {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.event-undated-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.event-undated-option + .event-undated-option {
+    margin-top: 8px;
+}
+
+.event-undated-option:has(input:checked) {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.event-undated-option input {
+    margin-top: 3px;
+}
+
+.event-undated-option strong,
+.event-undated-option .field-hint {
+    display: block;
+}
+
+.event-undated-option strong {
+    font-size: 14px;
+}
+
+.gallery-dialog-event {
+    margin: 0 0 12px;
+}
+
+/* Edit dialog: the event's current photos, each with a "Remove" tick box. */
+.event-current-photos[hidden] {
+    display: none;
+}
+
+.event-current-photos .form-label {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.event-current-photo-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.event-current-photo {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
+}
+
+.event-current-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.15s ease;
+}
+
+.event-current-photo .gallery-cover-badge {
+    top: 6px;
+    left: 6px;
+    font-size: 11px;
+}
+
+.event-current-photo .event-photo-remove {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px 2px 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #c0392b;
+    box-shadow: 0 1px 4px rgba(4, 17, 59, 0.2);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.event-photo-remove input {
+    margin: 0;
+    accent-color: #c0392b;
+}
+
+.event-current-photo:has(input:checked) {
+    border-color: #c0392b;
+}
+
+.event-current-photo:has(input:checked) img {
+    opacity: 0.35;
+}
+
+.event-current-photo:has(input:checked) .event-photo-remove {
+    background: #c0392b;
+    color: #fff;
+}
+
+/* ---------- Gallery ---------- */
+
+.gallery-event-heading span {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.gallery-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 14px;
+}
+
+.gallery-photo {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--page-bg);
+    box-shadow: 0 2px 8px rgba(4, 17, 59, 0.05);
+}
+
+.gallery-photo > a,
+.gallery-photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.gallery-photo img {
+    object-fit: cover;
+}
+
+.gallery-cover-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    background: #0389E1;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gallery-photo form {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    margin: 0;
+}
+
+/* Delete sits on the photo; always visible so it works on touch screens. */
+.gallery-photo-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    color: #c0392b;
+    box-shadow: 0 1px 4px rgba(4, 17, 59, 0.2);
+    cursor: pointer;
+}
+
+.gallery-photo-delete:hover {
+    background: #c0392b;
+    color: #fff;
+}
+
+/* Upload dialog: multi-photo drop zone and previews. */
+.gallery-dropzone {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 24px 20px;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    text-align: center;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.gallery-dropzone p {
+    margin: 0;
+}
+
+.gallery-dropzone.is-dragging,
+.gallery-dropzone:focus-within {
+    border-color: var(--accent);
+}
+
+.gallery-dropzone.is-dragging {
+    background: var(--accent-soft);
+}
+
+/* The real file input stays in the form but is visually hidden. */
+.gallery-dropzone-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.gallery-dropzone-input:focus-visible ~ .photo-dropzone-button {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.gallery-upload-previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+    gap: 10px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.gallery-upload-previews[hidden] {
+    display: none;
+}
+
+.gallery-upload-previews li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.gallery-upload-previews img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.gallery-upload-previews span {
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gallery-upload-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(4, 17, 59, 0.75);
+    color: #fff;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.gallery-upload-remove:hover {
+    background: #c0392b;
+}
+
+.gallery-dialog .form-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Phones: 2x2 summary cards, one card per row. */
+@media (max-width: 780px) {
+    .dashboard-main:has(.manage-page) .dashboard-heading h1 {
+        margin-bottom: 18px;
+        font-size: 26px;
+    }
+
+    .manage-page .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 26px;
+    }
+
+    .manage-page .dashboard-card {
+        padding: 14px 16px;
+    }
+
+    .manage-page .dashboard-card h2 {
+        margin-bottom: 6px;
+        font-size: 14px;
+    }
+
+    .manage-page .dashboard-card-value {
+        font-size: 28px;
+    }
+
+    .manage-page .dashboard-card-meta {
+        font-size: 12px;
+    }
+
+    .manage-page .panel-header {
+        flex-wrap: wrap;
+        gap: 10px;
+        padding-bottom: 12px;
+    }
+
+    .manage-page .panel-header h2 {
+        font-size: 17px;
+    }
+
+    .manage-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .gallery-photo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .manage-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .manage-action-button {
+        min-height: 42px;
+    }
+}
+
+/* =====================================================================
+ * CAMPAIGNS PAGE
+ *
+ * manageCampaigns.php. Reuses the Gallery & Events cards, gallery and
+ * dialogs above; only the campaign-specific parts live here.
+ * ===================================================================== */
+
+/* The left edge shows the status at a glance: active blue (default), draft amber, closed green. */
+.campaign-manage-card.campaign-status-draft  { border-left-color: #d89614; }
+.campaign-manage-card.campaign-status-closed { border-left-color: #2e8b57; }
+
+/* Raised so far against the goal. */
+.campaign-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.campaign-progress-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.campaign-progress-heading strong {
+    font-size: 16px;
+    color: #04113B;
+}
+
+.campaign-progress-heading span {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* Goal field with a fixed "R" in front. */
+.campaign-goal-input {
+    display: flex;
+    align-items: stretch;
+}
+
+.campaign-goal-input span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-right: 0;
+    border-radius: 7px 0 0 7px;
+    background: var(--page-bg);
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.form-field .campaign-goal-input input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border-radius: 0 7px 7px 0;
+}
+
+.campaign-status-options .event-undated-option strong {
+    color: #04113B;
+}
+
+/* Donations table on the campaign view. */
+.campaign-donations-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.campaign-donations-table td,
+.campaign-donations-table th {
+    vertical-align: top;
+}
+
+.campaign-donations-table .is-amount {
+    text-align: right;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.campaign-donations-table code {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.campaign-donations-table a {
+    color: var(--accent);
+    overflow-wrap: anywhere;
+}
+
+/* Donation payment status (manageCampaigns.php). Only paid donations count towards totals. */
+.donation-status-complete {
+    background: #e3f5ea;
+    color: #1d6b3a;
+}
+
+.donation-status-pending {
+    background: #fff4dc;
+    color: #8a5a00;
+}
+
+.donation-status-cancelled,
+.donation-status-failed {
+    background: #eef0f4;
+    color: var(--muted);
+}
+
+.campaign-donations-table .status-badge {
+    white-space: nowrap;
+}
+
+
+
+/*
+   ACCOUNTS PAGE
+   Uses the shared Registrations layout above.
+   Badge colours are scoped to .account-role / .account-status so they
+   do not change the shared .status-* badges used on other pages.
+   ============================================================== */
+
+.accounts-summary {
+    grid-template-columns: minmax(230px, 320px);
+}
+
+.account-role,
+.account-status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.account-role.role-admin {
+    background: #d0deff;
+    color: #214fa8;
+}
+
+.account-role.role-marketing {
+    background: #e5f6f6;
+    color: #0e6b6e;
+}
+
+.account-role.role-customer-service {
+    background: #fae7d1;
+    color: #855516;
+}
+
+.account-status.status-active {
+    background: #d4f1de;
+    color: #125d27;
+}
+
+.account-status.status-suspended {
+    background: #ffd9d9;
+    color: #8a0000;
+}
+
+.account-status.status-deactivated {
+    background: #eceef2;
+    color: #292a2e;
+}
+
+
+/*
+   ACCOUNTS MODALS
+   Bootstrap provides the modal behaviour; these rules keep its
+   appearance aligned with the existing dashboard theme.
+   ============================================================== */
+
+/* Bootstrap backdrop styling is shared with the Registration page. */
+
+.account-modal-dialog {
+    max-width: 580px;
+}
+
+.account-modal .modal-body {
+    padding: 20px 22px;
+}
+
+.account-modal-intro {
+    margin-bottom: 20px;
+}
+
+.account-modal-kicker {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--accent-strong);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.account-modal .modal-help {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.account-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.account-form-field {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.account-form-field-full {
+    grid-column: 1 / -1;
+}
+
+.account-form-field label {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.account-form-field input,
+.account-form-field select,
+.account-form-field textarea {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+}
+
+.account-form-field input:focus,
+.account-form-field select:focus,
+.account-form-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.account-form-field textarea {
+    resize: vertical;
+    line-height: 1.5;
+}
+
+/* Generated password: monospace so similar characters are easy to tell apart. */
+#new-credentials-password {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    letter-spacing: 0.05em;
+}
+
+.account-form-field small {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.account-managed-name {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
+}
+
+.account-managed-name span {
+    color: var(--muted);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.account-managed-name strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.account-modal .modal-footer {
+    padding: 14px 22px;
+}
+
+.account-modal .modal-footer > * {
+    margin: 0;
+}
+
+.account-modal-primary {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+}
+
+.account-modal-primary:hover {
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .account-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .account-form-field-full {
+        grid-column: auto;
+    }
+
+    .account-modal .modal-body {
+        padding: 18px;
+    }
+
+    .account-modal .modal-footer {
+        padding: 12px 18px;
+    }
+}
+
+/* ==============================================================
+   ARCHIVE PAGE (archive.php)
+   Reuses the registrations table, filters and confirm modal.
+   ============================================================== */
+
+.archive-page .dashboard-cards {
+    grid-template-columns: minmax(230px, 320px);
+}
+
+/* Title on the left, type tabs on the right; tabs wrap under the title when narrow. */
+.archive-panel-header {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.archive-type-tabs {
+    flex-wrap: wrap;
+}
+
+/* Only a search box and its buttons. */
+.archive-page .registration-filters {
+    grid-template-columns: minmax(200px, 420px) auto;
+    justify-content: start;
+}
+
+.archive-select {
+    width: 1%;
+}
+
+.archive-select input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--accent);
+}
+
+.archive-table .registrant-name {
+    white-space: normal;
+}
+
+.archive-detail {
+    max-width: 340px;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+
+/* Type badges, same shape as the account role badges. */
+.archive-type {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+}
+
+.archive-type-registration { background: #e5f6f6; color: #0e6b6e; }
+.archive-type-partner      { background: #efe9fb; color: #5b3aa6; }
+.archive-type-campaign     { background: #fae7d1; color: #8a4b0f; }
+.archive-type-event        { background: #e8f5e9; color: #2e6b34; }
+
+/* Appears above the table while items are ticked. */
+.archive-bulk-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 22px 14px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--accent-soft);
+}
+
+.archive-bulk-bar[hidden] {
+    display: none;
+}
+
+.archive-bulk-bar span {
+    margin-right: auto;
+    font-weight: 600;
+    color: var(--accent-strong);
+}
+
+.archive-confirm-warning {
+    margin: 10px 0 0;
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: var(--danger-soft);
+    color: var(--danger);
+    font-size: 14px;
+}
+
+@media (max-width: 780px) {
+    .archive-page .registration-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .archive-bulk-bar {
+        margin: 0 16px 14px;
+    }
+}
+
+/* ---- Pages & Site info (manageContent.php) ---- */
+
+/* Tabs across the top of the page, one per kind of content. */
+.content-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+}
+
+.content-tab {
+    padding: 9px 14px;
+    margin-bottom: -1px;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.content-tab:hover {
+    color: var(--accent-strong);
+}
+
+.content-tab.active {
+    border-bottom-color: var(--accent);
+    color: var(--accent-strong);
+}
+
+/* Up / down buttons: each is its own small form. */
+.content-order {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.content-order form {
+    margin: 0;
+}
+
+.content-table td {
+    vertical-align: middle;
+}
+
+/* Hidden programmes and services are greyed out. */
+.content-table tr.is-hidden-row td:nth-child(2) {
+    opacity: 0.55;
+}
+
+.content-service {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.content-service-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 18px;
+}
+
+.content-icon-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.content-icon-picker select {
+    flex: 1;
+}
+
+.content-photo-thumb {
+    width: 96px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.content-photo-preview {
+    max-width: 220px;
+    max-height: 130px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+}
+
+.content-details-form {
+    max-width: 620px;
+}
+
+.content-details-form .field-hint {
+    margin: 4px 0 0;
+}
+
+
+/* ==============================================================
+   ARCHIVED ACCOUNTS
+   ============================================================== */
+
+.account-status.status-archived {
+    background: #eceef2;
+    color: var(--muted);
+}
+
+/* Activity is a link styled as a row button. */
+a.table-action {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.account-archive-notes {
+    margin: 0;
+    padding-left: 18px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* ==============================================================
+   ACTIVITY LOG
+   Uses the shared Registrations layout (filters, table, pagination).
+   ============================================================== */
+
+/* The selected user, above their activity. */
+.activity-account {
+    margin-bottom: 24px;
+}
+
+.activity-account-body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px 22px;
+}
+
+.activity-account-who {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.activity-account-photo {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.activity-account-who h2 {
+    margin: 0 0 2px;
+    font-size: 18px;
+}
+
+.activity-account-who p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.activity-account-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 28px;
+    margin: 0;
+}
+
+.activity-account-facts dt {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.activity-account-facts dd {
+    margin: 2px 0 0;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.activity-count {
+    margin: 0;
+    padding: 12px 22px 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.activity-table .registrant-name a {
+    color: var(--text);
+    font-weight: 600;
+}
+
+.activity-table .registrant-name small {
+    display: block;
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.activity-archived-tag {
+    margin-left: 4px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: #eceef2;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.activity-description {
+    min-width: 260px;
+    overflow-wrap: anywhere;
+}
+
+.activity-ip {
+    color: var(--muted);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.activity-category {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: #214fa8;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.activity-category-login {
+    background: #e5f6f6;
+    color: #0e6b6e;
+}
+
+.activity-category-account,
+.activity-category-archive {
+    background: #fae7d1;
+    color: #855516;
+}
+
+/* Failed logins stand out so repeated attempts are easy to spot. */
+.activity-row-failed td {
+    background: var(--danger-soft);
+}
+
+.activity-row-failed .activity-description {
+    color: var(--danger);
+}
+
+.activity-page-gap {
+    align-self: center;
+    color: var(--muted);
+}
+
+/* Dialogs, modals and header popovers still scroll when they are taller than
+   the screen, but without a visible scrollbar (same as the sidebar).
+   .dashboard-table-wrap keeps its scrollbar: it shows a wide table has more columns. */
+.modal,
+.modal-dialog-scrollable .modal-body,
+.dialog-body,
+.notifications-dropdown,
+.profile-popover-body {
+    scrollbar-width: none;
+}
+
+.modal::-webkit-scrollbar,
+.modal-dialog-scrollable .modal-body::-webkit-scrollbar,
+.dialog-body::-webkit-scrollbar,
+.notifications-dropdown::-webkit-scrollbar,
+.profile-popover-body::-webkit-scrollbar {
+    display: none;
+}

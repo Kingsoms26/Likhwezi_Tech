@@ -3,3 +3,14 @@ Thumbs.db
 .vscode/
 *.log
 .env
+
+# Uploaded staff profile photos (keep the folder and its .htaccess)
+uploads/profiles/*
+!uploads/profiles/.htaccess
+
+# Uploaded event photos (keep the folder and its .htaccess)
+uploads/gallery/*
+!uploads/gallery/.htaccess
+
+# Test account passwords (the repo is public)
+docs/testAccounts.md

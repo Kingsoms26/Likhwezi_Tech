@@ -1,7 +1,8 @@
 <?php
-// Every past event (archived, or dated before today), newest first. Rules live in tools/events.php.
+// previous-events.php lists every past event, newest first
+// the rules for what counts as past live in includes/helpers/events.php
 $eventType = 'past';
 $pageTitle = 'Past Events';
 $listingIntro = 'Look back at the workshops, talks and community days Likhwezi Technologies has hosted and taken part in.';
 
-include __DIR__ . '/components/eventListing.php';
+include __DIR__ . '/includes/components/eventListing.php';
