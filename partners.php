@@ -3,6 +3,7 @@
     // contains the hero logo cluster and a card for each partner
     session_start();
     require_once __DIR__ . '/includes/helpers/cache.php';
+    require_once __DIR__ . '/includes/helpers/imageStorage.php';
     $pageTitle = "Partners";
 ?>
 
@@ -36,7 +37,7 @@
                     $partners[] = [
                         'name' => htmlspecialchars($row['name']),
                         'description' => htmlspecialchars($row['description']),
-                        'logo' => htmlspecialchars($row['logo']),
+                        'logo' => htmlspecialchars(imageSrc($row['logo'], 'assets/images/partners/')),
                         'websiteURL' => filter_var($rawURL, FILTER_VALIDATE_URL) ? htmlspecialchars($rawURL) : '',
                     ];
                 }
@@ -59,7 +60,7 @@
                 <div class="hero-image partners-hero-logos <?= count($heroLogos) <= 4 ? 'is-two-col' : '' ?>" aria-hidden="true">
                     <?php foreach ($heroLogos as $i => $partner): ?>
                         <div class="partners-hero-tile" style="--i: <?= $i ?>">
-                            <img src="assets/images/partners/<?= $partner['logo'] ?>" alt="">
+                            <img src="<?= $partner['logo'] ?>" alt="">
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -77,7 +78,7 @@
                     <?php foreach ($partners as $partner): ?>
                         <article class="partner-card">
                             <div class="partner-card-media">
-                                <img src="assets/images/partners/<?= $partner['logo'] ?>" alt="<?= $partner['name'] ?> logo" loading="lazy">
+                                <img src="<?= $partner['logo'] ?>" alt="<?= $partner['name'] ?> logo" loading="lazy">
                             </div>
                             <div class="partner-card-body">
                                 <h3 class="partner-name"><?= $partner['name'] ?></h3>

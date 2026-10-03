@@ -1,12 +1,12 @@
 <?php
 // galleryData.php fetches and saves the event and campaign photos for manageEvents.php and manageCampaigns.php
 // each photo belongs to one event or one campaign and the first photo is the cover
-// the image path starts from the site root, staff pages add ../ in front
+// the image is a cloudinary address, older ones are a path from the site root that staff pages add ../ in front of
 // photos are deleted rather than archived
 
-// where photos are saved, the size limit and allowed types
-const GALLERY_PHOTO_DIR = __DIR__ . '/../../uploads/gallery/';
-const GALLERY_PHOTO_PATH = 'uploads/gallery/';
+require_once __DIR__ . '/../../includes/helpers/imageStorage.php';
+
+// the size limit and allowed types
 const GALLERY_PHOTO_MAX_BYTES = 2 * 1024 * 1024;
 const GALLERY_PHOTO_TYPES = [
     'image/jpeg' => 'jpg',
@@ -69,7 +69,7 @@ function getGalleryItem(mysqli $conn, int $galleryItemID): ?array
 // image address for the staff pages
 function galleryImageSrc(string $image): string
 {
-    return '../' . ltrim($image, '/');
+    return imageSrc($image, '../');
 }
 
 // largest upload the server accepts at once, used to warn before too many photos are sent
@@ -129,28 +129,19 @@ function saveGalleryPhoto(array $file): array
         return ['path' => null, 'error' => "$label must be a JPG, PNG or WEBP image."];
     }
 
-    if (!is_dir(GALLERY_PHOTO_DIR)) {
-        mkdir(GALLERY_PHOTO_DIR, 0755, true);
-    }
+    $url = uploadImage($file['tmp_name'], 'gallery');
 
-    $filename = 'gallery_' . bin2hex(random_bytes(8)) . '.' . GALLERY_PHOTO_TYPES[$mime];
-
-    if (!move_uploaded_file($file['tmp_name'], GALLERY_PHOTO_DIR . $filename)) {
+    if (!$url) {
         return ['path' => null, 'error' => "$label could not be saved."];
     }
 
-    return ['path' => GALLERY_PHOTO_PATH . $filename, 'error' => null];
+    return ['path' => $url, 'error' => null];
 }
 
 // delete a photo uploaded through this page, the original images are left alone
 function deleteGalleryPhotoFile(?string $path): void
 {
-    if ($path && str_starts_with($path, GALLERY_PHOTO_PATH . 'gallery_')) {
-        $file = GALLERY_PHOTO_DIR . basename($path);
-        if (is_file($file)) {
-            unlink($file);
-        }
-    }
+    deleteImage($path);
 }
 
 // add a photo to an event or a campaign

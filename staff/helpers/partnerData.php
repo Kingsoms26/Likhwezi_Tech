@@ -1,10 +1,10 @@
 <?php
 // partnerData.php fetches and saves the partners for staff/manageContent.php
+// the logo is a cloudinary address, the original logos are a filename in assets/images/partners
 
-// folder where partner logos are saved
-const PARTNER_LOGO_DIR = __DIR__ . '/../../assets/images/partners/';
+require_once __DIR__ . '/../../includes/helpers/imageStorage.php';
 
-// address of that folder from the staff pages
+// address of the original logos folder from the staff pages
 const PARTNER_LOGO_URL = '../assets/images/partners/';
 
 // logo size limit and allowed types
@@ -85,49 +85,46 @@ function validatePartnerInput(mysqli $conn, array $input, ?int $partnerID): arra
     return $errors;
 }
 
-// check and save an uploaded logo, no filename means no file was uploaded
+// check and save an uploaded logo, no logo means no file was uploaded
 function savePartnerLogo(array $file): array
 {
     if (($file['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
-        return ['filename' => null, 'error' => null];
+        return ['logo' => null, 'error' => null];
     }
 
     if ($file['error'] !== UPLOAD_ERR_OK) {
-        return ['filename' => null, 'error' => 'The logo could not be uploaded. Please try again.'];
+        return ['logo' => null, 'error' => 'The logo could not be uploaded. Please try again.'];
     }
 
     if ($file['size'] > PARTNER_LOGO_MAX_BYTES) {
-        return ['filename' => null, 'error' => 'Logo must be 2 MB or smaller.'];
+        return ['logo' => null, 'error' => 'Logo must be 2 MB or smaller.'];
     }
 
     // check the real file contents, not just the extension
     $mime = (new finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
     if (!isset(PARTNER_LOGO_TYPES[$mime])) {
-        return ['filename' => null, 'error' => 'Logo must be a PNG, JPG or WEBP image.'];
+        return ['logo' => null, 'error' => 'Logo must be a PNG, JPG or WEBP image.'];
     }
 
-    if (!is_dir(PARTNER_LOGO_DIR)) {
-        mkdir(PARTNER_LOGO_DIR, 0755, true);
+    $url = uploadImage($file['tmp_name'], 'partners');
+
+    if (!$url) {
+        return ['logo' => null, 'error' => 'Failed to save the logo image.'];
     }
 
-    $filename = uniqid('partner_') . '.' . PARTNER_LOGO_TYPES[$mime];
+    return ['logo' => $url, 'error' => null];
+}
 
-    if (!move_uploaded_file($file['tmp_name'], PARTNER_LOGO_DIR . $filename)) {
-        return ['filename' => null, 'error' => 'Failed to save the logo image.'];
-    }
-
-    return ['filename' => $filename, 'error' => null];
+// image address for a logo from the staff pages
+function partnerLogoSrc(string $logo): string
+{
+    return imageSrc($logo, PARTNER_LOGO_URL);
 }
 
 // delete a logo uploaded through this page, the original logos are left alone
-function deletePartnerLogo(?string $filename): void
+function deletePartnerLogo(?string $logo): void
 {
-    if ($filename && str_starts_with($filename, 'partner_')) {
-        $path = PARTNER_LOGO_DIR . basename($filename);
-        if (is_file($path)) {
-            unlink($path);
-        }
-    }
+    deleteImage($logo);
 }
 
 // add a partner, the archivable entity is saved first then the partner with the same id

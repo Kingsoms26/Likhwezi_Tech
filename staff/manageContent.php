@@ -292,7 +292,7 @@
                 $logo = null;
                 if (empty($errors)) {
                     $upload = savePartnerLogo($_FILES['logo'] ?? []);
-                    $logo = $upload['filename'];
+                    $logo = $upload['logo'];
 
                     if ($upload['error']) {
                         $errors[] = $upload['error'];
@@ -735,12 +735,12 @@
                                 <?php $photoID = (int) $photo['photoID']; ?>
                                 <tr>
                                     <td><div class="content-order"><?php moveButtons($tab, $photoID, 'photo ' . ($i + 1), $i === 0, $i === count($photos) - 1); ?></div></td>
-                                    <td><img class="content-photo-thumb" src="../<?= htmlspecialchars($photo['src']) ?>" alt=""></td>
+                                    <td><img class="content-photo-thumb" src="<?= htmlspecialchars(imageSrc($photo['src'], '../')) ?>" alt=""></td>
                                     <td><?= htmlspecialchars($photo['altText']) ?></td>
                                     <td>
                                         <div class="table-actions">
                                             <a class="panel-button" href="manageContent.php?tab=photos&amp;edit=<?= $photoID ?>" data-dialog-open="content-dialog"
-                                               data-values="<?= htmlspecialchars(json_encode(['id' => $photoID, 'altText' => $photo['altText'], 'src' => $photo['src']])) ?>" aria-haspopup="dialog">Edit</a>
+                                               data-values="<?= htmlspecialchars(json_encode(['id' => $photoID, 'altText' => $photo['altText'], 'src' => imageSrc($photo['src'], '../')])) ?>" aria-haspopup="dialog">Edit</a>
                                             <?php rowActionButton($tab, $photoID, 'delete', 'Delete', 'button-danger', 'Delete this photo? It will be removed from the CYM page.'); ?>
                                         </div>
                                     </td>
@@ -775,7 +775,7 @@
                     <div class="form-field" data-edit-only <?= !empty($dialogValues['id']) ? '' : 'hidden' ?>>
                         <span class="field-hint">Current photo</span>
                         <img class="content-photo-preview" data-current-photo alt=""
-                             src="<?= !empty($dialogValues['src']) ? '../' . htmlspecialchars($dialogValues['src']) : '' ?>">
+                             src="<?= !empty($dialogValues['src']) ? htmlspecialchars(imageSrc($dialogValues['src'], '../')) : '' ?>">
                     </div>
 
                     <?php
@@ -879,7 +879,7 @@
                                     'name'        => $partner['name'],
                                     'description' => $partner['description'] ?? '',
                                     'websiteURL'  => $partner['websiteURL'] ?? '',
-                                    'logo'        => PARTNER_LOGO_URL . $partner['logo'],
+                                    'logo'        => partnerLogoSrc($partner['logo']),
                                 ]);
                                 ?>
                                 <tr class="<?= $isArchived ? 'is-archived' : 'partner-row' ?>"
@@ -907,7 +907,7 @@
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <img class="partner-logo-thumb" src="<?= htmlspecialchars(PARTNER_LOGO_URL . $partner['logo']) ?>" alt="">
+                                        <img class="partner-logo-thumb" src="<?= htmlspecialchars(partnerLogoSrc($partner['logo'])) ?>" alt="">
                                     </td>
                                     <td>
                                         <div class="partner-name"><?= htmlspecialchars($partner['name']) ?></div>
@@ -999,7 +999,7 @@
                     <div class="form-field" id="partner-current-logo" <?= $editingPartner ? '' : 'hidden' ?>>
                         <span class="field-hint">Current logo</span>
                         <img class="partner-logo-preview" alt=""
-                             src="<?= $editingPartner ? htmlspecialchars(PARTNER_LOGO_URL . $editingPartner['logo']) : '' ?>">
+                             src="<?= $editingPartner ? htmlspecialchars(partnerLogoSrc($editingPartner['logo'])) : '' ?>">
                     </div>
 
                     <?php
@@ -1086,7 +1086,7 @@
 
             dialog.querySelectorAll('[data-edit-only]').forEach((element) => { element.hidden = !editing; });
             const currentPhoto = dialog.querySelector('[data-current-photo]');
-            if (currentPhoto) currentPhoto.src = values.src ? '../' + values.src : '';
+            if (currentPhoto) currentPhoto.src = values.src || '';
 
             const photoHint = dialog.querySelector('.photo-dropzone')?.closest('.form-field').querySelector('label .field-hint');
             if (photoHint) photoHint.textContent = editing ? '(leave empty to keep the current photo)' : '(required)';

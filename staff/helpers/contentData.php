@@ -3,9 +3,8 @@
 // contains the cym programmes, service cards, cym photos and site details
 // the public pages read the same tables through includes/helpers/siteContent.php
 
-// folder where uploaded cym photos are saved and its path from the site root
-const CYM_PHOTO_DIR = __DIR__ . '/../../assets/images/cym/';
-const CYM_PHOTO_PATH = 'assets/images/cym/';
+// uploaded cym photos are saved on cloudinary, the original photos are a path from the site root
+require_once __DIR__ . '/../../includes/helpers/imageStorage.php';
 
 // photo size limit and allowed types
 const CYM_PHOTO_MAX_BYTES = 5 * 1024 * 1024;
@@ -337,28 +336,19 @@ function saveCymPhotoUpload(array $file): array
         return ['src' => null, 'error' => 'Photo must be a PNG, JPG or WEBP image.'];
     }
 
-    if (!is_dir(CYM_PHOTO_DIR)) {
-        mkdir(CYM_PHOTO_DIR, 0755, true);
-    }
+    $url = uploadImage($file['tmp_name'], 'cym');
 
-    $filename = uniqid('cym_') . '.' . CYM_PHOTO_TYPES[$mime];
-
-    if (!move_uploaded_file($file['tmp_name'], CYM_PHOTO_DIR . $filename)) {
+    if (!$url) {
         return ['src' => null, 'error' => 'Failed to save the photo.'];
     }
 
-    return ['src' => CYM_PHOTO_PATH . $filename, 'error' => null];
+    return ['src' => $url, 'error' => null];
 }
 
 // delete a photo uploaded through this page, the original photos are left alone
 function deleteCymPhotoFile(?string $src): void
 {
-    if ($src && str_starts_with($src, CYM_PHOTO_PATH . 'cym_')) {
-        $path = CYM_PHOTO_DIR . basename($src);
-        if (is_file($path)) {
-            unlink($path);
-        }
-    }
+    deleteImage($src);
 }
 
 // add a cym photo to the end of the list

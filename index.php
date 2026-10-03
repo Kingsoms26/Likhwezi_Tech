@@ -4,6 +4,7 @@
 
     session_start();
     require_once __DIR__ . '/includes/helpers/cache.php';
+    require_once __DIR__ . '/includes/helpers/imageStorage.php';
 
     // fetch the partner logos from the database
     $partnerLogos = cached('home_partner_logos_ordered', 300, function () {
@@ -109,8 +110,8 @@
                 <?php
                 // display the partner logos, only the first 4
                     foreach ($partnerLogos as $logo) {
-                        $logo = htmlspecialchars($logo);
-                        echo "<img src=\"assets/images/partners/{$logo}\" alt=\"Partner logo\" class=\"partner-logo\" loading=\"lazy\">";
+                        $logo = htmlspecialchars(imageSrc($logo, 'assets/images/partners/'));
+                        echo "<img src=\"{$logo}\" alt=\"Partner logo\" class=\"partner-logo\" loading=\"lazy\">";
                     }
                     for ($i = count($partnerLogos); $i < 4; $i++) {
                         echo '<div class="partner-placeholder"></div>';

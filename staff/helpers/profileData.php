@@ -14,9 +14,9 @@ const ACCOUNT_ROLES = [
 // account statuses
 const ACCOUNT_STATUSES = ['active', 'suspended', 'deactivated'];
 
-// where profile photos are saved, the size limit and allowed types
-const PROFILE_PHOTO_DIR = __DIR__ . '/../../uploads/profiles/';
-const PROFILE_PHOTO_PATH = 'uploads/profiles/';
+require_once __DIR__ . '/../../includes/helpers/imageStorage.php';
+
+// profile photo size limit and allowed types, photos are saved on cloudinary
 const PROFILE_PHOTO_MAX_BYTES = 2 * 1024 * 1024;
 const PROFILE_PHOTO_TYPES = [
     'image/jpeg' => 'jpg',
@@ -88,7 +88,7 @@ function accountDisplayName(array $account): string
 // image address for a profile photo from the staff pages
 function profileImageSrc(?string $profileImageURL): string
 {
-    return '../' . ($profileImageURL ?: 'assets/images/placeholder.webp');
+    return imageSrc($profileImageURL ?: 'assets/images/placeholder.webp', '../');
 }
 
 // checking the forms
@@ -224,28 +224,19 @@ function saveProfilePhoto(array $file): array
         return ['path' => null, 'error' => 'Profile photo must be a JPG, PNG or WEBP image.'];
     }
 
-    if (!is_dir(PROFILE_PHOTO_DIR)) {
-        mkdir(PROFILE_PHOTO_DIR, 0755, true);
-    }
+    $url = uploadImage($file['tmp_name'], 'profiles');
 
-    $filename = bin2hex(random_bytes(16)) . '.' . PROFILE_PHOTO_TYPES[$mime];
-
-    if (!move_uploaded_file($file['tmp_name'], PROFILE_PHOTO_DIR . $filename)) {
+    if (!$url) {
         return ['path' => null, 'error' => 'Failed to save the photo. Please try again.'];
     }
 
-    return ['path' => PROFILE_PHOTO_PATH . $filename, 'error' => null];
+    return ['path' => $url, 'error' => null];
 }
 
 // delete a replaced profile photo so we do not keep personal images we no longer use
 function deleteProfilePhoto(?string $path): void
 {
-    if ($path && str_starts_with($path, PROFILE_PHOTO_PATH)) {
-        $file = PROFILE_PHOTO_DIR . basename($path);
-        if (is_file($file)) {
-            unlink($file);
-        }
-    }
+    deleteImage($path);
 }
 
 // passwords
