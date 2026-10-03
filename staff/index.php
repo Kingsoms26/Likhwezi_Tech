@@ -2,7 +2,7 @@
 // staff/index.php sends each staff member to the dashboard for their role
 // requireStaff() already turns away accounts without a role
 
-session_start();
+require_once __DIR__ . '/../includes/security.php';
 
 require __DIR__ . '/../config/dbConnection.php';
 require __DIR__ . '/helpers/auth.php';

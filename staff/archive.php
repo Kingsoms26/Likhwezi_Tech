@@ -4,7 +4,7 @@
     // items can be restored or permanently deleted one at a time or several at once
     // archiving can be undone but deleting cannot, the rules live in helpers/archiveData.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

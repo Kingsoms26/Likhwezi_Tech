@@ -1,7 +1,7 @@
-<!-- privacy.php is the privacy policy page
- contains the privacy notice and how to contact us about personal information
--->
 <?php
+    // privacy.php is the privacy policy page
+    // contains the privacy notice and how to contact us about personal information
+    require_once __DIR__ . '/includes/security.php';
     $pageTitle = "Privacy Policy";
     require_once __DIR__ . '/includes/helpers/siteContent.php';
     // fetch the contact email for the page

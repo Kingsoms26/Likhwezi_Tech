@@ -1,6 +1,6 @@
 <?php
     // logout.php logs the staff member out and sends them back to the login page
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     // record the logout in the activity log
     if (isset($_SESSION['accountID'])) {

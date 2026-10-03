@@ -1,7 +1,7 @@
 <?php
     // campaign.php is the campaigns page
     // contains the campaign cards, the view all page with search and filters, and the donation form that sends donors to PayFast
-    session_start();
+    require_once __DIR__ . '/includes/security.php';
     require_once __DIR__ . '/includes/helpers/cache.php';
     require_once __DIR__ . '/includes/helpers/payfast.php';
     require_once __DIR__ . '/includes/helpers/donations.php';

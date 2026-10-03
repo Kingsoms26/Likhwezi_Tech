@@ -3,7 +3,7 @@
 // called by the notifications dropdown in components/dashboardHeader.php
 // takes the csrf token and the ids to hide, answers with json ok true or false
 
-session_start();
+require_once __DIR__ . '/../includes/security.php';
 
 require __DIR__ . '/../config/dbConnection.php';
 require __DIR__ . '/helpers/auth.php';

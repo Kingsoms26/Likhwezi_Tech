@@ -3,7 +3,7 @@
 // polled by components/dashboardHeader.php so the bell updates without reloading the page
 // a logged out account gets a 401 instead of the login redirect so the polling can stop
 
-session_start();
+require_once __DIR__ . '/../includes/security.php';
 
 require __DIR__ . '/../config/dbConnection.php';
 require __DIR__ . '/helpers/auth.php';

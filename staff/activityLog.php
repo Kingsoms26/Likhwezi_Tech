@@ -4,7 +4,7 @@
     // archived accounts stay in the user filter so their history can always be found
     // the log is read only, rows are written by logActivity() in helpers/activityLog.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

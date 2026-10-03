@@ -2,7 +2,7 @@
     // index.php is the landing page for the Likhwezi Technologies public facing website
     // contains the hero section, services section, about us section, and partner section
 
-    session_start();
+    require_once __DIR__ . '/includes/security.php';
     require_once __DIR__ . '/includes/helpers/cache.php';
     require_once __DIR__ . '/includes/helpers/imageStorage.php';
 

@@ -2,7 +2,7 @@
     // closedEnquiries.php lists every closed enquiry, opened from the closed card on manageEnquiries.php
     // uses the same table and dialog so an enquiry can be reopened or archived here
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

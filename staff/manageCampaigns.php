@@ -6,7 +6,7 @@
     // add and edit share one dialog and close, archive and restore ask first in a confirmation popup
     // the database work lives in helpers/campaignData.php and helpers/galleryData.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

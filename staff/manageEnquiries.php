@@ -3,7 +3,7 @@
     // contains the unclaimed enquiries, my enquiries for customer service and all enquiries for admin
     // closed enquiries have their own page, closedEnquiries.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

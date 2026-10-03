@@ -4,7 +4,7 @@
     // names and photos are edited by each staff member on their own profile
     // the rules live in helpers/accountData.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

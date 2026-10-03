@@ -3,7 +3,7 @@
     // contains the summary cards and the cym sign ups from cym.php with search, filters and sorting
     // customer service can archive but only admin can restore
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

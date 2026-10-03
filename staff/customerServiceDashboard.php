@@ -2,7 +2,7 @@
     // customerServiceDashboard.php is the customer service dashboard
     // contains the enquiry and registration cards, open enquiries and recent cym registrations
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

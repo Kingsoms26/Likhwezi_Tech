@@ -1,7 +1,7 @@
 <?php
     // contact.php is the contact us page
     // contains the contact details, the office map, social links and the enquiry form
-    session_start();
+    require_once __DIR__ . '/includes/security.php';
 
     // only connect to the database when an enquiry is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

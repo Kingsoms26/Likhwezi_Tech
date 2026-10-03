@@ -1,7 +1,7 @@
 <?php
     // partners.php is the partners page
     // contains the hero logo cluster and a card for each partner
-    session_start();
+    require_once __DIR__ . '/includes/security.php';
     require_once __DIR__ . '/includes/helpers/cache.php';
     require_once __DIR__ . '/includes/helpers/imageStorage.php';
     $pageTitle = "Partners";

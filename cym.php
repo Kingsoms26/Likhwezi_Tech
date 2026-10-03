@@ -1,6 +1,7 @@
 <?php
     // cym.php is the cyber young minds page
     // contains the hero section with the photo carousel, the programme banner, the overview and the registration form
+    require_once __DIR__ . '/includes/security.php';
 
     $pageTitle = "Cyber Young Minds";
     $navTitle = "Cyber Young Minds";
@@ -95,8 +96,6 @@
 
     // visitors must wait this many seconds between registrations
     const REGISTRATION_COOLDOWN_SECONDS = 30;
-
-    session_start();
 
     // the form is answered with json so php warnings would break it
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -1,6 +1,7 @@
 <?php
     // gallery.php is the gallery and events page
     // contains the photo carousel, the latest past events and the next upcoming events
+    require_once __DIR__ . '/includes/security.php';
     $pageTitle = "Gallery & Events";
     $eventsPerSection = 3;
 

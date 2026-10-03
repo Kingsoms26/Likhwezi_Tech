@@ -2,6 +2,7 @@
 // payfast-notify.php receives the payment notification PayFast sends after every payment
 // visitors never see this page and it is the only place a donation is marked complete
 // PayFast only needs a 200 response, anything rejected is written to the error log
+require_once __DIR__ . '/includes/security.php';
 require_once __DIR__ . '/includes/helpers/cache.php';
 require_once __DIR__ . '/includes/helpers/payfast.php';
 require_once __DIR__ . '/includes/helpers/donations.php';

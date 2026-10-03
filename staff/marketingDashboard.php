@@ -2,7 +2,7 @@
     // marketingDashboard.php is the marketing dashboard
     // contains the campaign, donation and event cards, campaign progress and upcoming events
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

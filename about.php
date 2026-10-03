@@ -1,7 +1,7 @@
 <?php
     // about.php is the about us page
     // contains the hero section, our story mission and vision section and the meet our team section
-    session_start();
+    require_once __DIR__ . '/includes/security.php';
     $pageTitle = 'About Us';
 ?>
 

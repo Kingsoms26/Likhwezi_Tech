@@ -8,6 +8,14 @@ Options -Indexes
     Require all denied
 </FilesMatch>
 
+# ---- Security headers for files php does not serve ----
+# PHP pages get theirs from includes/security.php.
+<IfModule mod_headers.c>
+    <FilesMatch "(?i)\.(css|js|png|jpe?g|gif|webp|svg|ico)$">
+        Header set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+</IfModule>
+
 # ---- Compress text files before sending them ----
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml

@@ -5,7 +5,7 @@
     // add and edit share one dialog with the details, current photos and new photos all saved together
     // the database work lives in helpers/eventData.php and helpers/galleryData.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

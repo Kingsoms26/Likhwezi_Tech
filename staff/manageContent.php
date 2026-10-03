@@ -5,7 +5,7 @@
     // the database work lives in helpers/contentData.php and helpers/partnerData.php
     // any staff save clears the public page cache so changes show straight away
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

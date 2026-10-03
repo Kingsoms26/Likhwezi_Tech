@@ -1,7 +1,7 @@
 <?php
     // staffLogin.php is the staff login page
     // checks the username or email and password then sends the staff member to their dashboard
-    session_start();
+    require_once __DIR__ . '/includes/security.php';
 
     // only connect to the database when a login is submitted
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

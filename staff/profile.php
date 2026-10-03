@@ -4,7 +4,7 @@
     // new accounts and admin resets only see the set up your account form until it is done
     // email, username, role and status can only be changed by an admin on accounts.php
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

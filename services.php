@@ -1,6 +1,9 @@
-<!-- services.php is the services page
- contains the hero section with the services wheel, the service cards and the consulting package
--->
+<?php
+    // services.php is the services page
+    // contains the hero section with the services wheel, the service cards and the consulting package
+    require_once __DIR__ . '/includes/security.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <?php include 'includes/components/header.php'; ?>

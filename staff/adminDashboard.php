@@ -2,7 +2,7 @@
     // adminDashboard.php is the admin dashboard
     // contains the summary cards, open enquiries, registrations by interest and campaign progress
 
-    session_start();
+    require_once __DIR__ . '/../includes/security.php';
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';

@@ -1,5 +1,6 @@
 <?php
     // 404.php is shown for any address that does not exist, see the 404 rule in .htaccess
+    require_once __DIR__ . '/includes/security.php';
     http_response_code(404);
     $pageTitle = "Page Not Found";
 
