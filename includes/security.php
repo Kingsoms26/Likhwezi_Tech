@@ -14,10 +14,10 @@ header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
 
 // content security policy, only the sites the pages actually load from
-// unsafe-inline is needed until the inline scripts, onsubmit handlers and style attributes are moved out
+// scripts only run from files, unsafe-inline is still needed for styles until the style attributes are moved out
 $csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+    "script-src 'self' https://cdn.jsdelivr.net",
     "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com",
     "font-src 'self' https://cdn.jsdelivr.net https://fonts.gstatic.com",
     "img-src 'self' data: blob: https://res.cloudinary.com",

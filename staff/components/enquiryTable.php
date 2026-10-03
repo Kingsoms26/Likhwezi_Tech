@@ -64,7 +64,7 @@
                             <?= csrfField() ?>
                             <input type="hidden" name="enquiryID" value="<?= (int) $enquiry['enquiryID'] ?>">
                             <input type="hidden" name="updateStatus" value="1">
-                            <select name="status" class="enquiry-status-select" onchange="this.form.submit()">
+                            <select name="status" class="enquiry-status-select" data-submit-on-change>
                                 <?php foreach (['new' => 'New', 'contacted' => 'Contacted', 'closed' => 'Closed'] as $value => $label) : ?>
                                     <option value="<?= $value ?>" <?= $enquiry['status'] === $value ? 'selected' : '' ?>>
                                         <?= $label ?>

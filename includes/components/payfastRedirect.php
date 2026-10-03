@@ -28,9 +28,6 @@
             </div>
         </main>
 
-        <script>
-            // send the form straight away
-            document.getElementById('payfastForm').submit();
-        </script>
+        <script src="assets/js/payfastRedirect.js?v=<?= filemtime(__DIR__ . '/../../assets/js/payfastRedirect.js') ?>"></script>
     </body>
 </html>

@@ -132,17 +132,7 @@
             </div>
         </section>
 
-        <script>
-            // show or hide the password
-            document.querySelector('.password-toggle').addEventListener('click', function () {
-                const input = document.getElementById('password');
-                const showing = input.type === 'text';
-                input.type = showing ? 'password' : 'text';
-                this.setAttribute('aria-pressed', String(!showing));
-                this.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
-                this.querySelector('i').className = showing ? 'bi bi-eye' : 'bi bi-eye-slash';
-            });
-        </script>
+        <script src="assets/js/staffLogin.js?v=<?= filemtime(__DIR__ . '/assets/js/staffLogin.js') ?>"></script>
 
         <!-- footer, staff pages do not show the cookie notice -->
         <?php $hideCookieNotice = true; ?>

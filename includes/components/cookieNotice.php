@@ -14,12 +14,4 @@
         <button type="button" class="btn btn-primary" data-cookie-choice="accepted">Got it</button>
     </div>
 </div>
-<script>
-    // remember the visitor dismissed the notice for a year so it does not show again
-    document.querySelectorAll('[data-cookie-choice]').forEach(function (button) {
-        button.addEventListener('click', function () {
-            document.cookie = 'cookieConsent=' + button.dataset.cookieChoice + '; max-age=31536000; path=/; SameSite=Lax; Secure';
-            document.getElementById('cookieNotice').remove();
-        });
-    });
-</script>
+<script src="assets/js/cookieNotice.js?v=<?= filemtime(__DIR__ . '/../../assets/js/cookieNotice.js') ?>"></script>

@@ -28,6 +28,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
 
+    <!-- confirm and save as you change forms, used on every staff page -->
+    <script src="assets/js/dashboardForms.js?v=<?= filemtime(__DIR__ . '/../assets/js/dashboardForms.js') ?>" defer></script>
+
     <!-- bootstrap icons, the same set the public site uses -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 
