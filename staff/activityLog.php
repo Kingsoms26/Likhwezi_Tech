@@ -40,7 +40,7 @@
         $out = fopen('php://output', 'w');
         // so excel opens the file with the right characters
         fwrite($out, "\xEF\xBB\xBF");
-        fputcsv($out, ['Date and time', 'Username', 'Name', 'Category', 'Action', 'Description', 'Record ID', 'IP address']);
+        fputcsv($out, ['Date and time', 'Username', 'Name', 'Category', 'Action', 'Description', 'Record ID']);
 
         // stop spreadsheet apps treating a cell as a formula
         $safe = fn ($value) => is_string($value) && preg_match('/^[=+\-@\t\r]/', $value) ? "'" . $value : $value;
@@ -48,7 +48,7 @@
         while ($result && $row = $result->fetch_assoc()) {
             fputcsv($out, array_map($safe, [
                 $row['createdAt'], $row['username'], $row['fullName'] ?? '', $row['category'],
-                $row['action'], $row['description'], $row['targetID'], $row['ipAddress'],
+                $row['action'], $row['description'], $row['targetID'],
             ]));
         }
 
@@ -231,7 +231,6 @@
                                 <th scope="col">User</th>
                                 <th scope="col">Category</th>
                                 <th scope="col">What happened</th>
-                                <th scope="col">IP address</th>
                             </tr>
                         </thead>
 
@@ -264,7 +263,6 @@
                                         </span>
                                     </td>
                                     <td class="activity-description"><?= htmlspecialchars($row['description']) ?></td>
-                                    <td class="activity-ip"><?= htmlspecialchars($row['ipAddress'] ?? '—') ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>

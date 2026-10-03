@@ -4383,12 +4383,6 @@ a.table-action {
     overflow-wrap: anywhere;
 }
 
-.activity-ip {
-    color: var(--muted);
-    font-size: 13px;
-    white-space: nowrap;
-}
-
 .activity-category {
     display: inline-block;
     padding: 4px 9px;
