@@ -3708,12 +3708,14 @@ body.modal-open{
     box-shadow: 0 0 0 3px rgba(3, 137, 225, 0.15);
 }
 
-/* The input carries an 18px bottom margin, so the toggle's height leaves it out. */
+/* The wrapper carries the bottom margin so the toggle can fill the input's full height. */
 .password-field {
     position: relative;
+    margin-bottom: 18px;
 }
 
-.password-field .form-control {
+.staff-login-form .password-field .form-control {
+    margin-bottom: 0;
     padding-right: 46px;
 }
 
@@ -3721,11 +3723,23 @@ body.modal-open{
     position: absolute;
     top: 0;
     right: 0;
-    height: calc(100% - 18px);
+    bottom: 0;
     width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
     border: none;
     background: none;
     color: var(--color-muted);
+}
+
+.password-toggle .bi::before {
+    vertical-align: 0;
+}
+
+.password-toggle .bi {
+    line-height: 1;
 }
 
 .password-toggle:hover,
