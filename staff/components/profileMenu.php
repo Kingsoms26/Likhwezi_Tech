@@ -6,12 +6,13 @@
     $menuAccount = $account ?? [
         'username'        => $_SESSION['username'] ?? 'Username',
         'role'            => $_SESSION['role'] ?? null,
+        'firstName'       => $_SESSION['firstName'] ?? null,
+        'lastName'        => $_SESSION['lastName'] ?? null,
         'profileImageURL' => $_SESSION['profileImage'] ?? null,
     ];
 
     $menuName = accountDisplayName($menuAccount);
     $menuRole = $menuAccount['role'] ?? 'No role assigned';
-    $menuPhoto = profileImageSrc($menuAccount['profileImageURL'] ?? null);
 
     // format a date the same way profile.php does
     $menuDate = fn (?string $value, string $format) => $value ? date($format, strtotime($value)) : 'Never';
@@ -25,7 +26,7 @@
     <!-- profile button, opens the settings menu -->
     <button type="button" class="dashboard-profile" id="settings-menu-toggle"
             aria-haspopup="true" aria-expanded="false" aria-controls="settings-menu">
-        <img src="<?= htmlspecialchars($menuPhoto) ?>" alt="" class="profile-avatar">
+        <?= profileAvatar($menuAccount, 'profile-avatar') ?>
         <span class="dashboard-user"><?= htmlspecialchars($menuName) ?></span>
         <?php if ($menuPasswordAge && $menuPasswordAge['status'] !== 'ok') : ?>
             <!-- dot on the avatar while a password change is due soon or overdue -->
@@ -37,7 +38,7 @@
     <!-- settings menu -->
     <div class="header-popover settings-menu" id="settings-menu" hidden>
         <div class="popover-identity">
-            <img src="<?= htmlspecialchars($menuPhoto) ?>" alt="" class="profile-avatar">
+            <?= profileAvatar($menuAccount, 'profile-avatar') ?>
             <div>
                 <div class="popover-name"><?= htmlspecialchars($menuName) ?></div>
                 <div class="popover-muted"><?= htmlspecialchars($menuRole) ?></div>
@@ -70,7 +71,7 @@
 
             <div class="profile-popover-body">
                 <div class="profile-identity">
-                    <img class="profile-photo" src="<?= htmlspecialchars($menuPhoto) ?>" alt="">
+                    <?= profileAvatar($menuAccount, 'profile-photo') ?>
                     <div>
                         <div class="profile-name"><?= htmlspecialchars($menuName) ?></div>
                         <div class="profile-role"><?= htmlspecialchars($menuRole) ?></div>

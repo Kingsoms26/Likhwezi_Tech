@@ -99,7 +99,7 @@
         <section class="dashboard-panel activity-account">
             <div class="panel-body activity-account-body">
                 <div class="activity-account-who">
-                    <img src="<?= htmlspecialchars(profileImageSrc($selected['profileImageURL'])) ?>" alt="" class="activity-account-photo">
+                    <?= profileAvatar($selected, 'activity-account-photo') ?>
                     <div>
                         <h2><?= htmlspecialchars(accountDisplayName($selected)) ?></h2>
                         <p>

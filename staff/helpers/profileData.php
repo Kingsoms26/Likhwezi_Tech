@@ -91,6 +91,29 @@ function profileImageSrc(?string $profileImageURL): string
     return imageSrc($profileImageURL ?: 'assets/images/placeholder.webp', '../');
 }
 
+// initials from the first and last name, the start of the username when there is no name yet
+function accountInitials(array $account): string
+{
+    $firstName = trim($account['firstName'] ?? '');
+    $lastName = trim($account['lastName'] ?? '');
+
+    $initials = $firstName !== '' || $lastName !== ''
+        ? mb_substr($firstName, 0, 1) . mb_substr($lastName, 0, 1)
+        : mb_substr($account['username'] ?? '', 0, 2);
+
+    return mb_strtoupper($initials) ?: '?';
+}
+
+// profile photo, or a circle with the initials when no photo has been added
+function profileAvatar(array $account, string $class): string
+{
+    if (!empty($account['profileImageURL'])) {
+        return '<img src="' . htmlspecialchars(profileImageSrc($account['profileImageURL'])) . '" alt="" class="' . $class . '">';
+    }
+
+    return '<span class="' . $class . ' profile-initials" aria-hidden="true">' . htmlspecialchars(accountInitials($account)) . '</span>';
+}
+
 // checking the forms
 
 // check the first and last name on my profile

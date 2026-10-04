@@ -319,6 +319,29 @@ a {
     object-fit: cover;
 }
 
+/* Initials shown in place of a profile photo that has not been added. */
+
+.profile-initials {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1;
+    user-select: none;
+}
+
+.profile-photo.profile-initials {
+    font-size: 26px;
+}
+
+.activity-account-photo.profile-initials {
+    font-size: 19px;
+}
+
 /* Name or username shown next to the avatar. */
 
 .dashboard-user {

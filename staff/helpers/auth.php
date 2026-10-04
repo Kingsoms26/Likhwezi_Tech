@@ -26,6 +26,8 @@ function requireStaff(mysqli $conn): array
     // refresh the session details
     $_SESSION['username'] = $account['username'];
     $_SESSION['role'] = $account['role'];
+    $_SESSION['firstName'] = $account['firstName'];
+    $_SESSION['lastName'] = $account['lastName'];
     $_SESSION['profileImage'] = $account['profileImageURL'];
 
     // block every other page until a required password change is done

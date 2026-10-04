@@ -189,7 +189,7 @@
 
                 <div class="panel-padding">
                     <div class="profile-identity">
-                        <img class="profile-photo" src="<?= htmlspecialchars(profileImageSrc($account['profileImageURL'])) ?>" alt="">
+                        <?= profileAvatar($account, 'profile-photo') ?>
                         <div>
                             <div class="profile-name"><?= htmlspecialchars(accountDisplayName($account)) ?></div>
                             <div class="profile-role"><?= htmlspecialchars($account['role'] ?? 'No role assigned') ?></div>
