@@ -502,9 +502,10 @@ a {
 
 .dashboard-heading h1 {
     margin: 0 0 28px;
-    font-size: 27px;
+    font-size: 20px;
     line-height: 1.2;
     font-weight: 500;
+    color: #000;
 }
 
 /* Grid containing the small statistic cards. */
@@ -538,7 +539,7 @@ a {
 
 .dashboard-card-value {
     margin-bottom: 7px;
-    font-size: 35px;
+    font-size: 28px;
     line-height: 1.05;
     font-weight: 600;
 }
@@ -2032,11 +2033,6 @@ button.panel-button {
     font-family: 'Public Sans', sans-serif;
 }
 
-.dashboard-main:has(.enquiries-page) .dashboard-heading h1 {
-    font-weight: 600;
-    color: #04113B;
-}
-
 /* Summary cards: narrow enough minimum that all of them stay on one row until phone size. */
 .enquiries-page .dashboard-cards {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -2051,20 +2047,10 @@ button.panel-button {
 
 .enquiries-page .dashboard-card h2 {
     margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #0F3C7A;
 }
 
 .enquiries-page .dashboard-card-value {
     margin-bottom: 4px;
-    font-size: 32px;
-    color: #04113B;
-}
-
-.enquiries-page .dashboard-card-meta {
-    font-size: 13px;
-    line-height: 1.35;
 }
 
 /* Sections: a heading above a grid of cards, not a boxed table. */
@@ -2251,7 +2237,6 @@ button.panel-button {
 
     .dashboard-main:has(.enquiries-page) .dashboard-heading h1 {
         margin-bottom: 18px;
-        font-size: 26px;
     }
 
     .enquiries-page .dashboard-cards {
@@ -2266,15 +2251,6 @@ button.panel-button {
 
     .enquiries-page .dashboard-card h2 {
         margin-bottom: 6px;
-        font-size: 14px;
-    }
-
-    .enquiries-page .dashboard-card-value {
-        font-size: 28px;
-    }
-
-    .enquiries-page .dashboard-card-meta {
-        font-size: 12px;
     }
 
     .enquiries-page .enquiries-panel + .enquiries-panel {
@@ -3117,11 +3093,6 @@ button.panel-button {
     font-family: 'Public Sans', sans-serif;
 }
 
-.dashboard-main:has(.manage-page) .dashboard-heading h1 {
-    font-weight: 600;
-    color: #04113B;
-}
-
 .manage-page .dashboard-cards {
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 18px;
@@ -3135,20 +3106,10 @@ button.panel-button {
 
 .manage-page .dashboard-card h2 {
     margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #0F3C7A;
 }
 
 .manage-page .dashboard-card-value {
     margin-bottom: 4px;
-    font-size: 32px;
-    color: #04113B;
-}
-
-.manage-page .dashboard-card-meta {
-    font-size: 13px;
-    line-height: 1.35;
 }
 
 .events-upcoming-card {
@@ -3710,7 +3671,6 @@ button.panel-button {
 @media (max-width: 780px) {
     .dashboard-main:has(.manage-page) .dashboard-heading h1 {
         margin-bottom: 18px;
-        font-size: 26px;
     }
 
     .manage-page .dashboard-cards {
@@ -3725,15 +3685,6 @@ button.panel-button {
 
     .manage-page .dashboard-card h2 {
         margin-bottom: 6px;
-        font-size: 14px;
-    }
-
-    .manage-page .dashboard-card-value {
-        font-size: 28px;
-    }
-
-    .manage-page .dashboard-card-meta {
-        font-size: 12px;
     }
 
     .manage-page .panel-header {
