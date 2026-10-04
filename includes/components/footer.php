@@ -57,5 +57,8 @@
 <!-- cookie notice -->
 <?php include __DIR__ . '/cookieNotice.php'; ?>
 
+<!-- email links offer gmail or outlook when no email app opens -->
+<script src="assets/js/emailChooser.js?v=<?= filemtime(__DIR__ . '/../../assets/js/emailChooser.js') ?>"></script>
+
 <!-- bootstrap script -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

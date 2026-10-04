@@ -31,6 +31,10 @@
     <!-- confirm and save as you change forms, used on every staff page -->
     <script src="assets/js/dashboardForms.js?v=<?= filemtime(__DIR__ . '/../assets/js/dashboardForms.js') ?>" defer></script>
 
+    <!-- email links offer gmail or outlook when no email app opens, shared with the public site -->
+    <script src="../assets/js/emailChooser.js?v=<?= filemtime(__DIR__ . '/../../assets/js/emailChooser.js') ?>" defer></script>
+    <link rel="stylesheet" href="../assets/css/emailChooser.css?v=<?= filemtime(__DIR__ . '/../../assets/css/emailChooser.css') ?>">
+
     <!-- bootstrap icons, the same set the public site uses -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 

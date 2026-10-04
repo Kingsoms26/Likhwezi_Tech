@@ -1,0 +1,83 @@
+/* Popup from emailChooser.js with Gmail and Outlook when no email app opens. */
+
+.email-chooser {
+    width: min(360px, calc(100vw - 32px));
+    padding: 24px;
+    border: 0;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #141a26;
+    font-family: "Public Sans", sans-serif;
+    box-shadow: 0 18px 48px rgba(4, 17, 59, 0.25);
+}
+
+.email-chooser::backdrop {
+    background: rgba(4, 17, 59, 0.45);
+}
+
+.email-chooser h2 {
+    margin: 0 0 8px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.email-chooser p {
+    margin: 0 0 18px;
+    color: #687286;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.email-chooser p strong {
+    color: #141a26;
+    font-weight: 600;
+}
+
+/* Gmail, Outlook and copy, one per row. */
+
+.email-chooser-options {
+    display: grid;
+    gap: 8px;
+}
+
+.email-chooser-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 14px;
+    border: 1px solid #d2d8e2;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #141a26;
+    font: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.email-chooser-option:hover,
+.email-chooser-option:focus-visible {
+    border-color: #2f66d3;
+    background: #eaf1ff;
+    color: #1e4fb3;
+}
+
+.email-chooser-close {
+    display: block;
+    margin: 14px auto 0;
+    padding: 6px 12px;
+    border: 0;
+    background: transparent;
+    color: #687286;
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.email-chooser-close:hover {
+    color: #141a26;
+}

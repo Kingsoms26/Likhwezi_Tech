@@ -23,4 +23,5 @@
     <!-- site stylesheets, the version number changes with every edit so browsers fetch the new css -->
     <link href="assets/css/custom.css?v=<?= filemtime(__DIR__ . '/../../assets/css/custom.css') ?>" rel="stylesheet">
     <link href="assets/css/style.css?v=<?= filemtime(__DIR__ . '/../../assets/css/style.css') ?>" rel="stylesheet">
+    <link href="assets/css/emailChooser.css?v=<?= filemtime(__DIR__ . '/../../assets/css/emailChooser.css') ?>" rel="stylesheet">
 </head>
