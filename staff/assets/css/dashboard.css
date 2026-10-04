@@ -560,6 +560,26 @@ a {
     transition: text-decoration-color 0.15s ease;
 }
 
+/* Chevron after the title so the card reads as clickable. */
+
+.dashboard-card-link h2::after {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-left: 10px;
+    border-top: 2px solid var(--accent);
+    border-right: 2px solid var(--accent);
+    vertical-align: middle;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.dashboard-card-link:hover h2::after,
+.dashboard-card-link:focus-visible h2::after {
+    transform: translate(3px, -2px) rotate(45deg);
+}
+
 .dashboard-card-link:hover h2,
 .dashboard-card-link:focus-visible h2 {
     text-decoration-color: var(--accent);
@@ -4183,32 +4203,36 @@ button.panel-button {
 
 /* ---- Pages & Site info (manageContent.php) ---- */
 
-/* Tabs across the top of the page, one per kind of content. */
+/* Tabs across the top of the page, one per kind of content, styled like the registrations view toggle. */
 .content-tabs {
-    display: flex;
+    display: inline-flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 2px;
+    max-width: 100%;
     margin-bottom: 18px;
-    border-bottom: 1px solid var(--border);
+    padding: 3px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
 }
 
 .content-tab {
-    padding: 9px 14px;
-    margin-bottom: -1px;
-    border-bottom: 2px solid transparent;
+    padding: 6px 13px;
+    border-radius: 6px;
     color: var(--muted);
-    font-size: 15px;
-    font-weight: 500;
+    font-size: 14px;
     text-decoration: none;
 }
 
 .content-tab:hover {
-    color: var(--accent-strong);
+    background: var(--accent);
+    color: #fff;
 }
 
 .content-tab.active {
-    border-bottom-color: var(--accent);
-    color: var(--accent-strong);
+    background: var(--surface);
+    color: var(--text);
+    box-shadow: 0 0 0 1px var(--border);
 }
 
 /* Up / down buttons: each is its own small form. */
