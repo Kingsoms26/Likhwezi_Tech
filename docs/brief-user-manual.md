@@ -151,6 +151,7 @@ CYM sign ups.
 
 - Search, filter and sort the list.
 - Click one to view all details.
+- **Download CSV** downloads every registration matching the current filters, for example everyone in one programme.
 - Customer Service can archive. Only Admin can restore.
 
 #### Campaigns

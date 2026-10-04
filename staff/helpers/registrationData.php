@@ -152,25 +152,9 @@ function likeContains(string $value): string
     return '%' . addcslashes($value, '\\%_') . '%';
 }
 
-// one page of registrations matching the filters and sort, plus the active and archived counts
-function getRegistrations(mysqli $conn, array $filters, $perPage = 10)
+// where clause, bound values and order by for the filters and sort, shared by the table and the csv download
+function buildRegistrationQuery(array $filters): array
 {
-    $empty = ['rows' => [], 'totalRows' => 0, 'page' => 1, 'pages' => 1, 'counts' => ['active' => 0, 'archived' => 0]];
-
-    // active and archived counts for the view toggle
-    $countResult = $conn->query(
-        "SELECT SUM(isArchived = FALSE) AS active, SUM(isArchived = TRUE) AS archived FROM Registration"
-    );
-
-    if (!$countResult) {
-        error_log('getRegistrations failed: ' . $conn->error);
-        return $empty;
-    }
-
-    $countRow = $countResult->fetch_assoc();
-    $counts = ['active' => (int) ($countRow['active'] ?? 0), 'archived' => (int) ($countRow['archived'] ?? 0)];
-
-    // build the filters
     $wantArchived = $filters['view'] === 'archived';
     $where = ['r.isArchived = ?'];
     $types = 'i';
@@ -213,6 +197,41 @@ function getRegistrations(mysqli $conn, array $filters, $perPage = 10)
 
     $whereSql = implode(' AND ', $where);
 
+    // sorting, only the listed columns reach the query and ties show newest first
+    $dateColumn = $wantArchived ? 'al.timestamp' : 'r.dateCreated';
+    $sortColumns = [
+        'name' => 'r.firstName %1$s, r.lastName %1$s',
+        'programme' => 'r.programme %1$s',
+        'age' => 'r.age %1$s',
+        'media' => 'r.mediaConsent %1$s',
+        'date' => $dateColumn . ' %1$s'
+    ];
+    $direction = $filters['dir'] === 'asc' ? 'ASC' : 'DESC';
+    $orderSql = sprintf($sortColumns[$filters['sort']], $direction) . ", $dateColumn DESC, r.registrationID DESC";
+
+    return [$whereSql, $types, $params, $orderSql];
+}
+
+// one page of registrations matching the filters and sort, plus the active and archived counts
+function getRegistrations(mysqli $conn, array $filters, $perPage = 10)
+{
+    $empty = ['rows' => [], 'totalRows' => 0, 'page' => 1, 'pages' => 1, 'counts' => ['active' => 0, 'archived' => 0]];
+
+    // active and archived counts for the view toggle
+    $countResult = $conn->query(
+        "SELECT SUM(isArchived = FALSE) AS active, SUM(isArchived = TRUE) AS archived FROM Registration"
+    );
+
+    if (!$countResult) {
+        error_log('getRegistrations failed: ' . $conn->error);
+        return $empty;
+    }
+
+    $countRow = $countResult->fetch_assoc();
+    $counts = ['active' => (int) ($countRow['active'] ?? 0), 'archived' => (int) ($countRow['archived'] ?? 0)];
+
+    [$whereSql, $types, $params, $orderSql] = buildRegistrationQuery($filters);
+
     // count the matches and keep the page within range
     $stmt = $conn->prepare("SELECT COUNT(*) FROM Registration r WHERE $whereSql");
 
@@ -227,18 +246,6 @@ function getRegistrations(mysqli $conn, array $filters, $perPage = 10)
 
     $pages = max(1, (int) ceil($totalRows / $perPage));
     $page = min($filters['page'], $pages);
-
-    // sorting, only the listed columns reach the query and ties show newest first
-    $dateColumn = $wantArchived ? 'al.timestamp' : 'r.dateCreated';
-    $sortColumns = [
-        'name' => 'r.firstName %1$s, r.lastName %1$s',
-        'programme' => 'r.programme %1$s',
-        'age' => 'r.age %1$s',
-        'media' => 'r.mediaConsent %1$s',
-        'date' => $dateColumn . ' %1$s'
-    ];
-    $direction = $filters['dir'] === 'asc' ? 'ASC' : 'DESC';
-    $orderSql = sprintf($sortColumns[$filters['sort']], $direction) . ", $dateColumn DESC, r.registrationID DESC";
 
     $stmt = $conn->prepare(
         "SELECT " . REGISTRATION_COLUMNS . "
@@ -270,6 +277,29 @@ function getRegistrations(mysqli $conn, array $filters, $perPage = 10)
         'pages' => $pages,
         'counts' => $counts
     ];
+}
+
+// every registration matching the filters and sort, no paging, for the csv download
+function getRegistrationsForExport(mysqli $conn, array $filters): array
+{
+    [$whereSql, $types, $params, $orderSql] = buildRegistrationQuery($filters);
+
+    $stmt = $conn->prepare(
+        "SELECT " . REGISTRATION_COLUMNS . "
+         FROM Registration r " . REGISTRATION_ARCHIVE_JOIN . "
+         WHERE $whereSql
+         ORDER BY $orderSql"
+    );
+
+    if (!$stmt) {
+        error_log('getRegistrationsForExport failed: ' . $conn->error);
+        return [];
+    }
+
+    $stmt->bind_param($types, ...$params);
+    $stmt->execute();
+
+    return array_map('normaliseRegistration', $stmt->get_result()->fetch_all(MYSQLI_ASSOC));
 }
 
 // latest registrations newest first for the dashboards

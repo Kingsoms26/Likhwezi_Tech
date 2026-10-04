@@ -98,6 +98,67 @@
         exit;
     }
 
+    // csv download of every registration matching the current view, filters and sort
+    if (($_GET['export'] ?? '') === 'csv') {
+        $exportFilters = readRegistrationFilters($_GET, $programmes);
+        $exportRows = getRegistrationsForExport($conn, $exportFilters);
+        $exportArchived = $exportFilters['view'] === 'archived';
+
+        // name the file after the programme when one is picked
+        $fileName = 'registrations'
+            . ($exportArchived ? '-archived' : '')
+            . ($exportFilters['programme'] !== '' ? '-' . trim(preg_replace('/[^a-z0-9]+/', '-', strtolower($exportFilters['programme'])), '-') : '')
+            . '-' . date('Y-m-d') . '.csv';
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Cache-Control: no-store');
+
+        $out = fopen('php://output', 'w');
+        // so excel opens the file with the right characters
+        fwrite($out, "\xEF\xBB\xBF");
+
+        $headings = [
+            'Registration ID', 'First name', 'Last name', 'Programme', 'Age', 'Under 18',
+            'Email', 'Phone', 'Registered', 'Privacy consent given', 'Media consent',
+            'Guardian first name', 'Guardian last name', 'Guardian relationship', 'Guardian email',
+            'Guardian phone', 'Guardian consent given', 'Guardian communication consent'
+        ];
+        if ($exportArchived) {
+            array_push($headings, 'Archived', 'Archived by');
+        }
+        fputcsv($out, $headings);
+
+        // stop spreadsheet apps treating a cell as a formula
+        $safe = fn ($value) => is_string($value) && preg_match('/^[=+\-@\t\r]/', $value) ? "'" . $value : $value;
+
+        foreach ($exportRows as $row) {
+            $line = [
+                $row['registrationID'], $row['firstName'], $row['lastName'], $row['programme'], $row['age'],
+                $row['isMinor'] ? 'Yes' : 'No',
+                $row['email'], formatPhone($row['phoneNumber']), $row['registeredAt'], $row['consentGivenAt'],
+                $row['mediaConsent'] ? 'Yes' : 'No',
+                $row['guardianName'] ?? '', $row['guardianLastName'] ?? '', $row['guardianRelationship'] ?? '',
+                $row['guardianEmail'] ?? '', formatPhone($row['guardianPhoneNumber']), $row['guardianConsentGivenAt'] ?? '',
+                $row['isMinor'] ? ($row['guardianCommunicationConsent'] ? 'Yes' : 'No') : ''
+            ];
+            if ($exportArchived) {
+                array_push($line, $row['archivedAt'] ?? '', $row['archivedBy'] ?? '');
+            }
+            fputcsv($out, array_map($safe, $line));
+        }
+
+        fclose($out);
+
+        // record the download
+        $exportCount = count($exportRows);
+        logActivity($conn, 'Registration', 'export', "Downloaded {$exportCount} "
+            . ($exportArchived ? 'archived ' : '')
+            . ($exportCount === 1 ? 'registration' : 'registrations')
+            . ($exportFilters['programme'] !== '' ? " for {$exportFilters['programme']}" : '') . ' as CSV');
+        exit;
+    }
+
     // fetch the filters, numbers and this page of registrations
     $filters = readRegistrationFilters($_GET, $programmes);
     $stats = getRegistrationStats($conn);
@@ -157,19 +218,28 @@
         <div class="panel-header">
             <h2><?= $isArchivedView ? 'Archived Registrations' : 'Registrations' ?></h2>
 
-            <!-- active and archived tabs, the filters reset on switch -->
-            <nav class="view-toggle js-results-links" aria-label="Registration view">
-                <a href="registrations.php" data-focus-key="view-active"
-                   class="<?= !$isArchivedView ? 'active' : '' ?>"
-                   <?= !$isArchivedView ? 'aria-current="page"' : '' ?>>
-                    Active <span class="view-count"><?= $result['counts']['active'] ?></span>
-                </a>
-                <a href="registrations.php?view=archived" data-focus-key="view-archived"
-                   class="<?= $isArchivedView ? 'active' : '' ?>"
-                   <?= $isArchivedView ? 'aria-current="page"' : '' ?>>
-                    Archived <span class="view-count"><?= $result['counts']['archived'] ?></span>
-                </a>
-            </nav>
+            <div class="panel-header-actions">
+                <!-- downloads every row matching the filters, not just this page -->
+                <?php if ($result['totalRows']) : ?>
+                    <a class="panel-button" href="<?= htmlspecialchars(registrationsUrl($filters, ['page' => 1, 'export' => 'csv'])) ?>">
+                        <i class="bi bi-download" aria-hidden="true"></i>&nbsp; Download CSV
+                    </a>
+                <?php endif; ?>
+
+                <!-- active and archived tabs, the filters reset on switch -->
+                <nav class="view-toggle js-results-links" aria-label="Registration view">
+                    <a href="registrations.php" data-focus-key="view-active"
+                       class="<?= !$isArchivedView ? 'active' : '' ?>"
+                       <?= !$isArchivedView ? 'aria-current="page"' : '' ?>>
+                        Active <span class="view-count"><?= $result['counts']['active'] ?></span>
+                    </a>
+                    <a href="registrations.php?view=archived" data-focus-key="view-archived"
+                       class="<?= $isArchivedView ? 'active' : '' ?>"
+                       <?= $isArchivedView ? 'aria-current="page"' : '' ?>>
+                        Archived <span class="view-count"><?= $result['counts']['archived'] ?></span>
+                    </a>
+                </nav>
+            </div>
         </div>
 
         <div class="panel-body">
