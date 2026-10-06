@@ -38,6 +38,19 @@
             <div class="hero-image">
                 <img src="assets/images/home-img-2.webp" alt="Hero Image" width="1400" height="1016" fetchpriority="high">
             </div>
+
+            <div class="partner-container d-flex justify-content-start gap-4">
+                <?php
+                // display the partner logos, only the first 4
+                    foreach ($partnerLogos as $logo) {
+                        $logo = htmlspecialchars(imageSrc($logo, 'assets/images/partners/'));
+                        echo "<img src=\"{$logo}\" alt=\"Partner logo\" class=\"partner-logo\" loading=\"lazy\">";
+                    }
+                    for ($i = count($partnerLogos); $i < 4; $i++) {
+                        echo '<div class="partner-placeholder"></div>';
+                    }
+                ?>
+            </div>
         </section>
 
         <hr>
@@ -105,19 +118,7 @@
 
         <!-- partner section -->
         <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
-            <div class="section-title py-2">Our Partners</div>
-            <div class="partner-container d-flex justify-content-start gap-4">
-                <?php
-                // display the partner logos, only the first 4
-                    foreach ($partnerLogos as $logo) {
-                        $logo = htmlspecialchars(imageSrc($logo, 'assets/images/partners/'));
-                        echo "<img src=\"{$logo}\" alt=\"Partner logo\" class=\"partner-logo\" loading=\"lazy\">";
-                    }
-                    for ($i = count($partnerLogos); $i < 4; $i++) {
-                        echo '<div class="partner-placeholder"></div>';
-                    }
-                ?>
-            </div>
+            
             <div class="partner-actions align-self-stretch">
                 <a href="partners.php" class="btn btn-sm mt-3">Explore our Partners</a>
             </div>
