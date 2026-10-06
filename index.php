@@ -39,7 +39,9 @@
                 <img src="assets/images/home-img-2.webp" alt="Hero Image" width="1400" height="1016" fetchpriority="high">
             </div>
 
-            <div class="partner-container d-flex justify-content-start gap-4">
+            
+        </section>
+        <div class="partner-container d-flex justify-content-start gap-4">
                 <?php
                 // display the partner logos, only the first 4
                     foreach ($partnerLogos as $logo) {
@@ -51,8 +53,6 @@
                     }
                 ?>
             </div>
-        </section>
-
         <hr>
 
         <!-- services section -->
