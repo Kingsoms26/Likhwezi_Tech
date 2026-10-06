@@ -453,7 +453,7 @@
                             </label>
 
                             <label class="consent">
-                                <input type="checkbox" name="guardianConsent">
+                                <input type="checkbox" name="guardianConsent" required>
                                 <span>I, as the guardian of the registered participant, consent to my information being used for the purpose of registration and communication.</span>
                             </label>
                         </div>
