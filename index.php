@@ -116,17 +116,17 @@
 
         <hr>
 
-        <!-- partner section -->
-        <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
-            
-            <div class="partner-actions align-self-stretch">
-                <a href="partners.php" class="btn btn-sm mt-3">Explore our Partners</a>
-            </div>
-
-            <!-- Empty div to ensure the section has some space between the partners section and the footer -->
-            <div><p></p></div>
-        </section>
-
+        <!-- partner section 
+            <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
+                
+                <div class="partner-actions align-self-stretch">
+                    <a href="partners.php" class="btn btn-sm mt-3">Explore our Partners</a>
+                </div>
+    
+                <!-- Empty div to ensure the section has some space between the partners section and the footer -->
+                <div><p></p></div>
+            </section>
+        -->
         <!-- footer -->
         <?php include 'includes/components/footer.php'; ?>
     </body>
