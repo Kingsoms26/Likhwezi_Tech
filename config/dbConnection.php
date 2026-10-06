@@ -31,7 +31,7 @@
     $conn = mysqli_init();
     $conn->ssl_set(null, null, $CA_Path, null, null);
     $conn->real_connect($host, $username, $password, $database, $port, null, MYSQLI_CLIENT_SSL);
-    $conn->query("SET time_zone = '+02:00'@);
+    // $conn->query("SET time_zone = '+02:00'@);
 
     if ($conn->connect_error) {
         error_log("DB connection failed: " . $conn->connect_error);
