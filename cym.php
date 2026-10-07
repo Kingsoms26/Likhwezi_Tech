@@ -448,12 +448,12 @@
                             </div>
 
                             <label class="consent">
-                                <input type="checkbox" name="guardian-consent" required>
+                                <input type="checkbox" name="guardian-consent">
                                 <span>I have read the <a href="#privacyModal" data-privacy-modal-open>Privacy Notice and Consent</a> and agree to Likhwezi Technologies using my details to manage this Cyber Young Minds registration, in line with POPIA.</span>
                             </label>
 
                             <label class="consent">
-                                <input type="checkbox" name="guardianConsent" required>
+                                <input type="checkbox" name="guardianConsent">
                                 <span>I, as the guardian of the registered participant, consent to my information being used for the purpose of registration and communication.</span>
                             </label>
                         </div>
