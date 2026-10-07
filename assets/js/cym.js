@@ -251,7 +251,7 @@ updateSubmitState();
 
 const guardianFields = document.getElementById('guardian-fields');
 const guardianInputs = guardianFields.querySelectorAll('input:not([type="checkbox"])');
-const guardianConsentInSection = guardianFields.querySelector('input[type="checkbox"]');
+const guardianCheckboxes = guardianFields.querySelectorAll('input[type="checkbox"]');
 
 // show and require the guardian details only for under 18s
 function updateGuardianFields() {
@@ -264,12 +264,10 @@ function updateGuardianFields() {
     guardianInputs.forEach((input) => {
         input.required = showGuardianFields;
     });
-    guardianConsentInSection.required = showGuardianFields;
-
-    if (!showGuardianFields) {
-        guardianConsentInSection.checked = false;
-        guardianConsent.checked = false;
-    }
+        guardianCheckboxes.forEach((box) => {
+        box.required = showGuardianFields;
+        if (!showGuardianFields) box.checked = false;
+    });
 }
 
 ageInput.addEventListener('input', updateGuardianFields);
