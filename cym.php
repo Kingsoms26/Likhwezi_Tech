@@ -374,7 +374,6 @@
                     <div class="cym-about-text">
                         <h3 class="cym-section-heading">Register for a programme or event</h3>
                         <p>Joining Cyber Young Minds gives you hands-on time with coding, robotics and AI, guided by people who work in technology every day. You learn by building real projects alongside other learners, and you leave with skills you can keep using at school, at work and in your community.</p>
-                        <p>There's no experience needed, no laptop needed and nothing to pay.</p>
                         <div class="cym-join-buttons">
                             <a href="#modal-overlay" class="btn btn-primary cym-register-cta register-btn" aria-haspopup="dialog">Register</a>
                             <?php if ($cymSiteOnline): ?>
