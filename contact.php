@@ -221,7 +221,7 @@
         <main class="contact-page">
 
             <!-- hero section -->
-            <section class="hero hero-text-only">
+            <section class="hero hero-centered hero-text-only">
                 <div class="hero-content d-grid gap-3 row-gap-3">
                     <div class="p-1">
                         <h1>Contact Us</h1>

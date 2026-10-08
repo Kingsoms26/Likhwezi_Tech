@@ -40,33 +40,19 @@
         <main>
 
             <!-- hero section -->
-            <section class="hero">
-                <div class="hero-content d-grid gap-3 row-gap-3">
+            <section class="hero hero-centered">
+                <div class="hero-content">
                     <div class="p-1">
                         <h1>Gallery & Events</h1>
                         <p>Explore moments from our events, workshops and activities. Discover how Likhwezi Technologies connects people, ideas and practical solutions through meaningful engagements with our communities and partners.</p>
                     </div>
-                </div>
-
-                <!-- photo carousel, the same one as on the cym page -->
-                <div class="hero-image">
-                    <?php
-                        $carouselID = 'galleryPhotoCarousel';
-                        $carouselPhotos = [
-                            ['src' => 'assets/images/about-img/school-footage.webp', 'alt' => 'Likhwezi Technologies team at an event'],
-                            ['src' => 'assets/images/about-img/school-footage2.webp', 'alt' => 'Likhwezi Technologies team at an event'],
-                            // portrait photo so keep the crop on the people rather than the sky
-                            ['src' => 'assets/images/about-img/group-photo.webp', 'alt' => 'Likhwezi Technologies team at an event', 'position' => 'center 72%'],
-                        ];
-                        include 'includes/components/photoCarousel.php';
-                    ?>
                 </div>
             </section>
 
             <hr>
 
             <!-- past events -->
-            <section class="gallery-section">
+            <section class="gallery-section section-centered">
                 <div class="gallery-heading">
                     <div>
                         <h2>Past Events</h2>
@@ -87,7 +73,7 @@
             <hr>
 
             <!-- upcoming events -->
-            <section class="gallery-section">
+            <section class="gallery-section section-centered">
                 <div class="gallery-heading">
                     <div>
                         <h2>Upcoming Events</h2>

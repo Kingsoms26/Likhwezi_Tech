@@ -17,7 +17,7 @@
         <?php include 'includes/components/navBar.php'; ?>
 
         <!-- hero section -->
-        <section class="hero hero-text-only">
+        <section class="hero hero-centered hero-text-only">
             <div class="hero-content d-grid gap-3 row-gap-3">
                 <div class="p-1">
                     <h1>Privacy Policy</h1>
@@ -29,7 +29,7 @@
         <hr>
 
         <!-- privacy notice -->
-        <section class="page-section privacy-page">
+        <section class="page-section section-centered privacy-page">
             <h2 class="section-title">Privacy Notice and Consent</h2>
             <div class="privacy-page-content">
                 <?php include 'includes/components/privacyNotice.php'; ?>

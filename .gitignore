@@ -14,3 +14,6 @@ uploads/gallery/*
 
 # Test account passwords (the repo is public)
 docs/testAccounts.md
+
+# Raw media drafts
+options/

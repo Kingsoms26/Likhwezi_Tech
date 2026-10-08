@@ -111,9 +111,21 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('dismissNotifications.php', { method: 'POST', body, keepalive: true })
             .catch(() => {});
 
-        items.forEach((item) => item.remove());
+        // an announcement also has a banner above the page, both go together
+        items.forEach((item) => {
+            document.querySelector(`.staff-announcement[data-id="${item.dataset.id}"]`)?.remove();
+            item.remove();
+        });
         syncCount(false);
     };
+
+    // closing an announcement banner dismisses it the same way as tapping it in the list
+    document.querySelectorAll('.staff-announcement-close').forEach((button) => {
+        button.addEventListener('click', () => {
+            const banner = button.closest('.staff-announcement');
+            dismiss([list.querySelector(`[data-id="${banner.dataset.id}"]`) || banner]);
+        });
+    });
 
     // clear all or tap one notification
     dropdown.addEventListener('click', (event) => {

@@ -1,6 +1,6 @@
 <?php
     // dashboard.php is the shared layout for every staff page
-    // contains the head, header, sidebar and the start of the main area
+    // contains the head, header, navbar and the start of the main area
     // each page writes its own content after this and closes the html itself
     // notifications show on every page so they are loaded here once
 
@@ -9,7 +9,7 @@
     $pageTitle = $pageTitle ?? 'Dashboard';
     $activePage = $activePage ?? 'dashboard';
     $notifications = isset($conn, $account) ? getNotifications($conn, $account) : [];
-    $sidebarCounts = isset($conn, $account) ? getSidebarCounts($conn) : [];
+    $navbarCounts = isset($conn, $account) ? getNavbarCounts($conn, $account) : [];
 ?>
 
 <!DOCTYPE html>
@@ -52,11 +52,28 @@
 
         <div class="dashboard-body">
 
-            <!-- sidebar -->
-            <?php include __DIR__ . '/dashboardSidebar.php'; ?>
+            <!-- navbar, fixed along the bottom of the screen -->
+            <?php include __DIR__ . '/dashboardNavbar.php'; ?>
 
             <!-- main area, the page fills this in -->
             <main class="dashboard-main">
+
+                <!-- staff announcements from announcements.php, closing one also clears it from the bell -->
+                <?php foreach (array_filter($notifications, fn ($note) => $note['type'] === 'announcement') as $note) : ?>
+                    <div class="staff-announcement" data-id="<?= htmlspecialchars($note['id']) ?>" role="status">
+                        <i class="bi bi-broadcast staff-announcement-icon" aria-hidden="true"></i>
+                        <div class="staff-announcement-text">
+                            <strong><?= htmlspecialchars($note['title']) ?></strong>
+                            <p><?= nl2br(htmlspecialchars($note['detail'])) ?></p>
+                            <?php if ($note['link']) : ?>
+                                <a href="<?= htmlspecialchars($note['link']) ?>" target="_blank" rel="noopener">Find out more</a>
+                            <?php endif; ?>
+                        </div>
+                        <button type="button" class="staff-announcement-close" aria-label="Close announcement">
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                <?php endforeach; ?>
 
                 <div class="dashboard-heading">
                     <h1><?= htmlspecialchars($pageTitle) ?></h1>

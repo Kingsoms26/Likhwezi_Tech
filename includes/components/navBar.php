@@ -35,3 +35,6 @@
         </div>
     </div>
 </nav>
+
+<!-- announcements from staff/announcements.php, shown under the navbar on every page -->
+<?php include __DIR__ . '/announcementBanner.php'; ?>

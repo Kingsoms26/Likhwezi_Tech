@@ -16,7 +16,7 @@
         <main class="about-page">
 
             <!-- hero section -->
-            <section class="hero hero-text-only">
+            <section class="hero hero-centered hero-text-only">
                 <div class="hero-content d-grid gap-3 row-gap-3">
                     <div class="p-1">
                         <h1>About Us</h1>
@@ -28,7 +28,7 @@
             <hr>
 
             <!-- our story, mission and vision section -->
-            <section class="page-section company-history" aria-labelledby="aboutValuesTitle">
+            <section class="page-section section-centered company-history" aria-labelledby="aboutValuesTitle">
 
                 <h2 class="section-title" id="aboutValuesTitle">Our Story, Mission and Vision</h2>
 
@@ -67,7 +67,7 @@
             <hr>
 
             <!-- meet our team section -->
-            <section class="page-section meet-team" aria-labelledby="meetTeamTitle">
+            <section class="page-section section-centered meet-team" aria-labelledby="meetTeamTitle">
 
                 <h2 class="section-title" id="meetTeamTitle">Meet Our Team</h2>
                 <p class="section-intro">Meet the people who contribute their knowledge, experience, and commitment to the work we do.</p>
@@ -117,7 +117,7 @@
 
                     <!-- team member six -->
                     <article class="team-member-card">
-                        <img src="assets/images/placeholder.webp" class="team-member-image" width="800" height="800" loading="lazy" alt="Placeholder portrait for team member six">
+                        <img src="assets/images/about-img/lulekwa-mcwabeni.webp" class="team-member-image" loading="lazy" alt="Lulekwa Mcwabeni">
                         <div class="team-member-body">
                             <h3>Lulekwa Mcwabeni</h3>
                         </div>

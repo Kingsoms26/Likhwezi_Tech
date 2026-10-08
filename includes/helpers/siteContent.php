@@ -24,8 +24,12 @@ const DEFAULT_SERVICES = [
 
 // built in cym photos
 const DEFAULT_CYM_PHOTOS = [
-    ['src' => 'assets/images/about-img/school-footage.webp', 'alt' => 'Cyber Young Minds school session'],
-    ['src' => 'assets/images/about-img/school-footage2.webp', 'alt' => 'Cyber Young Minds school session'],
+    ['src' => 'assets/images/cym/school-session-1.webp', 'alt' => 'Cyber Young Minds school session'],
+    ['src' => 'assets/images/cym/school-session-2.webp', 'alt' => 'Cyber Young Minds school session'],
+    ['src' => 'assets/images/cym/robotics-team.webp', 'alt' => 'Facilitator and learners assembling a robot'],
+    ['src' => 'assets/images/cym/robotics-learner.webp', 'alt' => 'Learner building a tracked robot'],
+    ['src' => 'assets/images/cym/robotics-kit-handover.webp', 'alt' => 'Learners receiving robotics kits from Likhwezi, Software AG and the Department of Communications and Digital Technologies'],
+    ['src' => 'assets/images/cym/computer-lab.webp', 'alt' => 'Computer lab sponsored by Software AG'],
 ];
 
 const SITE_CONTENT_CACHE_SECONDS = 3600;

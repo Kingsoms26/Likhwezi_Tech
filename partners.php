@@ -45,33 +45,18 @@
         ?>
 
         <!-- hero section -->
-        <section class="hero partners-hero <?= $partners ? '' : 'hero-text-only' ?>">
+        <section class="hero hero-centered partners-hero <?= $partners ? '' : 'hero-text-only' ?>">
             <div class="hero-content d-grid gap-3 row-gap-3">
                 <div class="p-1">
                     <h1>Our Partners</h1>
                     <p>Likhwezi Technologies works alongside a network of organisations who share our commitment to delivering real business value through data.</p>
                 </div>
             </div>
-
-            <?php if ($partners): ?>
-                <!-- logo cluster, the same partners are listed in full below -->
-                <?php $heroLogos = array_slice($partners, 0, 6); ?>
-                <!-- two columns for up to four logos so there is never a lone tile on the last row -->
-                <div class="hero-image partners-hero-logos <?= count($heroLogos) <= 4 ? 'is-two-col' : '' ?>" aria-hidden="true">
-                    <?php foreach ($heroLogos as $i => $partner): ?>
-                        <div class="partners-hero-tile" style="--i: <?= $i ?>">
-                            <img src="<?= $partner['logo'] ?>" alt="">
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endif; ?>
+            
+            
         </section>
 
-        <hr>
-
-        <!-- partners section -->
-        <section class="page-section">
-            <h2 class="section-title">Who We Work With</h2>
+        <div class="partners-container">
             <?php if ($partners): ?>
                 <!-- a card for each partner -->
                 <div class="partners-cards">
@@ -97,7 +82,8 @@
                 <!-- shown when there are no partners yet -->
                 <p class="text-center py-4">Partner information coming soon.</p>
             <?php endif; ?>
-        </section>
+        </div>
+        <hr>
 
         <!-- footer -->
         <?php include 'includes/components/footer.php'; ?>

@@ -24,40 +24,54 @@
         <?php include 'includes/components/navBar.php'; ?>
 
         <!-- hero section -->
-        <section class="hero">
+        <section class="hero hero-centered hero-home">
             <div class="hero-content d-grid gap-3 row-gap-3">
                 <div class="p-1">
-                    <h1>Realised Imagination through Insights</h1>
-                    <p>Our mission is to help private and public sector organisations realise and deliver business value through data insights.</p>
+                    <h1>Delivering IT solutions that drive business value.</h1>
+                    <p>Likhwezi Technologies is a consultancy firm. We design enterprise architecture, put data governance and quality in place, test data before it reaches your reports, and stay on to deliver the change.</p>
                 </div>
 
-                <div class="p-1">
-                    <a href="contact.php" class="btn btn-primary btn-sm">Book a Consultation</a>
+                <div class="btn-group">
+                    <div class="p-1">
+                        <a href="contact.php" class="btn btn-primary btn-sm">Book a Consultation</a>
+                    </div>
+                    <div class="p-1">
+                        <a href="about.php" class="btn btn-ghost btn-sm">View Our Story</a>
+                    </div>
                 </div>
             </div>
-            <div class="hero-image">
-                <img src="assets/images/home-img-2.webp" alt="Hero Image" width="1400" height="1016" fetchpriority="high">
-            </div>
+
 
             
         </section>
-        <div class="partner-container d-flex justify-content-start gap-4">
-                <?php
-                // display the partner logos, only the first 4
-                    foreach ($partnerLogos as $logo) {
-                        $logo = htmlspecialchars(imageSrc($logo, 'assets/images/partners/'));
-                        echo "<img src=\"{$logo}\" alt=\"Partner logo\" class=\"partner-logo\" loading=\"lazy\">";
-                    }
-                    for ($i = count($partnerLogos); $i < 4; $i++) {
-                        echo '<div class="partner-placeholder"></div>';
-                    }
-                ?>
+        <!-- scrolling partner logos -->
+        <section class="partner-banner" aria-label="Partner logos">
+            <div class="partner-track">
+                <?php for ($group = 0; $group < 2; $group++): ?>
+                    <div class="partner-group"<?= $group === 1 ? ' aria-hidden="true"' : '' ?>>
+                        <?php for ($i = 0; $i < 3; $i++): ?>
+                            <?php
+                                // display the partner logos, only the first 4
+                                // repeats get an empty alt so screen readers only read each logo once
+                                $alt = ($group === 0 && $i === 0) ? 'Partner logo' : '';
+                                foreach ($partnerLogos as $logo) {
+                                    $logo = htmlspecialchars(imageSrc($logo, 'assets/images/partners/'));
+                                    echo "<img src=\"{$logo}\" alt=\"{$alt}\" class=\"partner-logo\" loading=\"lazy\">";
+                                }
+                                for ($p = count($partnerLogos); $p < 4; $p++) {
+                                    echo '<div class="partner-placeholder"></div>';
+                                }
+                            ?>
+                        <?php endfor; ?>
+                    </div>
+                <?php endfor; ?>
             </div>
+        </section>
         <hr>
 
         <!-- services section -->
-        <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
-            <div class="section-title pt-3 pb-5">Client Solutions</div>
+        <section class="section-container section-centered d-flex flex-column py-3 mx-10">
+            <div class="section-title pt-3 pb-5">What can we help you with today?</div>
 
             <!-- services bento grid display all the services offered by Likhwezi Technologies -->
             <div class="service-bento">
@@ -100,33 +114,53 @@
 
         <!-- About Us Section -->
         <!-- About Us section with a brief description of Likhwezi Technologies and a link to the full profile -->
-        <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
+        <section class="section-container section-centered d-flex flex-column pt-3 pb-5 mx-10">
             <div class="section-title py-2">About Us</div>
-            <div class="about-container d-flex align-items-stretch gap-4 pt-4">
-                <div class="about-content d-flex flex-column gap-2">
-                    <p>Likhwezi Technologies is a 100% black-owned professional services consultancy based in Fourways, Gauteng. We work with organisations whose data has outgrown the way it is currently managed.</p>
-                    <p>Our consultants come from delivery backgrounds, not slide decks. That means we stay through implementation, hand the system over to your team, and leave documentation they can actually use.</p>
-                    <a href="about.php" class="btn btn-sm align-self-start mt-2">Read our Full Profile</a>
+            <div class="about-container pt-4">
+                <!-- mission on top with the company text under it -->
+                <div class="about-content d-flex flex-column gap-4">
+                    <!-- mission, same wording as about.php -->
+                    <div class="about-mission">
+                        <i class="bi bi-quote" aria-hidden="true"></i>
+                        <span class="about-mission-label">Our Mission</span>
+                        <p>To help private and public sector organisations realise and deliver business value through data insights.</p>
+                    </div>
+
+                    <div class="d-flex flex-column gap-2">
+                        <p>Likhwezi Technologies is a 100% black-owned professional services consultancy based in Fourways, Gauteng. We work with organisations whose data has outgrown the way it is currently managed.</p>
+                        <p>Our consultants come from delivery backgrounds, not slide decks. That means we stay through implementation, hand the system over to your team, and leave documentation they can actually use.</p>
+                    </div>
                 </div>
-                <div class="about-image">
-                    <img src="assets/images/about-img/about-us.webp" alt="About Us Image" width="938" height="602" loading="lazy">
-                </div>
+
+                <!-- team photo on the right -->
+                <img src="assets/images/about-img/about-us.webp" class="about-team-image" width="938" height="602" loading="lazy" alt="Likhwezi Technologies team">
+            </div>
+
+            <!-- quick points about the company, a card each under the text and mission -->
+            <ul class="about-points">
+                <li class="about-point">
+                    <i class="bi bi-buildings" aria-hidden="true"></i>
+                    <h3>Trusted Partner</h3>
+                    <p>A trusted advisor and partner for businesses in the private and public sectors.</p>
+                </li>
+                <li class="about-point">
+                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                    <h3>Bespoke Solutions</h3>
+                    <p>Bespoke solutions tailored to the unique needs of each client.</p>
+                </li>
+                <li class="about-point">
+                    <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                    <h3>Cyber Young Minds</h3>
+                    <p>Our work funds <a href="cym.php">Cyber Young Minds</a>, free coding, robotics and AI programmes for the youth.</p>
+                </li>
+            </ul>
+
+            <!-- link to the full about page -->
+            <div class="about-actions">
+                <a href="about.php" class="btn btn-sm">Read our Full Profile</a>
             </div>
         </section>
 
-        <hr>
-
-        <!-- partner section 
-            <section class="section-container d-flex flex-column align-items-left py-3 mx-10">
-                
-                <div class="partner-actions align-self-stretch">
-                    <a href="partners.php" class="btn btn-sm mt-3">Explore our Partners</a>
-                </div>
-    
-                <!-- Empty div to ensure the section has some space between the partners section and the footer -->
-                <div><p></p></div>
-            </section>
-        -->
         <!-- footer -->
         <?php include 'includes/components/footer.php'; ?>
     </body>

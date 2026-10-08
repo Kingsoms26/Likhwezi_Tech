@@ -1,7 +1,7 @@
 /*
  * Naming:
  *     dashboard-* = shared dashboard structure
- *     sidebar-*   = left navigation
+ *     navbar-*    = bottom navigation
  *     panel-*     = panel parts
  *     progress-*  = progress-bar parts
  *
@@ -18,9 +18,10 @@
     /* Matches the public site navbar (components/navBar.php). */
     --header-bg: #04113B;
     --header-height: 64px;
+    --navbar-height: 68px;
     --page-bg: #f5f8fd;
     --surface: #ffffff;
-    --sidebar-border: #cfd6e2;
+    --navbar-border: #cfd6e2;
     --border: #d2d8e2;
     --text: #141a26;
     --muted: #687286;
@@ -86,12 +87,13 @@ a {
     color: #fff;
     font: inherit;
     text-align: left;
-    cursor: pointer;
+    text-decoration: none;
 }
 
-/* The brand is the sidebar toggle. */
+/* The brand links back to the dashboard. */
 
 .dashboard-brand:hover {
+    color: #fff;
     background: rgba(255, 255, 255, 0.1);
 }
 
@@ -349,147 +351,171 @@ a {
     font-weight: 600;
 }
 
-/* Overall content area containing sidebar and main content. */
+/* Overall content area; leaves room at the bottom for the navbar. */
 
 .dashboard-body {
-    display: flex;
     min-height: calc(100vh - var(--header-height));
+    padding-bottom: calc(var(--navbar-height) + env(safe-area-inset-bottom));
 }
 
-/* Left dashboard navigation. */
+/* Bottom dashboard navigation, stays on screen while the page scrolls. */
 
-.dashboard-sidebar {
-    --sidebar-width: 250px;
-    width: var(--sidebar-width);
-    flex: 0 0 var(--sidebar-width);
+.dashboard-navbar {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
     background: var(--surface);
-    border-right: 1px solid var(--sidebar-border);
-    transition: margin-left 0.2s ease, visibility 0s;
-
-    /* Frozen under the header while the page scrolls; scrolls itself if the links don't fit. */
-    position: sticky;
-    top: var(--header-height);
-    align-self: flex-start;
-    height: calc(100vh - var(--header-height));
-    overflow-y: auto;
-
-    /* Still scrolls on short screens, but without a visible scrollbar. */
-    scrollbar-width: none;
-}
-
-.dashboard-sidebar::-webkit-scrollbar {
-    display: none;
-}
-
-/* Desktop: the logo collapses the sidebar off to the left. */
-
-@media (min-width: 781px) {
-    .sidebar-collapsed .dashboard-sidebar {
-        margin-left: calc(-1 * var(--sidebar-width));
-        visibility: hidden;
-        transition: margin-left 0.2s ease, visibility 0s 0.2s;
-    }
-}
-
-/* Only used on mobile (see the small-screen layout below). */
-
-.sidebar-backdrop {
-    display: none;
-}
-
-.dashboard-sidebar nav {
-    padding: 20px 14px 28px;
+    border-top: 1px solid var(--navbar-border);
+    box-shadow: 0 -6px 20px rgba(7, 22, 63, 0.06);
+    padding-bottom: env(safe-area-inset-bottom);
     font-family: "Public Sans", Arial, Helvetica, sans-serif;
 }
 
-.sidebar-section {
-    margin-top: 22px;
-}
-
-/* Small uppercase label above each group of links. */
-
-.sidebar-heading {
-    margin: 0 0 6px;
-    padding: 0 6px;
-    color: var(--muted);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-/* One navigation item: icon tile, label, optional count badge. */
-
-.sidebar-link {
+.navbar-links {
     display: flex;
+    justify-content: center;
+    gap: 4px;
+    height: var(--navbar-height);
+    margin: 0 auto;
+    padding: 0 12px;
+    list-style: none;
+}
+
+.navbar-links > li {
+    display: flex;
+    flex: 0 1 120px;
+    min-width: 0;
+}
+
+/* One navigation item: icon tile above its label. */
+
+.navbar-link {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
-    padding: 6px;
+    justify-content: center;
+    gap: 3px;
+    min-width: 0;
+    padding: 6px 4px;
+    border: 0;
     border-radius: 10px;
-    color: var(--text);
+    background: transparent;
+    color: var(--muted);
     text-decoration: none;
-    font-size: 16px;
+    font: inherit;
+    font-size: 12px;
     line-height: 1.2;
+    cursor: pointer;
 }
 
-.sidebar-link + .sidebar-link {
-    margin-top: 2px;
-}
-
-.sidebar-icon {
+.navbar-icon {
+    position: relative;
     display: grid;
     place-items: center;
-    flex: 0 0 38px;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 30px;
     border-radius: 9px;
-    background: #f0f3f8;
-    color: #4a5468;
     font-size: 17px;
     transition: background 0.15s ease, color 0.15s ease;
 }
 
-.sidebar-label {
-    flex: 1;
-    min-width: 0;
+.navbar-label {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.sidebar-badge {
-    min-width: 26px;
-    padding: 3px 8px;
+/* Count badge on the corner of the icon. */
+
+.navbar-badge {
+    position: absolute;
+    top: -4px;
+    right: -6px;
+    min-width: 20px;
+    padding: 2px 6px;
     border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-size: 13px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
     font-weight: 700;
+    line-height: 1.2;
     text-align: center;
 }
 
-.sidebar-link:hover {
-    background: #f5f7fb;
+.navbar-link:hover {
     color: var(--text);
 }
 
-.sidebar-link:hover .sidebar-icon {
+.navbar-link:hover .navbar-icon {
     background: var(--accent-soft);
     color: var(--accent-strong);
 }
 
-.sidebar-link:focus-visible {
+.navbar-link:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
 }
 
 /* Currently selected navigation item. */
 
-.sidebar-link.active {
-    background: #f2f5fa;
+.navbar-link.active {
+    color: var(--text);
     font-weight: 700;
 }
 
-.sidebar-link.active .sidebar-icon {
+.navbar-link.active .navbar-icon {
     background: var(--accent);
     color: #fff;
+}
+
+/* More menu opens upwards from the navbar; only used on small screens. */
+
+.navbar-more {
+    display: none !important;
+}
+
+.navbar-more-menu {
+    min-width: 220px;
+    padding: 6px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(7, 22, 63, 0.15);
+    font-family: "Public Sans", Arial, Helvetica, sans-serif;
+}
+
+.navbar-more-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 15px;
+}
+
+.navbar-more-menu .dropdown-item:hover {
+    background: var(--accent-soft);
+}
+
+.navbar-more-menu .dropdown-item.active {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 700;
+}
+
+@media (max-width: 1000px) {
+    .navbar-extra {
+        display: none !important;
+    }
+
+    .navbar-more {
+        display: flex !important;
+    }
 }
 
 /* Main page content area. */
@@ -818,10 +844,6 @@ a {
 /* Tablet layout. */
 
 @media (max-width: 1000px) {
-    .dashboard-sidebar {
-        --sidebar-width: 220px;
-    }
-
     .dashboard-main {
         padding: 24px;
     }
@@ -841,43 +863,6 @@ a {
 
     .dashboard-profile {
         padding: 4px;
-    }
-
-    .dashboard-body {
-        display: block;
-    }
-
-    /* Sidebar slides in from the left over the page; closed by default. */
-    .dashboard-sidebar {
-        position: fixed;
-        top: var(--header-height);
-        bottom: 0;
-        left: 0;
-        z-index: 35;
-        width: 260px;
-        height: auto;
-        /* Undo the desktop flex-start; otherwise it shrinks to its links instead of reaching the bottom. */
-        align-self: stretch;
-        max-width: 80vw;
-        overflow-y: auto;
-        transform: translateX(-100%);
-        visibility: hidden;
-        transition: transform 0.2s ease, visibility 0s 0.2s;
-    }
-
-    .sidebar-open .dashboard-sidebar {
-        transform: none;
-        visibility: visible;
-        box-shadow: 8px 0 30px rgba(7, 22, 63, 0.18);
-        transition: transform 0.2s ease;
-    }
-
-    .sidebar-open .sidebar-backdrop {
-        display: block;
-        position: fixed;
-        inset: var(--header-height) 0 0;
-        z-index: 34;
-        background: rgba(7, 22, 63, 0.35);
     }
 
     .dashboard-cards,
@@ -1518,9 +1503,7 @@ button.panel-button {
         animation: none;
     }
 
-    .dashboard-sidebar,
-    .sidebar-open .dashboard-sidebar,
-    .sidebar-collapsed .dashboard-sidebar {
+    .navbar-icon {
         transition: none;
     }
 }
@@ -4418,7 +4401,7 @@ a.table-action {
 }
 
 /* Dialogs, modals and header popovers still scroll when they are taller than
-   the screen, but without a visible scrollbar (same as the sidebar).
+   the screen, but without a visible scrollbar.
    .dashboard-table-wrap keeps its scrollbar: it shows a wide table has more columns. */
 .modal,
 .modal-dialog-scrollable .modal-body,
@@ -4434,4 +4417,83 @@ a.table-action {
 .notifications-dropdown::-webkit-scrollbar,
 .profile-popover-body::-webkit-scrollbar {
     display: none;
+}
+
+/* Announcements: staff banners above every page (components/dashboard.php)
+   and the admin list on announcements.php. */
+
+.staff-announcement {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 12px 12px 12px 16px;
+    border: 1px solid #c9daf8;
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: var(--accent-soft);
+    font-size: 14px;
+}
+
+.staff-announcement-icon {
+    margin-top: 1px;
+    color: var(--accent);
+    font-size: 18px;
+}
+
+.staff-announcement-text {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.staff-announcement-text p {
+    margin: 2px 0 0;
+}
+
+.staff-announcement-text a {
+    display: inline-block;
+    margin-top: 4px;
+    color: var(--accent-strong);
+    font-weight: 500;
+}
+
+.staff-announcement-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.staff-announcement-close:hover {
+    background: rgba(0, 0, 0, 0.06);
+    color: var(--text);
+}
+
+.staff-announcement + .dashboard-heading {
+    margin-top: 8px;
+}
+
+.status-scheduled {
+    background: #fff4dc;
+    color: #8a5a00;
+}
+
+/* Long messages are cut to two lines in the list, the full text is in the edit dialog. */
+.announcement-preview {
+    display: -webkit-box;
+    max-width: 420px;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.announcements-table tr.is-hidden-row td:first-child {
+    opacity: 0.55;
 }

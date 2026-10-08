@@ -16,6 +16,7 @@ const ACTIVITY_CATEGORIES = [
     'Event'        => 'Events & Gallery',
     'Partner'      => 'Partners',
     'Content'      => 'Pages & Site info',
+    'Announcement' => 'Announcements',
     'Archive'      => 'Archive',
 ];
 

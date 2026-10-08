@@ -26,6 +26,7 @@ List of Tables
 - ArchiveLog
 - Donation
 - ActivityLog
+- Announcement
 
 *********************************************************************
 SQL Code
@@ -51,6 +52,8 @@ CREATE TABLE UserAccount (
   profileImageURL VARCHAR(500) NULL,
   lastLogin DATETIME NULL,
   passwordChangedAt DATETIME NULL,
+  -- Last time this account opened the registrations page, new registrations after it show as a badge on the navbar.
+  registrationsSeenAt DATETIME NULL,
   mustChangePassword BOOLEAN NOT NULL DEFAULT TRUE,
   -- Accounts are archived, never deleted, so the records they created keep their owner.
   isArchived BOOLEAN NOT NULL DEFAULT FALSE,
@@ -274,6 +277,24 @@ CREATE TABLE ActivityLog (
   INDEX idx_activitylog_created (createdAt)
 );
 
+-- Messages admins push from staff/announcements.php. 'website' shows a banner on the public
+-- pages, 'staff' shows on the staff portal and 'everyone' shows on both. Empty dates mean
+-- no limit, endDate is the last day it shows.
+CREATE TABLE Announcement (
+  announcementID int PRIMARY KEY NOT NULL AUTO_INCREMENT,
+  createdBy int NULL,
+  title VARCHAR(150) NOT NULL,
+  message TEXT NOT NULL,
+  audience ENUM('everyone', 'website', 'staff') NOT NULL DEFAULT 'everyone',
+  linkURL VARCHAR(255) NULL,
+  startDate DATE NULL,
+  endDate DATE NULL,
+  isActive BOOLEAN NOT NULL DEFAULT TRUE,
+  dateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (createdBy) REFERENCES UserAccount (accountID) ON DELETE SET NULL,
+  INDEX idx_announcement_live (isActive, audience)
+);
+
 -- seeding the website content
 -- these are the words and photos the public pages had written into them before,
 -- so nothing on the site changes until an admin edits it on staff/manageContent.php
@@ -302,8 +323,8 @@ INSERT INTO Service (name, tagline, icon, description, includes, sortOrder) VALU
    'Programme & Project Management\nDemand Planning & Prioritisation\nStakeholder Management\nSolution Design & Implementation', 5);
 
 INSERT INTO CymPhoto (src, altText, sortOrder) VALUES
-  ('assets/images/about-img/school-footage.webp', 'Cyber Young Minds school session', 1),
-  ('assets/images/about-img/school-footage2.webp', 'Cyber Young Minds school session', 2);
+  ('assets/images/cym/school-session-1.webp', 'Cyber Young Minds school session', 1),
+  ('assets/images/cym/school-session-2.webp', 'Cyber Young Minds school session', 2);
 ```
 
 *********************************************************************
@@ -323,7 +344,7 @@ echo "Connected OK to database: " . $conn->query("SELECT DATABASE()")->fetch_row
 $expected = [
     'UserAccount','Admin','StaffMarketing','StaffCustomerService','ArchivableEntity',
     'Enquiry','Registration','Programme','SiteSetting','Service','CymPhoto','Partner','Report','Campaign','Event','GalleryItem',
-    'ArchiveLog','Donation','ActivityLog'
+    'ArchiveLog','Donation','ActivityLog','Announcement'
 ];
 
 echo "Checking tables:\n";

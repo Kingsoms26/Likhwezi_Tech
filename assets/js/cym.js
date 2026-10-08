@@ -272,3 +272,40 @@ function updateGuardianFields() {
 
 ageInput.addEventListener('input', updateGuardianFields);
 updateGuardianFields();
+
+// hero video, a silent loop plays in the panel and pressing it opens the full video with sound
+const heroLoop = document.getElementById('cymHeroLoop');
+const videoOpen = document.getElementById('cymVideoOpen');
+const videoModal = document.getElementById('cymVideoModal');
+const videoClose = document.getElementById('cymVideoClose');
+const fullVideo = document.getElementById('cymFullVideo');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+// keep the loop still for visitors who turned motion off, they see the poster instead
+function playHeroLoop() {
+    if (reduceMotion.matches) return;
+    heroLoop.play().catch(() => {});
+}
+
+playHeroLoop();
+
+// open the popup and start the full video from the beginning
+videoOpen.addEventListener('click', () => {
+    heroLoop.pause();
+    videoModal.showModal();
+    fullVideo.currentTime = 0;
+    fullVideo.play().catch(() => {});
+});
+
+videoClose.addEventListener('click', () => videoModal.close());
+
+// clicking the dark area around the video closes it too
+videoModal.addEventListener('click', e => {
+    if (e.target === videoModal) videoModal.close();
+});
+
+// stop the full video when the popup closes, including with escape
+videoModal.addEventListener('close', () => {
+    fullVideo.pause();
+    playHeroLoop();
+});

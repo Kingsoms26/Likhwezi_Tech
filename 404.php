@@ -19,7 +19,7 @@
 
         <!-- not found message -->
         <main>
-            <section class="hero hero-text-only not-found">
+            <section class="hero hero-centered hero-text-only not-found">
                 <div class="hero-content d-grid gap-3 row-gap-3">
                     <div class="p-1">
                         <p class="not-found-code">404</p>

@@ -55,8 +55,7 @@
                     ?>
                 </div>
                 <div class="wheel-hub">
-                    <span>Likhwezi</span>
-                    <small>Services</small>
+                    <img src="assets/images/logo/logo-branding.webp" alt="Likhwezi Technologies" class="wheel-hub-logo">
                 </div>
             </div>
         </div>
@@ -64,8 +63,9 @@
         <hr>
 
         <!-- services offered -->
-        <!-- the cards stay pinned while the visitor scrolls and slide up one at a time -->
-        <section class="service-stack" id="serviceStack">
+        <!-- horizontal scrolling -->
+        <!-- the cards stay pinned while the visitor scrolls and slide across one at a time -->
+        <section class="service-stack section-centered" id="serviceStack">
             <div class="service-stack-sticky">
                 <div class="section-title service-stack-heading">What We Offer</div>
                 <p class="service-stack-intro">Likhwezi Technologies is a 100% black-owned consultancy focused on enterprise data systems. We build bespoke solutions tailored to the unique needs of each client.</p>

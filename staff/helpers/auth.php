@@ -45,7 +45,7 @@ function requireStaff(mysqli $conn): array
 }
 
 // send staff without the right role to their profile with a message
-// keep in step with the links in components/dashboardSidebar.php
+// keep in step with the links in components/dashboardNavbar.php
 function requireRole(array $account, string|array $roles): void
 {
     if (!in_array($account['role'], (array) $roles, true)) {

@@ -226,7 +226,7 @@
         <?php include 'includes/components/navBar.php'; ?>
 
         <!-- hero section -->
-        <section class="hero hero-text-only">
+        <section class="hero hero-centered hero-text-only">
             <div class="hero-content d-grid gap-3 row-gap-3">
                 <div class="p-1">
                     <h1>Campaigns</h1>
@@ -266,8 +266,8 @@
         <?php endif; ?>
 
         <!-- campaign section -->
-        <h2 class="section-title pt-4 mb-0"><?= $showAllCampaigns ? 'All Campaigns' : 'Current Campaigns' ?></h2>
-        <section class="campaign-section">
+        <h2 class="section-title section-centered pt-4 mb-0"><?= $showAllCampaigns ? 'All Campaigns' : 'Current Campaigns' ?></h2>
+        <section class="campaign-section section-centered">
 
             <!-- shown when there are no campaigns -->
             <?php if (empty($campaigns)): ?>

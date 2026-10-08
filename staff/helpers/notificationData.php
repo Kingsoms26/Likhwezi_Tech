@@ -4,6 +4,7 @@
 // dismissing hides a notification for the session until its wording changes
 
 require_once __DIR__ . '/profileData.php';
+require_once __DIR__ . '/../../includes/helpers/announcements.php';
 
 // upcoming events within this many days are shown to marketing
 const NOTIFY_EVENT_DAYS = 7;
@@ -11,7 +12,7 @@ const NOTIFY_EVENT_DAYS = 7;
 // notifications for the logged in account, most urgent first
 function getNotifications(mysqli $conn, array $account): array
 {
-    $notifications = passwordNotifications($account);
+    $notifications = array_merge(passwordNotifications($account), announcementNotifications($conn));
     $role = $account['role'];
 
     if ($role === 'Admin' || $role === 'Customer Service') {
@@ -74,6 +75,19 @@ function passwordNotifications(array $account): array
         'detail' => passwordAgeLabel($age),
         'link'   => 'profile.php#change-password',
     ]];
+}
+
+// announcements admins posted for staff on announcements.php, everyone sees these
+// they also show as banners above every staff page in components/dashboard.php
+function announcementNotifications(mysqli $conn): array
+{
+    return array_map(fn ($announcement) => [
+        'type'   => 'announcement',
+        'level'  => 'info',
+        'title'  => $announcement['title'],
+        'detail' => $announcement['message'],
+        'link'   => $announcement['linkURL'],
+    ], staffAnnouncements($conn));
 }
 
 // new enquiries, admin sees unclaimed ones and customer service also sees the ones they claimed
@@ -195,20 +209,44 @@ function eventNotifications(mysqli $conn): array
     return $notifications;
 }
 
-// counts for the badges beside the sidebar links, new enquiries and registrations from the last 7 days
+// counts for the badges on the navbar links
+// enquiries stays until every new enquiry is claimed so nobody forgets them
+// registrations only counts sign ups since this account last opened the registrations page, or the last 7 days before its first visit
 // zero counts are left out so no badge shows
-function getSidebarCounts(mysqli $conn): array
+function getNavbarCounts(mysqli $conn, array $account): array
 {
-    $result = $conn->query(
-        "SELECT (SELECT COUNT(*) FROM Enquiry WHERE status = 'new' AND isArchived = FALSE) AS enquiries,
-                (SELECT COUNT(*) FROM Registration WHERE isArchived = FALSE
-                    AND dateCreated >= CURDATE() - INTERVAL 6 DAY) AS registrations"
-    );
+    $accountID = (int) $account['accountID'];
 
-    if (!$result) {
-        error_log('getSidebarCounts failed: ' . $conn->error);
+    $stmt = $conn->prepare(
+        "SELECT (SELECT COUNT(*) FROM Enquiry WHERE status = 'new' AND handledBy IS NULL AND isArchived = FALSE) AS enquiries,
+                (SELECT COUNT(*) FROM Registration WHERE isArchived = FALSE
+                    AND dateCreated > COALESCE(
+                        (SELECT registrationsSeenAt FROM UserAccount WHERE accountID = ?),
+                        CURDATE() - INTERVAL 6 DAY
+                    )) AS registrations"
+    );
+    if (!$stmt) {
+        error_log('getNavbarCounts failed: ' . $conn->error);
         return [];
     }
 
-    return array_filter(array_map('intval', $result->fetch_assoc()));
+    $stmt->bind_param("i", $accountID);
+    $stmt->execute();
+
+    return array_filter(array_map('intval', $stmt->get_result()->fetch_assoc()));
+}
+
+// clear the registrations badge, called when the registrations page opens
+function markRegistrationsSeen(mysqli $conn, array $account): void
+{
+    $accountID = (int) $account['accountID'];
+
+    $stmt = $conn->prepare("UPDATE UserAccount SET registrationsSeenAt = NOW() WHERE accountID = ?");
+    if (!$stmt) {
+        error_log('markRegistrationsSeen failed (has registrationsSeenAt from database/dbSetup.md been added?): ' . $conn->error);
+        return;
+    }
+
+    $stmt->bind_param("i", $accountID);
+    $stmt->execute();
 }

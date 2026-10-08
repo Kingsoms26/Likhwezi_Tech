@@ -6,15 +6,14 @@
 ?>
 
 <header class="dashboard-header">
-    <!-- logo, also opens and closes the sidebar -->
-    <button type="button" class="dashboard-brand" id="sidebar-toggle"
-            aria-controls="dashboard-sidebar" aria-expanded="true" aria-label="Toggle navigation">
+    <!-- logo, goes back to the dashboard -->
+    <a class="dashboard-brand" href="index.php">
         <img src="assets/images/logo-branding.jpeg" alt="">
         <span class="company-name">
             <span>Likhwezi</span>
             <span>Technologies</span>
         </span>
-    </button>
+    </a>
 
     <!-- notifications and profile menu -->
     <div class="dashboard-header-actions">

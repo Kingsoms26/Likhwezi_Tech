@@ -32,10 +32,11 @@
         const active = Math.round(progress);
 
         cards.forEach(function (card, i) {
-            // cards above have slid out and cards below are waiting
+            // cards to the left have slid past and cards to the right are waiting
             const offset = i - progress;
             const distance = Math.min(Math.abs(offset), 1);
-            card.style.transform = 'translateY(' + (offset * 108) + '%) scale(' + (1 - distance * 0.06) + ')';
+            card.style.transform = 'translateX(calc(-50% + ' + (offset * 106) + '%)) scale(' + (1 - distance * 0.08) + ')';
+            card.style.opacity = 1 - distance * 0.2;
             card.classList.toggle('is-active', i === active);
         });
 
@@ -72,6 +73,7 @@
         } else {
             cards.forEach(function (card) {
                 card.style.transform = '';
+                card.style.opacity = '';
             });
         }
     }

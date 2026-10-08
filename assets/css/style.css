@@ -134,6 +134,64 @@ body {
     outline: none;
 }
 
+/* Announcements under the navbar, posted on staff/announcements.php */
+.site-announcement {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px var(--section-gutter);
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: 14px;
+}
+
+.site-announcement-icon {
+    margin-top: 1px;
+    color: var(--color-accent);
+    font-size: 17px;
+}
+
+.site-announcement-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.site-announcement-text strong {
+    margin-right: 6px;
+    color: var(--color-navy);
+}
+
+.site-announcement-text a {
+    margin-left: 6px;
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+.site-announcement-text a:hover {
+    color: var(--color-accent);
+}
+
+.site-announcement-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: var(--color-muted);
+}
+
+.site-announcement-close:hover {
+    background-color: var(--color-border);
+    color: var(--color-text);
+}
+
 .logo {
     height: 40px;
     width: 40px;
@@ -237,6 +295,8 @@ body {
     margin-right: 0.5rem;
 }
 
+
+
 /* Home Page Styles */
 
 .section-title {
@@ -266,8 +326,8 @@ body {
 }
 
 .hero-image {
-    flex: 1 1 50%;
-    max-width: 50%;
+    flex: 1 1 80%;
+    max-width: 80%;
     margin-left: auto;
 }
 
@@ -305,7 +365,7 @@ body {
 /* Services Section — bento grid: one featured tile, four beside it */
 .service-bento {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 1.5fr 1fr 1fr;
     grid-auto-rows: minmax(250px, auto);
     gap: 20px;
     padding-left: var(--section-gutter);
@@ -477,72 +537,243 @@ body {
 }
 
 /* About Us Section */
+/* text on the left, mission card on the right */
 .about-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 56px;
     width: 100%;
     padding-left: var(--section-gutter);
     padding-right: var(--section-gutter);
     box-sizing: border-box;
-    flex-wrap: wrap;
 }
 
-.about-content {
-    flex: 1 1 250px;
-    min-width: 280px;
+.about-content > div:not(.about-mission) p {
+    margin: 0 0 0.25rem;
+    color: var(--color-muted);
+    font-size: 15px;
+    line-height: 1.7;
 }
 
-.about-content p {
-    color: #333;
-    line-height: 1.6;
+/* first paragraph reads as the lead line */
+.about-content > div:not(.about-mission) p:first-child {
+    color: var(--color-navy);
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.55;
 }
 
-.about-image {
-    flex: 1 1 380px;
-    min-width: 280px;
-    border-radius: 8px;
+/* mission card, navy like the stats card on cym.php */
+.about-mission {
+    position: relative;
     overflow: hidden;
+    padding: 36px 36px 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-navy));
+    color: #ffffff;
+    box-shadow: 0 12px 30px rgba(4, 17, 59, 0.18);
 }
 
-.about-image img {
+/* large faded quote mark in the corner */
+.about-mission i {
+    position: absolute;
+    top: -18px;
+    right: 18px;
+    font-size: 120px;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.08);
+}
+
+.about-mission-label {
+    display: block;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+}
+
+.about-mission p {
+    position: relative;
+    margin: 0;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.5;
+}
+
+/* team photo beside the mission and text */
+.about-team-image {
+    display: block;
     width: 100%;
     height: 100%;
-    min-height: 300px;
+    max-height: 520px;
+    align-self: stretch;
     object-fit: cover;
-    object-position: top;
-    display: block;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(4, 17, 59, 0.12);
 }
 
-/* Partners Section (homepage teaser strip) */
-.partner-container {
-    width: 100%;
-    padding-left: var(--section-gutter);
-    padding-right: var(--section-gutter);
-    box-sizing: border-box;
-    flex-wrap: wrap;
+/* profile button centred under the cards */
+.about-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    padding: 0 var(--section-gutter);
+}
+
+/* three cards in a row under the text and mission */
+.about-points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin: 2.5rem 0 0;
+    padding: 0 var(--section-gutter);
+    list-style: none;
+}
+
+.about-point {
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.about-point:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 6px 18px rgba(4, 17, 59, 0.08);
+}
+
+/* icon sits in a soft round badge */
+.about-point i {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 14px;
+    border-radius: 50%;
+    background-color: rgba(3, 137, 225, 0.1);
+    color: var(--color-accent);
+    font-size: 18px;
+}
+
+.about-point h3 {
+    margin: 0 0 6px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.about-point p {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.about-point a {
+    color: var(--color-primary);
+    font-weight: 500;
+}
+
+@media (max-width: 991px) {
+    .about-points {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    /* on smaller screens the icon sits beside the text to keep the cards short */
+    .about-point {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        column-gap: 16px;
+        padding: 18px 20px;
+    }
+
+    .about-point i {
+        grid-row: span 2;
+        margin-bottom: 0;
+    }
+}
+
+/* Partners Section (homepage teaser strip)
+   Scrolling logo ribbon, moves like the programme banner on cym.php */
+.partner-banner {
+    overflow: hidden;
+    position: relative;
+}
+
+/* Logos fade into the page at both edges as they scroll in and out */
+.partner-banner::before,
+.partner-banner::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 10%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.partner-banner::before {
+    left: 0;
+    background: linear-gradient(90deg, #ffffff, transparent);
+}
+
+.partner-banner::after {
+    right: 0;
+    background: linear-gradient(270deg, #ffffff, transparent);
+}
+
+.partner-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    min-width: 100%;
+    will-change: transform;
+    animation: banner-scroll 45s linear infinite;
+}
+
+/* Each group ends with the same gap it uses between logos so the loop has no jump */
+.partner-group {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 1.5rem;
+    padding-right: 1.5rem;
 }
 
 .partner-logo,
 .partner-placeholder {
-    flex: 1 1 250px;
-    max-width: 250px;
-    height: 200px;
+    flex: 0 0 210px;
+    width: 210px;
+    height: 160px;
 }
 
 .partner-logo {
     object-fit: contain;
 }
 
-@media (max-width: 767px) {
-    .partner-container {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        justify-items: center;
-    }
+/* Pause so visitors can look at a logo */
+.partner-banner:hover .partner-track {
+    animation-play-state: paused;
+}
 
+@media (prefers-reduced-motion: reduce) {
+    .partner-track {
+        animation-duration: 70s;
+    }
+}
+
+@media (max-width: 767px) {
     .partner-logo,
     .partner-placeholder {
-        width: 100%;
-        max-width: 150px;
-        height: 150px;
+        flex-basis: 125px;
+        width: 125px;
+        height: 120px;
     }
 }
 
@@ -567,15 +798,20 @@ body {
     box-sizing: border-box;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     .about-container {
-        flex-direction: column;
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+}
+
+@media (max-width: 575px) {
+    .about-mission {
+        padding: 28px 24px 30px;
     }
 
-    .about-content,
-    .about-image {
-        flex: 1 1 auto;
-        width: 100%;
+    .about-mission p {
+        font-size: 18px;
     }
 }
 
@@ -610,6 +846,397 @@ body {
     margin: -0.75rem 0 2rem;
     color: var(--color-text);
     line-height: 1.6;
+}
+
+/* centred hero, text and buttons in the middle with any image stacked under it */
+.hero.hero-centered {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 32px;
+    padding-top: 56px;
+    padding-bottom: 56px;
+}
+
+.hero.hero-centered .hero-content {
+    flex: 0 1 auto;
+    max-width: 760px;
+}
+
+.hero-centered .hero-content p {
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+.hero-centered .btn-group {
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.hero.hero-centered .hero-image {
+    flex: 0 1 auto;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.hero-centered .services-wheel-wrap {
+    margin: 0 auto;
+}
+
+/* home keeps its logo small and above the text */
+.hero-home .hero-content {
+    order: 1;
+}
+
+.hero-home .hero-content p {
+    margin-bottom: 0;
+}
+
+.hero.hero-home .hero-image {
+    max-width: 420px;
+}
+
+/* cym hero: video on the left, intro in the middle, photos on the right, each panel holds a stat card in a notch */
+.hero.cym-hero {
+    display: block;
+    padding-top: 48px;
+    padding-bottom: 56px;
+}
+
+.cym-hero-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 40px;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.cym-hero-text {
+    text-align: center;
+}
+
+.cym-hero-text h1 {
+    margin: 0 0 1rem;
+}
+
+.cym-hero-text p {
+    margin: 0 0 1.5rem;
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+/* every card size below is a share of the panel, so the notches in the svg clip paths stay lined up */
+.cym-hero-panel {
+    position: relative;
+    height: clamp(380px, 31vw, 440px);
+}
+
+.cym-hero-frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background-color: var(--color-navy);
+}
+
+.cym-hero-video {
+    clip-path: url(#cymShapeVideo);
+}
+
+.cym-hero-photos {
+    clip-path: url(#cymShapePhotos);
+}
+
+.cym-hero-video video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* the whole video is the button, with a round play icon in the open part above the notch */
+.cym-video-play {
+    position: absolute;
+    inset: 0 0 30% 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.cym-video-play::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 -50% 0;
+    background: rgba(4, 17, 59, 0.2);
+}
+
+.cym-video-play-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background: rgba(4, 17, 59, 0.55);
+    color: #ffffff;
+    font-size: 32px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.cym-video-play:hover .cym-video-play-icon,
+.cym-video-play:focus-visible .cym-video-play-icon {
+    background: var(--color-primary);
+    transform: scale(1.08);
+}
+
+.cym-video-play:focus-visible {
+    outline: none;
+}
+
+.cym-video-play:focus-visible .cym-video-play-icon {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+}
+
+/* carousel fills the panel instead of keeping its usual 4:3 shape */
+.cym-hero-photos .photo-carousel,
+.cym-hero-photos .carousel-inner,
+.cym-hero-photos .carousel-item {
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.cym-hero-photos .photo-carousel .carousel-item img {
+    height: 100%;
+    aspect-ratio: auto;
+}
+
+/* stat cards sitting in the notches */
+.cym-hero-stat {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    width: calc(50% - 12px);
+    height: calc(30% - 12px);
+    padding: 14px 18px;
+    box-sizing: border-box;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background-color: #ffffff;
+    box-shadow: 0 12px 30px rgba(4, 17, 59, 0.1);
+    text-align: left;
+}
+
+.cym-hero-panel-video .cym-hero-stat {
+    right: 0;
+    bottom: 0;
+}
+
+.cym-hero-panel-photos .cym-hero-stat {
+    top: 0;
+    left: 0;
+}
+
+.cym-hero-stat-number {
+    color: var(--color-navy);
+    font-size: 1.9rem;
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.cym-hero-stat-label {
+    color: var(--color-muted);
+    font-size: 13px;
+    line-height: 1.35;
+}
+
+/* programme names as pills above the button */
+.cym-hero-programmes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 1.75rem;
+    padding: 0;
+    list-style: none;
+}
+
+.cym-hero-programmes li {
+    padding: 6px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background-color: var(--color-surface);
+    color: var(--color-navy);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.cym-hero-shapes {
+    position: absolute;
+}
+
+/* full video popup */
+.cym-video-modal {
+    width: min(1100px, 92vw);
+    max-width: none;
+    padding: 0;
+    border: none;
+    border-radius: 12px;
+    background: #000000;
+    overflow: visible;
+}
+
+.cym-video-modal::backdrop {
+    background: rgba(4, 17, 59, 0.85);
+}
+
+.cym-video-modal video {
+    display: block;
+    width: 100%;
+    max-height: 85vh;
+    border-radius: 12px;
+    background: #000000;
+}
+
+.cym-video-close {
+    position: absolute;
+    top: -48px;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.cym-video-close:hover,
+.cym-video-close:focus-visible {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cym-video-play-icon {
+        transition: none;
+    }
+}
+
+/* smaller laptops: tighter gaps so the middle column keeps room for the heading */
+@media (max-width: 1199px) {
+    .cym-hero-layout {
+        gap: 28px;
+    }
+
+    .cym-hero-stat {
+        padding: 12px 14px;
+    }
+
+    .cym-hero-stat-number {
+        font-size: 1.6rem;
+    }
+
+    .cym-hero-stat-label {
+        font-size: 12px;
+    }
+}
+
+/* tablets: intro on top, video and photos side by side under it */
+@media (max-width: 991px) {
+    .cym-hero-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .cym-hero-text {
+        grid-column: 1 / -1;
+        order: -1;
+        max-width: 640px;
+        margin: 0 auto 12px;
+    }
+
+    .cym-hero-panel {
+        height: 400px;
+    }
+}
+
+/* phones: everything stacked */
+@media (max-width: 575px) {
+    .cym-hero-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cym-hero-panel {
+        height: 360px;
+    }
+}
+
+/* centred section titles with a short accent line */
+.section-centered .section-title,
+.section-title.section-centered,
+.section-centered .gallery-heading h2 {
+    text-align: center;
+    padding-left: 0;
+    font-size: 22px;
+    font-weight: 500;
+}
+
+.section-centered .section-title::after,
+.section-title.section-centered::after,
+.section-centered .gallery-heading h2::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    margin: 10px auto 0;
+    border-radius: 2px;
+    background-color: var(--color-accent);
+}
+
+.section-centered .section-intro {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+.section-centered .gallery-heading {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* card grids under a centred title keep their cards in the middle when there are only one or two */
+@media (min-width: 992px) {
+    .section-centered .gallery-grid,
+    .campaign-section.section-centered {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 360px));
+        justify-content: center;
+    }
+}
+
+/* privacy text sits in the middle under its title */
+.section-centered .privacy-page-content {
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Shared inner-page layout end */
@@ -742,7 +1369,8 @@ body {
 /* Partners Page — cards */
 .partners-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+    justify-content: center;
     gap: 24px;
 }
 
@@ -3214,6 +3842,14 @@ body.modal-open{
     letter-spacing: 0.04em;
 }
 
+/* logo fills the hub and is cropped to the circle */
+.wheel-hub-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
 .wheel-hub small {
     color: var(--color-accent);
     font-size: calc(var(--hub-size) * 0.09);
@@ -3412,17 +4048,22 @@ body.modal-open{
     /* Takes whatever height the pinned screen has left after the heading, intro, dots and button */
     flex: 1 1 auto;
     width: 100%;
+    max-width: none;
     min-height: 280px;
-    max-height: 480px;
-    /* Cards slide in and out through the deck's top and bottom edges; the sides stay open for the shadow */
-    clip-path: inset(0 -60px round 16px);
+    max-height: 440px;
+    /* Cards slide in and out through the deck's left and right edges; top and bottom stay open for the shadow */
+    clip-path: inset(-60px 0);
 }
 
+/* Cards sit side by side, centred, with the neighbours peeking in from either side */
 .service-stack.is-stacked .stack-card {
     position: absolute;
-    inset: 0;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: min(720px, 60%);
     transform-origin: center center;
-    will-change: transform;
+    will-change: transform, opacity;
 }
 
 /* The text sits at the bottom of the card, so a tall card looks deliberate rather than empty */
@@ -3459,6 +4100,10 @@ body.modal-open{
     .service-stack.is-stacked .service-stack-deck {
         min-height: 320px;
         max-height: 520px;
+    }
+
+    .service-stack.is-stacked .stack-card {
+        width: 80%;
     }
 
     .stack-card-tags {

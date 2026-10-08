@@ -251,26 +251,70 @@
 
         <main class="cym-page-main">
 
-            <!-- hero section, programme intro on the left and the photo carousel on the right -->
+            <!-- hero section, video on the left, intro in the middle and photos on the right, each panel has a stat card in a notch -->
             <section class="hero cym-hero">
-                <div class="hero-content d-grid gap-3 row-gap-3">
-                    <div class="p-1">
-                        <h1>Building the minds that build the future</h1>
-                        <p>Cyber Young Minds runs programmes catered to the youth, in coding, robotics, and AI for learners, their teachers, and anyone in the community who wants to start. It's all funded by Likhwezi Technologies' consultancy work and by sponsors, which is why it costs participants nothing.</p>
+                <div class="cym-hero-layout">
+                    <!-- left panel, short silent loop that opens the full video, cost card in the bottom right notch -->
+                    <div class="cym-hero-panel cym-hero-panel-video">
+                        <div class="cym-hero-frame cym-hero-video">
+                            <video id="cymHeroLoop" src="assets/images/cym/jeffreys-bay-launch-loop.mp4" poster="assets/images/cym/jeffreys-bay-launch-poster.webp" muted loop playsinline preload="metadata" aria-hidden="true"></video>
+                            <button type="button" class="cym-video-play" id="cymVideoOpen" aria-haspopup="dialog">
+                                <span class="cym-video-play-icon"><i class="bi bi-play-fill" aria-hidden="true"></i></span>
+                                <span class="visually-hidden">Play video</span>
+                            </button>
+                        </div>
+                        <div class="cym-hero-stat">
+                            <span class="cym-hero-stat-number">R0</span>
+                            <span class="cym-hero-stat-label">Charged to participants</span>
+                        </div>
                     </div>
-                    <div class="p-1">
+
+                    <!-- intro, programme names and register button -->
+                    <div class="cym-hero-text">
+                        <h1>Building the minds that build the future</h1>
+                        <p>Cyber Young Minds runs programmes catered to the youth, in coding, robotics, and AI for learners, their teachers, and anyone in the community who wants to start. It's all funded by Likhwezi Technologies' consultancy work and by sponsors.</p>
+                        <ul class="cym-hero-programmes">
+                            <?php foreach ($programmes as $programme): ?>
+                                <li><?= htmlspecialchars($programme) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
                         <a href="#modal-overlay" class="btn btn-primary cym-register-cta register-btn" aria-haspopup="dialog">Register</a>
+                    </div>
+
+                    <!-- right panel, photos from cym sessions managed on staff/manageContent.php, participants card in the top left notch -->
+                    <div class="cym-hero-panel cym-hero-panel-photos">
+                        <div class="cym-hero-frame cym-hero-photos">
+                            <?php
+                                $carouselID = 'cymPhotoCarousel';
+                                $carouselPhotos = cymPhotos();
+                                include 'includes/components/photoCarousel.php';
+                            ?>
+                        </div>
+                        <div class="cym-hero-stat">
+                            <span class="cym-hero-stat-number"><?= htmlspecialchars($site['cymParticipants']) ?></span>
+                            <span class="cym-hero-stat-label">Registered participants</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- photos from cym sessions, managed on staff/manageContent.php -->
-                <div class="hero-image cym-photos">
-                    <?php
-                        $carouselID = 'cymPhotoCarousel';
-                        $carouselPhotos = cymPhotos();
-                        include 'includes/components/photoCarousel.php';
-                    ?>
-                </div>
+                <!-- full video popup, starts from the beginning with sound -->
+                <dialog class="cym-video-modal" id="cymVideoModal" aria-label="Cyber Young Minds at Jeffreys Bay High School">
+                    <button type="button" class="cym-video-close" id="cymVideoClose">
+                        <i class="bi bi-x-lg" aria-hidden="true"></i>
+                        <span class="visually-hidden">Close video</span>
+                    </button>
+                    <video id="cymFullVideo" src="assets/images/cym/jeffreys-bay-launch.mp4" poster="assets/images/cym/jeffreys-bay-launch-poster.webp" controls playsinline preload="none"></video>
+                </dialog>
+
+                <!-- panel outlines, the video has a bottom right notch and the photos a top left one, matches the card sizes in style.css -->
+                <svg class="cym-hero-shapes" width="0" height="0" aria-hidden="true" focusable="false">
+                    <clipPath id="cymShapeVideo" clipPathUnits="objectBoundingBox">
+                        <path d="M0.04,0 L0.96,0 Q1,0 1,0.03 L1,0.67 Q1,0.7 0.96,0.7 L0.54,0.7 Q0.5,0.7 0.5,0.73 L0.5,0.97 Q0.5,1 0.46,1 L0.04,1 Q0,1 0,0.97 L0,0.03 Q0,0 0.04,0 Z"/>
+                    </clipPath>
+                    <clipPath id="cymShapePhotos" clipPathUnits="objectBoundingBox">
+                        <path d="M0.54,0 L0.96,0 Q1,0 1,0.03 L1,0.97 Q1,1 0.96,1 L0.04,1 Q0,1 0,0.97 L0,0.33 Q0,0.3 0.04,0.3 L0.46,0.3 Q0.5,0.3 0.5,0.27 L0.5,0.03 Q0.5,0 0.54,0 Z"/>
+                    </clipPath>
+                </svg>
             </section>
 
             <!-- scrolling programme banner -->

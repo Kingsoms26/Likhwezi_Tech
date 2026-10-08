@@ -443,6 +443,10 @@ if (($_SERVER['HTTP_X_REGISTRATIONS_PARTIAL'] ?? '') === '1') {
 $notice = $_SESSION['registrationNotice'] ?? null;
 unset($_SESSION['registrationNotice']);
 
+// opening this page clears the registrations badge on the navbar
+require_once __DIR__ . '/helpers/notificationData.php';
+markRegistrationsSeen($conn, $account);
+
 $pageTitle = 'Registrations';
 $activePage = 'registrations';
 
