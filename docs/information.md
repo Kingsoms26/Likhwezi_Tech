@@ -28,6 +28,15 @@ phase 3
 - marketing dashboard
 - revision/correction d1 and d2
 
+phase 3, continuation
+D1:
+- 1, 2, 3 -- Thando
+D2:
+- 2.1, 2.2 -- Mutshidzi
+- 2.3.2, 2.3.5, 2.3.9 -- Somila
+- 2.3.3, 2.3.4, 2.3.8 -- Tshepo
+- 2.3.6, 2.3.7  -- Thami
+
 Essential Components * Everyone will use this, sits within the includes/components folder *
 ______________________________
 -  Navigation Bar

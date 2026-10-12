@@ -377,20 +377,21 @@
                         <div class="cym-join-buttons">
                             <a href="#modal-overlay" class="btn btn-primary cym-register-cta register-btn" aria-haspopup="dialog">Register</a>
                             <?php if ($cymSiteOnline): ?>
-                                <a href="<?= htmlspecialchars($cymSiteURL) ?>" class="btn btn-ghost" target="_blank" rel="noopener">Go to Cyber Young Minds</a>
+                                <a href="<?= htmlspecialchars($cymSiteURL) ?>" class="btn btn-ghost" target="_blank" rel="noopener">Go to Cyber Young Mindso</a>
                             <?php endif; ?>
                         </div>
                     </div>
 
+                    <!--
                     <div class="cym-join-card">
-                        <p class="cym-site-name"><?= htmlspecialchars(preg_replace('/^www\./', '', parse_url($cymSiteURL, PHP_URL_HOST) ?: $cymSiteURL)) ?></p>
+                        <p class="cym-site-name"> </p>
                         <h6>What you'll find there</h6>
                         <ul class="cym-site-list">
                             <li>Session times and dates</li>
                             <li>Photos and recaps of previous sessions</li>
                             <li>Contact Details</li>
                         </ul>
-                    </div>
+                    </div> -->
                 </div>
             </section>
         </main>

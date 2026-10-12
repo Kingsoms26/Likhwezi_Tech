@@ -1,12 +1,13 @@
 <?php
 // events.php is the shared event logic for gallery.php, previous-events.php and all-events.php
 // the one place that decides what counts as a past or upcoming event
-// past is archived, dated before today or undated and not to be confirmed, newest first
+// past is not archived and dated before today or undated and not to be confirmed, newest first
 // upcoming is not archived and dated today or later or to be confirmed, soonest first
+// archived events only show on the staff archive page
 
 const EVENT_FILTERS = [
     'past' => [
-        'where' => 'e.isArchived = TRUE OR e.eventDate < CURDATE() OR (e.eventDate IS NULL AND e.dateToBeConfirmed = FALSE)',
+        'where' => 'e.isArchived = FALSE AND (e.eventDate < CURDATE() OR (e.eventDate IS NULL AND e.dateToBeConfirmed = FALSE))',
         'order' => 'e.eventDate IS NULL, e.eventDate DESC, e.eventID DESC',
     ],
     'upcoming' => [
