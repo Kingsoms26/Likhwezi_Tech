@@ -12,9 +12,9 @@
     require __DIR__ . '/helpers/eventData.php';
     require __DIR__ . '/helpers/galleryData.php';
 
-    // admin and marketing can both add, edit and archive events
+    // admin and staff can both add, edit and archive events
     $account = requireStaff($conn);
-    requireRole($account, ['Admin', 'Marketing']);
+    requireRole($account, ['Admin', 'Staff']);
 
     // show archived events when asked
     $showArchived = isset($_GET['showArchived']);

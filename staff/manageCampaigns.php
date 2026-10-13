@@ -14,9 +14,9 @@
     require __DIR__ . '/helpers/galleryData.php';
     require __DIR__ . '/helpers/marketingData.php';
 
-    // admin and marketing can both add, edit and archive campaigns
+    // admin and staff can both add, edit and archive campaigns
     $account = requireStaff($conn);
-    requireRole($account, ['Admin', 'Marketing']);
+    requireRole($account, ['Admin', 'Staff']);
 
     // which view to show and where forms go back to
     $showArchived = isset($_GET['showArchived']);

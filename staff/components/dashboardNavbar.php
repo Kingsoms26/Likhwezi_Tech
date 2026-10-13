@@ -1,22 +1,22 @@
 <?php
     // dashboardNavbar.php is the staff navbar along the bottom of the screen, each link only shows for the roles that can use it
-    // customer service sees enquiries and registrations, marketing sees campaigns and gallery, admin sees everything
+    // staff see enquiries, registrations, campaigns and gallery, admin sees everything
     // hiding a link is not enough on its own so pages also call requireRole() in helpers/auth.php
     $navbarRole = $account['role'] ?? ($_SESSION['role'] ?? null);
     $navbarCounts = $navbarCounts ?? [];
 
     // each link has a key, label, page, roles and icon, null roles means everyone
     $navbarLinks = [
-        ['dashboard',     'Dashboard',         'index.php',           null,                          'house'],
-        ['enquiries',     'Enquiries',         'manageEnquiries.php', ['Admin', 'Customer Service'], 'envelope'],
-        ['registrations', 'Registrations',     'registrations.php',   ['Admin', 'Customer Service'], 'person-plus'],
-        ['campaigns',     'Campaigns',         'manageCampaigns.php', ['Admin', 'Marketing'],        'megaphone'],
-        ['events',        'Gallery & Events',  'manageEvents.php',    ['Admin', 'Marketing'],        'image'],
-        ['content',       'Pages & Site info', 'manageContent.php',   ['Admin'],                     'file-earmark-text'],
-        ['announcements', 'Announcements',     'announcements.php',   ['Admin'],                     'broadcast'],
-        ['accounts',      'Accounts',          'accounts.php',        ['Admin'],                     'person-gear'],
-        ['archive',       'Archive',           'archive.php',         ['Admin'],                     'archive'],
-        ['activity',      'Activity Log',      'activityLog.php',     ['Admin'],                     'clock-history'],
+        ['dashboard',     'Dashboard',         'index.php',           null,               'house'],
+        ['enquiries',     'Enquiries',         'manageEnquiries.php', ['Admin', 'Staff'], 'envelope'],
+        ['registrations', 'Registrations',     'registrations.php',   ['Admin', 'Staff'], 'person-plus'],
+        ['campaigns',     'Campaigns',         'manageCampaigns.php', ['Admin', 'Staff'], 'megaphone'],
+        ['events',        'Gallery & Events',  'manageEvents.php',    ['Admin', 'Staff'], 'image'],
+        ['content',       'Pages & Site info', 'manageContent.php',   ['Admin'],          'file-earmark-text'],
+        ['announcements', 'Announcements',     'announcements.php',   ['Admin'],          'broadcast'],
+        ['accounts',      'Accounts',          'accounts.php',        ['Admin'],          'person-gear'],
+        ['archive',       'Archive',           'archive.php',         ['Admin'],          'archive'],
+        ['activity',      'Activity Log',      'activityLog.php',     ['Admin'],          'clock-history'],
     ];
     $navbarLinks = array_values(array_filter($navbarLinks, fn ($link) => $link[3] === null || in_array($navbarRole, $link[3], true)));
 

@@ -3,8 +3,8 @@
     // needs $tableEnquiries, $tableEmpty and $account which decides claim or release
     $tableEnquiries = $tableEnquiries ?? [];
     $tableEmpty = $tableEmpty ?? 'No enquiries to show.';
-    // only customer service can claim enquiries
-    $canClaim = $account['role'] === 'Customer Service';
+    // only staff can claim enquiries
+    $canClaim = $account['role'] === 'Staff';
     $myAccountID = (int) $account['accountID'];
 ?>
 

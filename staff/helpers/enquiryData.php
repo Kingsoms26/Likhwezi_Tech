@@ -45,7 +45,7 @@ function getEnquiries(mysqli $conn, bool $includeArchived = false): array
 }
 
 // change an enquiry's status
-// if customer service changes an unclaimed enquiry it is claimed for them
+// if staff change an unclaimed enquiry it is claimed for them
 // an enquiry someone already claimed keeps its handler
 function updateEnquiryStatus(mysqli $conn, int $enquiryID, string $status, int $accountID): bool
 {
@@ -58,7 +58,7 @@ function updateEnquiryStatus(mysqli $conn, int $enquiryID, string $status, int $
          SET status = ?,
              handledBy = COALESCE(
                  handledBy,
-                 (SELECT accountID FROM StaffCustomerService WHERE accountID = ?)
+                 (SELECT accountID FROM Staff WHERE accountID = ?)
              )
          WHERE enquiryID = ?"
     );
@@ -72,8 +72,8 @@ function updateEnquiryStatus(mysqli $conn, int $enquiryID, string $status, int $
     return $stmt->execute();
 }
 
-// claim an unclaimed enquiry for a customer service account
-// returns false if someone already claimed it, it is archived or the account is not customer service
+// claim an unclaimed enquiry for a staff account
+// returns false if someone already claimed it, it is archived or the account is not staff
 function claimEnquiry(mysqli $conn, int $enquiryID, int $accountID): bool
 {
     $stmt = $conn->prepare(
@@ -83,7 +83,7 @@ function claimEnquiry(mysqli $conn, int $enquiryID, int $accountID): bool
            AND handledBy IS NULL
            AND isArchived = FALSE
            AND status <> 'closed'
-           AND EXISTS (SELECT 1 FROM StaffCustomerService WHERE accountID = ?)"
+           AND EXISTS (SELECT 1 FROM Staff WHERE accountID = ?)"
     );
 
     if (!$stmt) {

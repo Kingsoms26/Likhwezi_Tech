@@ -1,14 +1,13 @@
 <?php
 // profileData.php handles the staff member's own profile, passwords and activity
 // admin account changes on accountData.php reuse some of these
-// a role is whichever of the admin, marketing or customer service tables holds the account
+// a role is whichever of the admin or staff tables holds the account
 // accounts are never deleted, they are deactivated or archived so their records keep their owner
 
 // each role and its table, the order decides which wins if someone is in several
 const ACCOUNT_ROLES = [
-    'Admin'            => 'Admin',
-    'Marketing'        => 'StaffMarketing',
-    'Customer Service' => 'StaffCustomerService',
+    'Admin' => 'Admin',
+    'Staff' => 'Staff',
 ];
 
 // account statuses
@@ -38,14 +37,12 @@ function getAccount(mysqli $conn, int $accountID): ?array
                 c.username AS creatorUsername,
                 CASE
                     WHEN a.accountID IS NOT NULL THEN 'Admin'
-                    WHEN m.accountID IS NOT NULL THEN 'Marketing'
-                    WHEN s.accountID IS NOT NULL THEN 'Customer Service'
+                    WHEN s.accountID IS NOT NULL THEN 'Staff'
                 END AS role
          FROM UserAccount u
          LEFT JOIN UserAccount c ON c.accountID = u.createdBy
          LEFT JOIN Admin a ON a.accountID = u.accountID
-         LEFT JOIN StaffMarketing m ON m.accountID = u.accountID
-         LEFT JOIN StaffCustomerService s ON s.accountID = u.accountID
+         LEFT JOIN Staff s ON s.accountID = u.accountID
          WHERE u.accountID = ?"
     );
 
@@ -414,9 +411,9 @@ function getRecentActivity(mysqli $conn, int $accountID, int $limit = 10): array
 function roleChangeBlocker(mysqli $conn, int $accountID, string $currentRole): ?string
 {
     $checks = [
-        'Admin'            => ["SELECT COUNT(*) FROM Report WHERE generatedBy = ?", 'reports'],
-        // marketing has none since events and campaigns link to the account not the role
-        'Customer Service' => ["SELECT COUNT(*) FROM Enquiry WHERE handledBy = ?", 'enquiries'],
+        'Admin' => ["SELECT COUNT(*) FROM Report WHERE generatedBy = ?", 'reports'],
+        // events and campaigns link to the account not the role so only enquiries count
+        'Staff' => ["SELECT COUNT(*) FROM Enquiry WHERE handledBy = ?", 'enquiries'],
     ];
 
     if (!isset($checks[$currentRole])) {

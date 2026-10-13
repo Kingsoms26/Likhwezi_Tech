@@ -3,7 +3,7 @@
 // returns data only, includes/helpers/events.php decides what shows as past or upcoming on the public site
 // an event with no date is past unless staff mark it to be confirmed
 // archiving an event moves it to past events and its cover is its first photo
-// admin and marketing can both add, edit and archive events
+// admin and staff can both add, edit and archive events
 
 // every event newest first with its photo count, cover photo and who added it
 // each one also says if it is upcoming or past and when it is like today or in 3 days

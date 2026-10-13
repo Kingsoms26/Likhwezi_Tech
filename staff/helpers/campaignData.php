@@ -2,7 +2,7 @@
 // campaignData.php fetches and saves the campaigns and their donations for manageCampaigns.php
 // active campaigns show on campaign.php and take donations, draft and closed ones are hidden
 // archived campaigns are always hidden and a campaign's image is its first photo
-// admin and marketing can both add, edit and archive campaigns
+// admin and staff can both add, edit and archive campaigns
 
 // campaign statuses
 const CAMPAIGN_STATUSES = [

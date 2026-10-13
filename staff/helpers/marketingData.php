@@ -1,5 +1,5 @@
 <?php
-// marketingData.php fetches the campaign, donation and event figures for marketingDashboard.php
+// marketingData.php fetches the campaign, donation and event figures for staffDashboard.php
 // returns data only and archived campaigns and events are left out everywhere
 
 // upcoming events within this many days count as this week on the events card

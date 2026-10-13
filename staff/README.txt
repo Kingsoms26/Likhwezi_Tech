@@ -4,11 +4,8 @@ PROJECT STRUCTURE
     adminDashboard.php
         Admin dashboard page and Admin-specific content.
 
-    marketingDashboard.php
-        Marketing dashboard template.
-
-    customerServiceDashboard.php
-        Customer Service dashboard template.
+    staffDashboard.php
+        Staff dashboard template.
 
     index.php
         Standalone preview entry point.
@@ -85,13 +82,9 @@ Admin:
 
     <div class="admin-dashboard">
 
-Marketing:
+Staff:
 
-    <div class="marketing-dashboard">
-
-Customer Service:
-
-    <div class="customer-service-dashboard">
+    <div class="staff-dashboard">
 
 Do not dynamically build these class names from the session.
 
@@ -107,16 +100,10 @@ Admin-only change:
         background: #eef3ff;
     }
 
-Marketing-only change:
+Staff-only change:
 
-    .marketing-dashboard .dashboard-card {
+    .staff-dashboard .dashboard-card {
         background: #eef8f2;
-    }
-
-Customer Service-only change:
-
-    .customer-service-dashboard .dashboard-card {
-        background: #fff5e8;
     }
 
 Only the targeted dashboard is changed.
@@ -250,7 +237,6 @@ If only one role needs specialised data, use a role-specific helper.
 Examples:
 
     helpers/marketingData.php
-    helpers/customerServiceData.php
 
 Do not put every query for the whole project into dashboardData.php.
 
@@ -275,8 +261,7 @@ Business-specific styles use semantic names:
 Role-specific styles are scoped:
 
     .admin-dashboard ...
-    .marketing-dashboard ...
-    .customer-service-dashboard ...
+    .staff-dashboard ...
 
 Only override the properties that need to change.
 

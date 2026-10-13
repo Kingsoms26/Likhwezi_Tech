@@ -11,9 +11,8 @@ $account = requireStaff($conn);
 
 // dashboard for each role, anyone else goes to their profile
 $dashboards = [
-    'Admin'            => 'adminDashboard.php',
-    'Marketing'        => 'marketingDashboard.php',
-    'Customer Service' => 'customerServiceDashboard.php',
+    'Admin' => 'adminDashboard.php',
+    'Staff' => 'staffDashboard.php',
 ];
 
 header('Location: ' . ($dashboards[$account['role']] ?? 'profile.php'));

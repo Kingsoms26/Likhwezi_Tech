@@ -6,8 +6,7 @@
  *     progress-*  = progress-bar parts
  *
  * Role-specific changes should be scoped:
- *     .marketing-dashboard .dashboard-card { ... }
- *     .customer-service-dashboard .dashboard-card { ... }
+ *     .staff-dashboard .dashboard-card { ... }
  *
  * Keep public website CSS separate from this file.
  */
@@ -888,16 +887,10 @@ a {
 .admin-dashboard .dashboard-card {
 }
 
-/* Example: Customer Service-only card styling. */
+/* Example: Staff-only card styling. */
 
-.customer-service-dashboard .dashboard-card {
-    /* Customer Service-specific card styling can go here. */
-}
-
-/* Example: Marketing-only campaign styling. */
-
-.marketing-dashboard .dashboard-card {
-    /* Marketing-specific card styling can go here. */
+.staff-dashboard .dashboard-card {
+    /* Staff-specific card styling can go here. */
 }
 
 /* ------------------------------------------------------------------
@@ -2889,14 +2882,14 @@ button.panel-button {
 
 
 /* =====================================================================
- * CUSTOMER SERVICE DASHBOARD
+ * STAFF DASHBOARD
  *
- * customerServiceDashboard.php. Scoped to .customer-service-dashboard so
+ * staffDashboard.php. Scoped to .staff-dashboard so
  * no other page is affected. Some of these mirror the Registrations page
  * styles; they can be merged when the pages are standardised.
  * ===================================================================== */
 
-.customer-service-dashboard {
+.staff-dashboard {
     --status-new-bg: #eaf1ff;
     --status-new-text: #1e4fb3;
     --status-contacted-bg: #fff4dc;
@@ -2907,15 +2900,13 @@ button.panel-button {
 
 /* Panel header buttons: blue fill on hover, like Apply filters. */
 
-.customer-service-dashboard .panel-button:hover,
-.marketing-dashboard .panel-button:hover {
+.staff-dashboard .panel-button:hover {
     border-color: var(--accent);
     background: var(--accent);
     color: #fff;
 }
 
-.customer-service-dashboard a:focus-visible,
-.marketing-dashboard a:focus-visible {
+.staff-dashboard a:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
@@ -2969,7 +2960,7 @@ button.panel-button {
 
 /* Enquiry status badges. The word carries the meaning; colour supports it. */
 
-.customer-service-dashboard .status-badge {
+.staff-dashboard .status-badge {
     display: inline-block;
     padding: 3px 10px;
     border-radius: 999px;
@@ -2978,22 +2969,22 @@ button.panel-button {
     white-space: nowrap;
 }
 
-.customer-service-dashboard .status-new {
+.staff-dashboard .status-new {
     background: var(--status-new-bg);
     color: var(--status-new-text);
 }
 
-.customer-service-dashboard .status-contacted {
+.staff-dashboard .status-contacted {
     background: var(--status-contacted-bg);
     color: var(--status-contacted-text);
 }
 
-.customer-service-dashboard .status-closed {
+.staff-dashboard .status-closed {
     background: var(--status-closed-bg);
     color: var(--status-closed-text);
 }
 
-.customer-service-dashboard .minor-badge {
+.staff-dashboard .minor-badge {
     display: inline-block;
     margin-left: 6px;
     padding: 2px 8px;
@@ -3018,28 +3009,20 @@ button.panel-button {
 }
 
 @media (max-width: 780px) {
-    .customer-service-dashboard .panel-header,
-    .marketing-dashboard .panel-header {
+    .staff-dashboard .panel-header {
         flex-wrap: wrap;
         gap: 10px;
         padding: 12px 18px;
     }
 }
 
-/* =====================================================================
- * MARKETING DASHBOARD
- *
- * marketingDashboard.php. Shares the snapshot tables, empty state and
- * panel header styles with the Customer Service dashboard above.
- * ===================================================================== */
-
 /* Percentage above a slim bar in the Campaign Progress table. */
 
-.marketing-dashboard .campaign-progress-cell {
+.staff-dashboard .campaign-progress-cell {
     min-width: 120px;
 }
 
-.marketing-dashboard .campaign-progress-value {
+.staff-dashboard .campaign-progress-value {
     display: block;
     margin-bottom: 5px;
     font-size: 13px;
@@ -3048,7 +3031,7 @@ button.panel-button {
 
 /* "Today", "In 3 days" etc. Today and tomorrow are highlighted. */
 
-.marketing-dashboard .when-badge {
+.staff-dashboard .when-badge {
     display: inline-block;
     padding: 3px 10px;
     border-radius: 999px;
@@ -3058,7 +3041,7 @@ button.panel-button {
     font-weight: 600;
 }
 
-.marketing-dashboard .when-soon {
+.staff-dashboard .when-soon {
     background: #fff4dc;
     color: #8a5a00;
 }
@@ -3841,14 +3824,9 @@ button.panel-button {
     color: #214fa8;
 }
 
-.account-role.role-marketing {
+.account-role.role-staff {
     background: #e5f6f6;
     color: #0e6b6e;
-}
-
-.account-role.role-customer-service {
-    background: #fae7d1;
-    color: #855516;
 }
 
 .account-status.status-active {

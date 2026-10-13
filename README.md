@@ -17,13 +17,12 @@ The public website and staff portal for Likhwezi Technologies, a professional se
 
 **Staff portal**
 
-There are three roles, and each has its own dashboard:
+There are two roles, and each has its own dashboard:
 
-| Role             | Can do                                                           |
-| ---------------- | ---------------------------------------------------------------- |
-| Admin            | Manage staff accounts, site content, archive and activity log    |
-| Marketing        | Manage events, campaigns, partners, gallery and registrations    |
-| Customer Service | Reply to and close enquiries                                     |
+| Role  | Can do                                                                                      |
+| ----- | ------------------------------------------------------------------------------------------- |
+| Admin | Manage staff accounts, site content, archive and activity log                               |
+| Staff | Manage events, campaigns, partners, gallery and registrations, reply to and close enquiries |
 
 ## Built with
 

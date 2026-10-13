@@ -9,8 +9,7 @@ List of Tables
 
 - UserAccount
 - Admin
-- StaffMarketing
-- StaffCustomerService
+- Staff
 - ArchivableEntity
 - Enquiry
 - Registration
@@ -70,12 +69,7 @@ CREATE TABLE Admin (
   FOREIGN KEY (accountID) REFERENCES UserAccount (accountID) ON DELETE CASCADE
 );
 
-CREATE TABLE StaffMarketing (
-  accountID int PRIMARY KEY NOT NULL,
-  FOREIGN KEY (accountID) REFERENCES UserAccount (accountID) ON DELETE CASCADE
-);
-
-CREATE TABLE StaffCustomerService (
+CREATE TABLE Staff (
   accountID int PRIMARY KEY NOT NULL,
   FOREIGN KEY (accountID) REFERENCES UserAccount (accountID) ON DELETE CASCADE
 );
@@ -98,8 +92,8 @@ CREATE TABLE Enquiry (
   isArchived BOOLEAN NOT NULL DEFAULT FALSE,
   dateCreated DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (enquiryID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE,
-  -- Removing a customer service role unassigns their enquiries rather than deleting them.
-  FOREIGN KEY (handledBy) REFERENCES StaffCustomerService (accountID) ON DELETE SET NULL
+  -- Removing a staff role unassigns their enquiries rather than deleting them.
+  FOREIGN KEY (handledBy) REFERENCES Staff (accountID) ON DELETE SET NULL
 );
 
 CREATE TABLE Registration (
@@ -196,7 +190,7 @@ CREATE TABLE Campaign (
   goal DECIMAL(12, 2) NOT NULL,
   status ENUM('draft', 'active', 'closed') NOT NULL DEFAULT 'draft',
   isArchived BOOLEAN NOT NULL DEFAULT FALSE,
-  -- Admin and Marketing can both add campaigns, so this references any staff account.
+  -- Admin and Staff can both add campaigns, so this references any staff account.
   FOREIGN KEY (createdBy) REFERENCES UserAccount (accountID),
   FOREIGN KEY (campaignID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
 );
@@ -210,7 +204,7 @@ CREATE TABLE Event (
   -- Only used when eventDate is NULL: TRUE = date to be confirmed (upcoming), FALSE = past event.
   dateToBeConfirmed BOOLEAN NOT NULL DEFAULT FALSE,
   isArchived BOOLEAN NOT NULL DEFAULT FALSE,
-  -- Admin and Marketing can both add events, so this references any staff account.
+  -- Admin and Staff can both add events, so this references any staff account.
   FOREIGN KEY (createdBy) REFERENCES UserAccount (accountID),
   FOREIGN KEY (eventID) REFERENCES ArchivableEntity (entityID) ON DELETE CASCADE
 );
@@ -342,7 +336,7 @@ require __DIR__ . '/dbConnection.php';
 echo "Connected OK to database: " . $conn->query("SELECT DATABASE()")->fetch_row()[0] . "\n\n";
 
 $expected = [
-    'UserAccount','Admin','StaffMarketing','StaffCustomerService','ArchivableEntity',
+    'UserAccount','Admin','Staff','ArchivableEntity',
     'Enquiry','Registration','Programme','SiteSetting','Service','CymPhoto','Partner','Report','Campaign','Event','GalleryItem',
     'ArchiveLog','Donation','ActivityLog','Announcement'
 ];

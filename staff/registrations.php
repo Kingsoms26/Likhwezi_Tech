@@ -1,7 +1,7 @@
 <?php
-    // registrations.php is the staff registrations page for admin and customer service
+    // registrations.php is the staff registrations page for admin and staff
     // contains the summary cards and the cym sign ups from cym.php with search, filters and sorting
-    // customer service can archive but only admin can restore
+    // staff can archive but only admin can restore
 
     require_once __DIR__ . '/../includes/security.php';
 
@@ -11,7 +11,7 @@
 
     // make sure the staff member is logged in and has access
     $account = requireStaff($conn);
-    requireRole($account, ['Admin', 'Customer Service']);
+    requireRole($account, ['Admin', 'Staff']);
 
     $isAdmin = $account['role'] === 'Admin';
     $programmes = getRegistrationProgrammes($conn);

@@ -349,14 +349,12 @@
                                 <?php
                                 // an account with no staff role shows a dash, each role gets its own colour
                                 $row['role'] = $row['role'] ?? '—';
-                                $roleClass = 'role-customer-service';
+                                $roleClass = 'role-staff';
 
                                 if ($row['role'] === '—') {
                                     $roleClass = '';
                                 } elseif ($row['role'] === 'Admin') {
                                     $roleClass = 'role-admin';
-                                } elseif ($row['role'] === 'Marketing') {
-                                    $roleClass = 'role-marketing';
                                 }
 
                                 $statusClass = 'status-' . ($row['isArchived'] ? 'archived' : $row['accountStatus']);

@@ -1,6 +1,6 @@
 <?php
-    // manageEnquiries.php is the enquiries page for admin and customer service
-    // contains the unclaimed enquiries, my enquiries for customer service and all enquiries for admin
+    // manageEnquiries.php is the enquiries page for admin and staff
+    // contains the unclaimed enquiries, my enquiries for staff and all enquiries for admin
     // closed enquiries have their own page, closedEnquiries.php
 
     require_once __DIR__ . '/../includes/security.php';
@@ -11,7 +11,7 @@
 
     // make sure the staff member is logged in and has access
     $account = requireStaff($conn);
-    requireRole($account, ['Admin', 'Customer Service']);
+    requireRole($account, ['Admin', 'Staff']);
 
     // show archived enquiries when asked
     $showArchived = isset($_GET['showArchived']);
@@ -31,7 +31,7 @@
     $enquiries = getEnquiries($conn, $showArchived);
 
     // split the enquiries into unclaimed and mine
-    $isCustomerService = $account['role'] === 'Customer Service';
+    $isStaff = $account['role'] === 'Staff';
     $activeEnquiries = array_filter($enquiries, fn ($e) => !$e['isArchived']);
     $unclaimedEnquiries = array_values(array_filter(
         $activeEnquiries,
@@ -66,7 +66,7 @@
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
-        <?php if ($isCustomerService) : ?>
+        <?php if ($isStaff) : ?>
             <?php
             $cardTitle = 'My Enquiries';
             $cardValue = count($myEnquiries);
@@ -109,8 +109,8 @@
         </div>
     </section>
 
-    <!-- my enquiries for customer service, all enquiries for everyone else -->
-    <?php if ($isCustomerService) : ?>
+    <!-- my enquiries for staff, all enquiries for everyone else -->
+    <?php if ($isStaff) : ?>
         <section class="dashboard-panel enquiries-panel" id="my-enquiries">
             <div class="panel-header">
                 <h2>My Enquiries</h2>

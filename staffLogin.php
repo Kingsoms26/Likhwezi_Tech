@@ -18,13 +18,11 @@
             "SELECT u.accountID, u.username, u.passwordHash, u.accountStatus, u.isArchived,
                     CASE
                         WHEN a.accountID IS NOT NULL THEN 'Admin'
-                        WHEN m.accountID IS NOT NULL THEN 'Marketing'
-                        WHEN s.accountID IS NOT NULL THEN 'Customer Service'
+                        WHEN s.accountID IS NOT NULL THEN 'Staff'
                     END AS role
              FROM UserAccount u
              LEFT JOIN Admin a ON a.accountID = u.accountID
-             LEFT JOIN StaffMarketing m ON m.accountID = u.accountID
-             LEFT JOIN StaffCustomerService s ON s.accountID = u.accountID
+             LEFT JOIN Staff s ON s.accountID = u.accountID
              WHERE u.username = ? OR u.email = ?"
         );
     }

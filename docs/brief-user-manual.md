@@ -85,8 +85,8 @@ For the staff side, use the test accounts sent separately from this file.
 
 | Form              | What it creates on the staff side         |
 | ----------------- | ----------------------------------------- |
-| Contact form      | An **enquiry** for Customer Service       |
-| CYM registration  | A **registration** for Customer Service   |
+| Contact form      | An **enquiry** for Staff                  |
+| CYM registration  | A **registration** for Staff              |
 
 Both forms:
 - check phone numbers (South African, 10 digits)
@@ -115,25 +115,24 @@ After logging in, you are taken to the dashboard for your role.
 
 ### Who sees what
 
-| Page              | Admin | Marketing | Customer Service |
-| ----------------- | :---: | :-------: | :--------------: |
-| Dashboard         |   ✔   |     ✔     |        ✔         |
-| Enquiries         |   ✔   |           |        ✔         |
-| Registrations     |   ✔   |           |        ✔         |
-| Campaigns         |   ✔   |     ✔     |                  |
-| Gallery & Events  |   ✔   |     ✔     |                  |
-| Pages & Site info |   ✔   |           |                  |
-| Accounts          |   ✔   |           |                  |
-| Archive           |   ✔   |           |                  |
-| Activity Log      |   ✔   |           |                  |
+| Page              | Admin | Staff |
+| ----------------- | :---: | :---: |
+| Dashboard         |   ✔   |   ✔   |
+| Enquiries         |   ✔   |   ✔   |
+| Registrations     |   ✔   |   ✔   |
+| Campaigns         |   ✔   |   ✔   |
+| Gallery & Events  |   ✔   |   ✔   |
+| Pages & Site info |   ✔   |       |
+| Accounts          |   ✔   |       |
+| Archive           |   ✔   |       |
+| Activity Log      |   ✔   |       |
 
 ### The dashboards
 
-| Role                 | What the dashboard shows |
-| -------------------- | ------------------------ |
-| **Admin**            | Active enquiries, active campaigns, total funds raised, open enquiries, registrations by interest and campaign progress |
-| **Marketing**        | Active campaigns, donation totals, upcoming events, the campaigns closest to their goal and the next five events |
-| **Customer Service** | New and open enquiries, registrations from the last 7 days, open enquiries and the latest registrations |
+| Role      | What the dashboard shows |
+| --------- | ------------------------ |
+| **Admin** | Active enquiries, active campaigns, total funds raised, open enquiries, registrations by interest and campaign progress |
+| **Staff** | New and open enquiries, registrations from the last 7 days, active campaigns, donation totals, upcoming events, open enquiries, the latest registrations, the campaigns closest to their goal and the next five events |
 
 ### Staff pages
 
@@ -152,7 +151,7 @@ CYM sign ups.
 - Search, filter and sort the list.
 - Click one to view all details.
 - **Download CSV** downloads every registration matching the current filters, for example everyone in one programme.
-- Customer Service can archive. Only Admin can restore.
+- Staff can archive. Only Admin can restore.
 
 #### Campaigns
 - Add, edit, close or archive campaigns and upload photos.

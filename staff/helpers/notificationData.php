@@ -6,7 +6,7 @@
 require_once __DIR__ . '/profileData.php';
 require_once __DIR__ . '/../../includes/helpers/announcements.php';
 
-// upcoming events within this many days are shown to marketing
+// upcoming events within this many days are shown to admin and staff
 const NOTIFY_EVENT_DAYS = 7;
 
 // notifications for the logged in account, most urgent first
@@ -15,13 +15,13 @@ function getNotifications(mysqli $conn, array $account): array
     $notifications = array_merge(passwordNotifications($account), announcementNotifications($conn));
     $role = $account['role'];
 
-    if ($role === 'Admin' || $role === 'Customer Service') {
+    if ($role === 'Admin' || $role === 'Staff') {
         $notifications = array_merge($notifications, enquiryNotifications($conn, $account));
     }
     if ($role === 'Admin') {
         $notifications = array_merge($notifications, profileNotifications($conn));
     }
-    if ($role === 'Admin' || $role === 'Marketing') {
+    if ($role === 'Admin' || $role === 'Staff') {
         $notifications = array_merge($notifications, eventNotifications($conn));
     }
 
@@ -90,7 +90,7 @@ function announcementNotifications(mysqli $conn): array
     ], staffAnnouncements($conn));
 }
 
-// new enquiries, admin sees unclaimed ones and customer service also sees the ones they claimed
+// new enquiries, admin sees unclaimed ones and staff also see the ones they claimed
 function enquiryNotifications(mysqli $conn, array $account): array
 {
     $accountID = (int) $account['accountID'];
@@ -114,7 +114,7 @@ function enquiryNotifications(mysqli $conn, array $account): array
     $mine = (int) ($counts['mine'] ?? 0);
     $notifications = [];
 
-    if ($account['role'] === 'Customer Service' && $mine > 0) {
+    if ($account['role'] === 'Staff' && $mine > 0) {
         $notifications[] = [
             'type'   => 'enquiry',
             'level'  => 'warning',
@@ -129,7 +129,7 @@ function enquiryNotifications(mysqli $conn, array $account): array
             'type'   => 'enquiry',
             'level'  => 'info',
             'title'  => $unassigned === 1 ? '1 unclaimed enquiry' : "$unassigned unclaimed enquiries",
-            'detail' => 'Not yet claimed by Customer Service',
+            'detail' => 'Not yet claimed by Staff',
             'link'   => 'manageEnquiries.php#unclaimed-enquiries',
         ];
     }
@@ -144,10 +144,9 @@ function profileNotifications(mysqli $conn): array
         "SELECT u.accountID, u.firstName, u.lastName, u.username
          FROM UserAccount u
          LEFT JOIN Admin a ON a.accountID = u.accountID
-         LEFT JOIN StaffMarketing m ON m.accountID = u.accountID
-         LEFT JOIN StaffCustomerService s ON s.accountID = u.accountID
+         LEFT JOIN Staff s ON s.accountID = u.accountID
          WHERE u.accountStatus = 'active'
-           AND a.accountID IS NULL AND m.accountID IS NULL AND s.accountID IS NULL
+           AND a.accountID IS NULL AND s.accountID IS NULL
          ORDER BY u.dateCreated DESC"
     );
 
@@ -166,7 +165,7 @@ function profileNotifications(mysqli $conn): array
     return $notifications;
 }
 
-// for admin and marketing, events happening in the next 7 days
+// for admin and staff, events happening in the next 7 days
 function eventNotifications(mysqli $conn): array
 {
     $days = NOTIFY_EVENT_DAYS;

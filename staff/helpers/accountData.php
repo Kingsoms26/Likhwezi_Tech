@@ -1,6 +1,6 @@
 <?php
 // accountData.php lists, creates, archives and changes staff accounts for the admin accounts page
-// roles live in the admin, marketing and customer service tables and a username never changes
+// roles live in the admin and staff tables and a username never changes
 // accounts are never deleted, they are deactivated or archived once the person has left
 // archived accounts cannot log in but keep their row so their history stays with them
 // an admin cannot suspend, deactivate, archive or demote their own account
@@ -19,13 +19,11 @@ const ACCOUNT_LIST_SQL =
             u.isArchived, u.archivedAt,
             CASE
                 WHEN a.accountID IS NOT NULL THEN 'Admin'
-                WHEN m.accountID IS NOT NULL THEN 'Marketing'
-                WHEN s.accountID IS NOT NULL THEN 'Customer Service'
+                WHEN s.accountID IS NOT NULL THEN 'Staff'
             END AS role
      FROM UserAccount u
      LEFT JOIN Admin a ON a.accountID = u.accountID
-     LEFT JOIN StaffMarketing m ON m.accountID = u.accountID
-     LEFT JOIN StaffCustomerService s ON s.accountID = u.accountID";
+     LEFT JOIN Staff s ON s.accountID = u.accountID";
 
 // one page of accounts matching the search, role and status, newest first
 // archived accounts are left out unless the archived filter is chosen

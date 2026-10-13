@@ -10,7 +10,7 @@
 
     // make sure the staff member is logged in and has access
     $account = requireStaff($conn);
-    requireRole($account, ['Admin', 'Customer Service']);
+    requireRole($account, ['Admin', 'Staff']);
 
     // show archived enquiries when asked
     $showArchived = isset($_GET['showArchived']);
