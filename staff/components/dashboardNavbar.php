@@ -26,6 +26,9 @@
     $navbarExtra = count($navbarLinks) > ($navbarFloating ? 5 : 4)
         ? array_slice($navbarLinks, $navbarPrimaryCount)
         : [];
+    // Floating dashboard navs put every role-available destination in the mobile three-dot menu.
+    $navbarExtraKeys = array_column($navbarExtra, 0);
+    $navbarMoreLinks = $navbarFloating ? $navbarLinks : $navbarExtra;
 ?>
 
 <nav class="dashboard-navbar<?= $navbarFloating ? ' dashboard-navbar-floating' : '' ?>" aria-label="Dashboard navigation">
@@ -46,18 +49,19 @@
         <?php endforeach; ?>
 
         <!-- More menu keeps additional role-specific destinations accessible -->
-        <?php if ($navbarExtra) : ?>
-            <?php $extraActive = in_array($activePage, array_column($navbarExtra, 0), true); ?>
-            <li class="navbar-more dropup">
+        <?php if ($navbarFloating || $navbarExtra) : ?>
+            <?php $extraActive = in_array($activePage, array_column($navbarMoreLinks, 0), true); ?>
+            <li class="navbar-more dropup<?= $navbarExtra ? '' : ' navbar-more-mobile-only' ?>">
                 <button type="button" class="navbar-link <?= $extraActive ? 'active' : '' ?>"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                        data-bs-toggle="dropdown" aria-label="Open dashboard menu" aria-haspopup="true" aria-expanded="false">
                     <span class="navbar-icon"><i class="bi bi-three-dots" aria-hidden="true"></i></span>
                     <span class="navbar-label">More</span>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end navbar-more-menu">
-                    <?php foreach ($navbarExtra as [$key, $label, $href, , $icon]) : ?>
+                    <?php foreach ($navbarMoreLinks as [$key, $label, $href, , $icon]) : ?>
+                        <?php $mobileOnly = $navbarFloating && !in_array($key, $navbarExtraKeys, true); ?>
                         <li>
-                            <a class="dropdown-item <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
+                            <a class="dropdown-item<?= $mobileOnly ? ' navbar-mobile-only' : '' ?> <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
                                <?= $activePage === $key ? 'aria-current="page"' : '' ?>>
                                 <i class="bi bi-<?= $icon ?>" aria-hidden="true"></i>
                                 <?= htmlspecialchars($label) ?>

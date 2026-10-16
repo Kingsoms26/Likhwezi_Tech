@@ -4607,6 +4607,15 @@ a.table-action {
     display: flex !important;
 }
 
+/* Keep the all-destinations menu exclusive to small screens when no desktop overflow exists. */
+.dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more-mobile-only {
+    display: none !important;
+}
+
+.dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more-menu .navbar-mobile-only {
+    display: none !important;
+}
+
 .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more > .navbar-link {
     min-height: 42px;
     padding: 7px 12px;
@@ -5424,6 +5433,7 @@ a.table-action {
 }
 
 @media (max-width: 780px) {
+    /* Replace the crowded horizontal dashboard links with a compact three-dot menu on phones. */
     .dashboard:has(.staff-dashboard) .dashboard-header {
         position: absolute;
         display: grid;
@@ -5455,20 +5465,44 @@ a.table-action {
 
     .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-links {
         width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
+        justify-content: flex-end;
+        overflow: visible;
         padding: 0 0 8px;
-        scrollbar-width: none;
     }
 
-    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-links::-webkit-scrollbar {
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-links > li:not(.navbar-more) {
+        display: none !important;
+    }
+
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more-mobile-only {
+        display: flex !important;
+    }
+
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more > .navbar-link {
+        width: 40px;
+        min-height: 36px;
+        justify-content: center;
+        padding: 6px;
+    }
+
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more > .navbar-link .navbar-icon {
+        font-size: 20px;
+    }
+
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more > .navbar-link .navbar-label {
         display: none;
     }
 
-    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-link {
-        min-height: 36px;
-        padding: 6px 10px;
-        font-size: 11px;
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more-menu {
+        right: 0;
+        left: auto;
+        width: min(280px, calc(100vw - 28px));
+        max-height: min(70vh, 480px);
+        overflow-y: auto;
+    }
+
+    .dashboard:has(.staff-dashboard) .dashboard-navbar-floating .navbar-more-menu .navbar-mobile-only {
+        display: flex !important;
     }
 
     .dashboard:has(.staff-dashboard) .dashboard-header-actions {
@@ -5939,6 +5973,7 @@ a.table-action {
 .dashboard:not(:has(.staff-dashboard)) .dashboard-header,
 .dashboard:has(.staff-dashboard) .dashboard-header,
 .dashboard:has(.staff-dashboard):has(.staff-announcement) .dashboard-header {
+    /* A solid base keeps the shared header consistent over every dashboard background. */
     border-bottom: 1px solid rgba(255, 255, 255, .2);
     background: #04113b;
     box-shadow: 0 8px 24px rgba(5, 23, 58, .12);
@@ -6017,112 +6052,5 @@ a.table-action {
 @media (max-width: 780px) {
     .dashboard:not(:has(.staff-dashboard)) {
         background-attachment: scroll;
-    }
-}
-
-.admin-dashboard .overview-cards {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.admin-dashboard .admin-summary-glass > .overview-eyebrow {
-    margin-bottom: 12px;
-}
-
-.admin-dashboard .admin-summary-glass .donation-totals {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 12px;
-    margin-top: 0;
-}
-
-.admin-dashboard .admin-summary-glass .donation-totals span {
-    min-height: 24px;
-}
-
-.admin-dashboard .admin-summary-glass .donation-totals strong {
-    font-size: 15px;
-}
-
-.admin-dashboard .admin-overview-list {
-    display: grid;
-    gap: 9px;
-    margin: 13px 0 0;
-    padding: 0;
-    list-style: none;
-}
-
-.admin-dashboard .admin-overview-list li {
-    display: grid;
-    min-width: 0;
-    gap: 3px;
-    padding-top: 8px;
-    border-top: 1px solid #e8edf4;
-}
-
-.admin-dashboard .admin-overview-list strong,
-.admin-dashboard .admin-overview-list span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.admin-dashboard .admin-overview-list strong {
-    color: #30394a;
-    font-size: 10px;
-    font-weight: 600;
-}
-
-.admin-dashboard .admin-overview-list span,
-.admin-dashboard .admin-progress-item small {
-    color: var(--muted);
-    font-size: 9px;
-}
-
-.admin-dashboard .admin-interest-list,
-.admin-dashboard .admin-campaign-list {
-    display: grid;
-    gap: 12px;
-    margin-top: 17px;
-}
-
-.admin-dashboard .admin-campaign-list {
-    gap: 15px;
-}
-
-.admin-dashboard .admin-progress-heading {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 5px;
-    color: #505b6d;
-    font-size: 10px;
-}
-
-.admin-dashboard .admin-progress-heading span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.admin-dashboard .admin-progress-heading strong {
-    flex: 0 0 auto;
-    color: #30394a;
-    font-size: 10px;
-}
-
-.admin-dashboard .admin-progress-item small {
-    display: block;
-    margin-top: 4px;
-}
-
-@media (max-width: 1180px) {
-    .admin-dashboard .overview-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 480px) {
-    .admin-dashboard .overview-cards {
-        grid-template-columns: minmax(0, 1fr);
     }
 }

@@ -17,6 +17,7 @@
         ? $_GET['donationPeriod']
         : 'week';
 
+    // Both dashboard roles use the same fixed fixtures so the overview is populated without live records.
     $dashboardUsesSampleData = true;
     $staffPreview = staffPreviewEnabled();
 
