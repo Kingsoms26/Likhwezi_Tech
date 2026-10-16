@@ -238,6 +238,10 @@ function getNavbarCounts(mysqli $conn, array $account): array
 // clear the registrations badge, called when the registrations page opens
 function markRegistrationsSeen(mysqli $conn, array $account): void
 {
+    if (staffPreviewEnabled()) {
+        return;
+    }
+
     $accountID = (int) $account['accountID'];
 
     $stmt = $conn->prepare("UPDATE UserAccount SET registrationsSeenAt = NOW() WHERE accountID = ?");

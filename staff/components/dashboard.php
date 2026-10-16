@@ -5,11 +5,18 @@
     // notifications show on every page so they are loaded here once
 
     require_once __DIR__ . '/../helpers/notificationData.php';
+    require_once __DIR__ . '/../helpers/previewData.php';
 
     $pageTitle = $pageTitle ?? 'Dashboard';
     $activePage = $activePage ?? 'dashboard';
-    $notifications = isset($conn, $account) ? getNotifications($conn, $account) : [];
-    $navbarCounts = isset($conn, $account) ? getNavbarCounts($conn, $account) : [];
+    $staffPreview = staffPreviewEnabled();
+    $notifications = !$staffPreview && isset($conn, $account) ? getNotifications($conn, $account) : [];
+    if ($staffPreview) {
+        $notifications = staffPreviewNotifications();
+    }
+    $navbarCounts = $staffPreview
+        ? ['enquiries' => 2, 'registrations' => 6]
+        : (isset($conn, $account) ? getNavbarCounts($conn, $account) : []);
 ?>
 
 <!DOCTYPE html>
@@ -41,19 +48,17 @@
     <!-- dashboard styles are kept separate from the public website css -->
     <!-- the version number changes with every edit so browsers fetch the new css -->
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboard.css') ?>">
+    <script src="assets/js/staffPreview.js?v=<?= filemtime(__DIR__ . '/../assets/js/staffPreview.js') ?>" defer></script>
 </head>
 
 <body>
 
-    <div class="dashboard">
+    <div class="dashboard" data-preview="<?= $staffPreview ? 'true' : 'false' ?>">
 
-        <!-- header -->
+        <!-- shared top navigation -->
         <?php include __DIR__ . '/dashboardHeader.php'; ?>
 
         <div class="dashboard-body">
-
-            <!-- navbar, fixed along the bottom of the screen -->
-            <?php include __DIR__ . '/dashboardNavbar.php'; ?>
 
             <!-- main area, the page fills this in -->
             <main class="dashboard-main">
@@ -78,3 +83,10 @@
                 <div class="dashboard-heading">
                     <h1><?= htmlspecialchars($pageTitle) ?></h1>
                 </div>
+
+                <?php if ($staffPreview && $activePage !== 'dashboard') : ?>
+                    <aside class="staff-preview-banner" role="status">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                        <span><strong>Demo preview</strong> · sample data only; changes are disabled and nothing is saved.</span>
+                    </aside>
+                <?php endif; ?>

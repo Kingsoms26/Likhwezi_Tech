@@ -9,6 +9,7 @@
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/archiveData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and is an admin
     $account = requireStaff($conn);
@@ -83,6 +84,21 @@
     // fetch the counts and this page of archived items
     $counts = getArchiveCounts($conn);
     $result = getArchivedItems($conn, $type, $search, $page);
+    if (staffPreviewEnabled()) {
+        $demoRows = [
+            ['type' => 'enquiry', 'id' => 99008, 'title' => 'Zanele Maseko', 'detail' => 'Interested in partnering on a digital inclusion event.', 'donations' => 0, 'photos' => 0, 'archivedAt' => staffPreviewDate(2), 'archivedBy' => 'Mpho Dube'],
+            ['type' => 'registration', 'id' => 99112, 'title' => 'Bongani Maseko', 'detail' => 'Robotics', 'donations' => 0, 'photos' => 0, 'archivedAt' => staffPreviewDate(5), 'archivedBy' => 'Nandi Mthembu'],
+            ['type' => 'campaign', 'id' => 99207, 'title' => 'Mobile Maker Space', 'detail' => 'Goal R60,000.00', 'donations' => 21, 'photos' => 3, 'archivedAt' => staffPreviewDate(18), 'archivedBy' => 'Mpho Dube'],
+            ['type' => 'event', 'id' => 99306, 'title' => 'Mobile Maker Space Launch', 'detail' => date('j M Y', strtotime(staffPreviewDate(35))), 'donations' => 0, 'photos' => 0, 'archivedAt' => staffPreviewDate(21), 'archivedBy' => 'Nandi Mthembu'],
+            ['type' => 'partner', 'id' => 99733, 'title' => 'Future Makers Trust', 'detail' => 'https://example.test/future-makers', 'donations' => 0, 'photos' => 0, 'archivedAt' => staffPreviewDate(45), 'archivedBy' => 'Mpho Dube'],
+        ];
+        $demoRows = array_values(array_filter($demoRows, function ($row) use ($type, $search) {
+            if ($type !== 'all' && $row['type'] !== $type) return false;
+            return $search === '' || stripos($row['title'] . ' ' . $row['detail'], $search) !== false;
+        }));
+        $counts = ['all' => 5, 'enquiry' => 1, 'registration' => 1, 'partner' => 1, 'campaign' => 1, 'event' => 1];
+        $result = ['rows' => $demoRows, 'total' => count($demoRows), 'page' => 1, 'pages' => 1];
+    }
     $rows = $result['rows'];
     $page = $result['page'];
     $flash = takeFlash();

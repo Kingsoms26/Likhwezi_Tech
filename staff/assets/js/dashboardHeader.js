@@ -2,6 +2,26 @@
 
 // open and close the notifications dropdown
 document.addEventListener('DOMContentLoaded', () => {
+    const previewMode = document.querySelector('.dashboard')?.dataset.preview === 'true';
+    const dashboardClock = document.querySelector('.dashboard-clock');
+    if (dashboardClock) {
+        const updateClock = () => {
+            dashboardClock.textContent = new Intl.DateTimeFormat(undefined, {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'short',
+                hour: 'numeric',
+                minute: '2-digit',
+            }).format(new Date());
+        };
+        updateClock();
+        window.setInterval(updateClock, 60000);
+    }
+
+    document.getElementById('donation-period')?.addEventListener('change', (event) => {
+        event.target.form.requestSubmit();
+    });
+
     const toggle = document.querySelector('.notifications-toggle');
     const dropdown = document.getElementById('notifications-dropdown');
 
@@ -102,14 +122,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // tell the server then remove the notifications straight away
     // keepalive lets the request finish when the tap also opens another page
     const dismiss = (items) => {
-        const body = new FormData();
-        body.append('csrfToken', dropdown.dataset.csrf);
-        items.forEach((item) => {
-            body.append('ids[]', item.dataset.id);
-            dismissedHere.add(item.dataset.id);
-        });
-        fetch('dismissNotifications.php', { method: 'POST', body, keepalive: true })
-            .catch(() => {});
+        if (!previewMode) {
+            const body = new FormData();
+            body.append('csrfToken', dropdown.dataset.csrf);
+            items.forEach((item) => body.append('ids[]', item.dataset.id));
+            fetch('dismissNotifications.php', { method: 'POST', body, keepalive: true })
+                .catch(() => {});
+        }
+        items.forEach((item) => dismissedHere.add(item.dataset.id));
 
         // an announcement also has a banner above the page, both go together
         items.forEach((item) => {
@@ -148,7 +168,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (stopped || document.hidden) return;
 
         try {
-            const response = await fetch('notifications.php', {
+            const notificationsURL = new URL('notifications.php', window.location.href);
+            if (previewMode) notificationsURL.searchParams.set('preview', '1');
+            const response = await fetch(notificationsURL, {
                 headers: { Accept: 'application/json' },
                 cache: 'no-store',
             });

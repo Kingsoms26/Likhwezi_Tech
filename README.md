@@ -54,6 +54,8 @@ uploads/        local upload folders
 4. Create a file called `config/.env` with your settings (see below).
 5. Open `http://localhost/<folder-name>/` in your browser.
 
+After signing in to the staff portal on localhost, open any staff page with `?preview=1` (for example, `staff/staffDashboard.php?preview=1`) to view labelled sample data. The preview follows links between pages, is display-only, and never saves sample records to the database.
+
 ### The `.env` file
 
 ```

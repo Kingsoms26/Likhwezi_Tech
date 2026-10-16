@@ -8,6 +8,7 @@ require_once __DIR__ . '/../includes/security.php';
 require __DIR__ . '/../config/dbConnection.php';
 require __DIR__ . '/helpers/auth.php';
 require __DIR__ . '/helpers/notificationData.php';
+require __DIR__ . '/helpers/previewData.php';
 
 header('Content-Type: application/json');
 header('Cache-Control: no-store');
@@ -21,7 +22,9 @@ if (!isset($_SESSION['accountID'])) {
 
 // fetch the notifications for this account
 $account = requireStaff($conn);
-$notifications = getNotifications($conn, $account);
+$notifications = staffPreviewEnabled()
+    ? staffPreviewNotifications()
+    : getNotifications($conn, $account);
 
 // release the session lock so this poll never holds up other requests
 session_write_close();

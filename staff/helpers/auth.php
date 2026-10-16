@@ -13,6 +13,12 @@ const CHANGE_PASSWORD_PAGE = 'profile.php';
 // sends them to the login page or the change password page when needed
 function requireStaff(mysqli $conn): array
 {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && staffPreviewEnabled()) {
+        http_response_code(403);
+        header('Content-Type: text/plain; charset=utf-8');
+        exit('Demo preview is display-only. No changes were saved.');
+    }
+
     $account = isset($_SESSION['accountID']) ? getAccount($conn, (int) $_SESSION['accountID']) : null;
 
     // log out anyone not logged in, not active, archived or without a staff role
@@ -67,7 +73,22 @@ function csrfToken(): string
 // hidden input to place inside every post form
 function csrfField(): string
 {
-    return '<input type="hidden" name="csrfToken" value="' . htmlspecialchars(csrfToken()) . '">';
+    $field = '<input type="hidden" name="csrfToken" value="' . htmlspecialchars(csrfToken()) . '">';
+    if (staffPreviewEnabled()) {
+        $field .= '<input type="hidden" name="preview" value="1">';
+    }
+
+    return $field;
+}
+
+// Demo records are available only on this machine and are never stored in MySQL.
+function staffPreviewEnabled(): bool
+{
+    $host = strtolower((string) parse_url('http://' . ($_SERVER['HTTP_HOST'] ?? ''), PHP_URL_HOST));
+    $localHost = in_array($host, ['localhost', '127.0.0.1', '::1'], true);
+    $previewFlag = ($_GET['preview'] ?? $_POST['preview'] ?? '') === '1';
+
+    return $localHost && $previewFlag;
 }
 
 // check the submitted token matches

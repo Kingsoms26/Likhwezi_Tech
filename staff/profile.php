@@ -8,6 +8,7 @@
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in
     $account = requireStaff($conn);
@@ -111,6 +112,14 @@
     $flash = takeFlash();
     $form = $formInput ?? $account;
     $activity = $mustChangePassword ? [] : getRecentActivity($conn, $accountID);
+    if (staffPreviewEnabled() && !$mustChangePassword) {
+        $activity = [
+            ['type' => 'Enquiry', 'summary' => 'Handling enquiry from Amara Ndlovu (new)', 'happenedAt' => staffPreviewDate(0)],
+            ['type' => 'Registration', 'summary' => 'Reviewed a new Coding registration', 'happenedAt' => staffPreviewDate(1)],
+            ['type' => 'Campaign', 'summary' => 'Updated campaign: School Lab Equipment', 'happenedAt' => staffPreviewDate(2)],
+            ['type' => 'Event', 'summary' => 'Reviewed event: Robotics Open Day', 'happenedAt' => staffPreviewDate(4)],
+        ];
+    }
 
     $pageTitle = $mustChangePassword ? 'Set Up Your Account' : 'My Profile';
     $activePage = $mustChangePassword ? '' : 'profile';

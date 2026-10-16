@@ -8,6 +8,7 @@
 
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and is an admin
     $account = requireStaff($conn);
@@ -31,6 +32,12 @@
     // csv download
 
     if (($_GET['export'] ?? '') === 'csv') {
+        if (staffPreviewEnabled()) {
+            http_response_code(403);
+            header('Content-Type: text/plain; charset=utf-8');
+            exit('CSV export is unavailable in the display-only demo preview.');
+        }
+
         $result = getActivityLogResult($conn, $filters);
 
         header('Content-Type: text/csv; charset=utf-8');
@@ -69,6 +76,49 @@
     $accounts = getActivityAccounts($conn);
     $selected = $filters['account'] ? getAccount($conn, $filters['account']) : null;
     $summary = $selected ? getAccountActivitySummary($conn, $filters['account']) : null;
+    if (staffPreviewEnabled()) {
+        $demoUserID = 99090;
+        $demoUser = [
+            'accountID' => $demoUserID,
+            'username' => 'mpho.dube',
+            'firstName' => 'Mpho',
+            'lastName' => 'Dube',
+            'email' => 'mpho.dube@example.test',
+            'role' => 'Admin',
+            'accountStatus' => 'active',
+            'isArchived' => false,
+            'archivedAt' => null,
+            'dateCreated' => staffPreviewDate(120),
+            'lastLogin' => staffPreviewDate(0),
+            'profileImageURL' => null,
+        ];
+        $demoRows = [
+            ['logID' => 99001, 'accountID' => $demoUserID, 'username' => 'mpho.dube', 'category' => 'Enquiry', 'action' => 'claimed', 'description' => 'Claimed enquiry #99001', 'targetID' => 99001, 'ipAddress' => '127.0.0.1', 'createdAt' => staffPreviewDate(0), 'fullName' => 'Mpho Dube', 'actorArchived' => 0],
+            ['logID' => 99002, 'accountID' => $demoUserID, 'username' => 'mpho.dube', 'category' => 'Registration', 'action' => 'export', 'description' => 'Downloaded 12 registrations as CSV', 'targetID' => null, 'ipAddress' => '127.0.0.1', 'createdAt' => staffPreviewDate(1), 'fullName' => 'Mpho Dube', 'actorArchived' => 0],
+            ['logID' => 99003, 'accountID' => $demoUserID, 'username' => 'mpho.dube', 'category' => 'Campaign', 'action' => 'updated', 'description' => 'Updated campaign "School Lab Equipment"', 'targetID' => 99201, 'ipAddress' => '127.0.0.1', 'createdAt' => staffPreviewDate(2), 'fullName' => 'Mpho Dube', 'actorArchived' => 0],
+            ['logID' => 99004, 'accountID' => $demoUserID, 'username' => 'mpho.dube', 'category' => 'Event', 'action' => 'created', 'description' => 'Created event "Robotics Open Day"', 'targetID' => 99302, 'ipAddress' => '127.0.0.1', 'createdAt' => staffPreviewDate(4), 'fullName' => 'Mpho Dube', 'actorArchived' => 0],
+            ['logID' => 99005, 'accountID' => $demoUserID, 'username' => 'mpho.dube', 'category' => 'Account', 'action' => 'failed', 'description' => 'Failed sign-in attempt for a demo account', 'targetID' => null, 'ipAddress' => '127.0.0.1', 'createdAt' => staffPreviewDate(6), 'fullName' => 'Mpho Dube', 'actorArchived' => 0],
+        ];
+        $demoRows = array_values(array_filter($demoRows, function ($row) use ($filters, $demoUserID) {
+            if ($filters['account'] && $filters['account'] !== $demoUserID) return false;
+            if ($filters['category'] !== '' && $filters['category'] !== $row['category']) return false;
+            return $filters['search'] === ''
+                || stripos($row['description'] . ' ' . $row['username'], $filters['search']) !== false;
+        }));
+        $result = ['rows' => $demoRows, 'total' => count($demoRows), 'page' => 1, 'pages' => 1];
+        $rows = $result['rows'];
+        $filters['page'] = 1;
+        $accounts = [[
+            'accountID' => $demoUserID, 'username' => 'mpho.dube',
+            'firstName' => 'Mpho', 'lastName' => 'Dube', 'isArchived' => false,
+        ], [
+            'accountID' => 99091, 'username' => 'nandi.m',
+            'firstName' => 'Nandi', 'lastName' => 'Mthembu', 'isArchived' => false,
+        ]];
+        $selected = $filters['account'] === $demoUserID ? $demoUser : null;
+        $summary = $selected ? ['total' => 18] : null;
+        $totalPages = 1;
+    }
 
     $hasFilters = $filters['account'] || $filters['category'] !== '' || $filters['search'] !== ''
         || $filters['from'] !== '' || $filters['to'] !== '';

@@ -49,6 +49,34 @@ function getCampaignStats(mysqli $conn): array
     return $stats;
 }
 
+// paid donations grouped by date for the dashboard trend chart
+function getDonationTrend(mysqli $conn, string $period = 'week'): array
+{
+    $lookback = $period === 'month' ? 29 : 6;
+    $stmt = $conn->prepare(
+        "SELECT DATE(d.donationDate) AS donatedOn, SUM(d.amount) AS total
+         FROM Donation d
+         JOIN Campaign c ON c.campaignID = d.campaignID
+         WHERE c.isArchived = FALSE
+           AND d.paymentStatus = 'complete'
+           AND d.donationDate >= CURDATE() - INTERVAL ? DAY
+           AND d.donationDate < CURDATE() + INTERVAL 1 DAY
+         GROUP BY DATE(d.donationDate)
+         ORDER BY donatedOn"
+    );
+    if (!$stmt) {
+        error_log('getDonationTrend failed: ' . $conn->error);
+        return [];
+    }
+
+    $stmt->bind_param('i', $lookback);
+    $stmt->execute();
+
+    return array_map(function ($row) {
+        return ['date' => $row['donatedOn'], 'amount' => (float) $row['total']];
+    }, $stmt->get_result()->fetch_all(MYSQLI_ASSOC));
+}
+
 // active campaigns with how much they have raised against their goal, closest to the goal first
 function getActiveCampaignProgress(mysqli $conn, int $limit = 5): array
 {

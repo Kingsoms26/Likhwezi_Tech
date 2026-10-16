@@ -7,6 +7,7 @@
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/enquiryData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and has access
     $account = requireStaff($conn);
@@ -29,6 +30,12 @@
         getEnquiries($conn, $showArchived),
         fn ($e) => $e['status'] === 'closed'
     ));
+    if (staffPreviewEnabled()) {
+        $closedEnquiries = array_values(array_filter(
+            staffPreviewEnquiries((int) $account['accountID']),
+            fn ($enquiry) => $enquiry['status'] === 'closed' && ($showArchived || !$enquiry['isArchived'])
+        ));
+    }
 
     $pageTitle = 'Closed Enquiries';
     $activePage = 'enquiries';

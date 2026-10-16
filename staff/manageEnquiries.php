@@ -8,6 +8,7 @@
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/enquiryData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and has access
     $account = requireStaff($conn);
@@ -29,6 +30,16 @@
     $flash = takeFlash();
     $counts = getEnquiryCounts($conn);
     $enquiries = getEnquiries($conn, $showArchived);
+    if (staffPreviewEnabled()) {
+        $previewEnquiries = staffPreviewEnquiries((int) $account['accountID']);
+        $enquiries = array_values(array_filter($previewEnquiries, fn ($enquiry) => $showArchived || !$enquiry['isArchived']));
+        $counts = ['new' => 0, 'contacted' => 0, 'closed' => 0];
+        foreach ($previewEnquiries as $enquiry) {
+            if (!$enquiry['isArchived']) {
+                $counts[$enquiry['status']]++;
+            }
+        }
+    }
 
     // split the enquiries into unclaimed and mine
     $isStaff = $account['role'] === 'Staff';

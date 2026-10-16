@@ -11,6 +11,7 @@
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/contentData.php';
     require __DIR__ . '/helpers/partnerData.php';
+    require __DIR__ . '/helpers/previewData.php';
     require_once __DIR__ . '/../includes/helpers/siteContent.php';
 
     // make sure the staff member is logged in and is an admin
@@ -411,6 +412,44 @@
         // keep showing the current photo when an edit fails
         if ($tab === 'photos' && !empty($formInput['id']) && ($row = getCymPhoto($conn, (int) $formInput['id']))) {
             $dialogValues['src'] = $row['src'];
+        }
+    }
+
+    if (staffPreviewEnabled()) {
+        if ($tab === 'programmes') {
+            $programmes = [
+                ['programmeID' => 99701, 'name' => 'Coding', 'isActive' => 1, 'dateAdd' => staffPreviewDate(160), 'registrations' => 4],
+                ['programmeID' => 99702, 'name' => 'Artificial Intelligence', 'isActive' => 1, 'dateAdd' => staffPreviewDate(120), 'registrations' => 2],
+                ['programmeID' => 99703, 'name' => 'Robotics', 'isActive' => 1, 'dateAdd' => staffPreviewDate(90), 'registrations' => 4],
+                ['programmeID' => 99704, 'name' => 'Hackathons', 'isActive' => 0, 'dateAdd' => staffPreviewDate(60), 'registrations' => 2],
+            ];
+            $shownCount = 3;
+        } elseif ($tab === 'services') {
+            $services = [
+                ['serviceID' => 99711, 'name' => 'Digital Transformation', 'tagline' => 'Practical technology for growing organisations', 'icon' => 'bi-diagram-3', 'description' => 'A tailored roadmap to improve your digital operations.', 'includes' => "Discovery workshop\nImplementation roadmap\nOngoing support", 'isActive' => 1],
+                ['serviceID' => 99712, 'name' => 'Cloud & Infrastructure', 'tagline' => 'Reliable, secure foundations', 'icon' => 'bi-cloud', 'description' => 'Modern cloud services designed around your needs.', 'includes' => "Cloud readiness review\nMigration planning\nSecurity guidance", 'isActive' => 1],
+                ['serviceID' => 99713, 'name' => 'Software Development', 'tagline' => 'Build useful digital products', 'icon' => 'bi-code-slash', 'description' => 'Custom web and application development.', 'includes' => "Product discovery\nWeb applications\nMaintenance", 'isActive' => 1],
+            ];
+        } elseif ($tab === 'photos') {
+            $photos = [
+                ['photoID' => 99721, 'altText' => 'Young people learning together at a technology workshop', 'src' => 'assets/images/home-img-2.webp'],
+                ['photoID' => 99722, 'altText' => 'Technology and digital innovation illustration', 'src' => 'assets/images/home-img-2.webp'],
+            ];
+        } elseif ($tab === 'partners') {
+            $partners = [
+                ['partnerID' => 99731, 'name' => 'Bright Futures Foundation', 'description' => 'Supporting digital learning opportunities for young people.', 'logo' => '', 'websiteURL' => 'https://example.test/bright-futures', 'sortOrder' => 1, 'dateAdd' => staffPreviewDate(150), 'isArchived' => 0],
+                ['partnerID' => 99732, 'name' => 'Community Tech Network', 'description' => 'Connecting communities with practical technology resources.', 'logo' => '', 'websiteURL' => 'https://example.test/community-tech', 'sortOrder' => 2, 'dateAdd' => staffPreviewDate(90), 'isArchived' => 0],
+                ['partnerID' => 99733, 'name' => 'Future Makers Trust', 'description' => 'Helping learners explore science, engineering and coding.', 'logo' => '', 'websiteURL' => 'https://example.test/future-makers', 'sortOrder' => 3, 'dateAdd' => staffPreviewDate(45), 'isArchived' => 1],
+            ];
+            $counts = ['total' => 3, 'active' => 2, 'archived' => 1];
+        } elseif ($tab === 'details') {
+            $settings = $formInput ?? array_merge(DEFAULT_SITE_SETTINGS, [
+                'contactAddress' => 'Johannesburg, South Africa',
+                'contactPhone' => '+27 11 555 0100',
+                'contactEmail' => 'hello@likhwezitech.example',
+                'cymSiteURL' => 'https://example.test/cym.php',
+                'cymParticipants' => '240+',
+            ]);
         }
     }
 
@@ -879,7 +918,7 @@
                                     'name'        => $partner['name'],
                                     'description' => $partner['description'] ?? '',
                                     'websiteURL'  => $partner['websiteURL'] ?? '',
-                                    'logo'        => partnerLogoSrc($partner['logo']),
+                                    'logo'        => $partner['logo'] ? partnerLogoSrc($partner['logo']) : '',
                                 ]);
                                 ?>
                                 <tr class="<?= $isArchived ? 'is-archived' : 'partner-row' ?>"
@@ -907,7 +946,11 @@
                                         <?php endif; ?>
                                     </td>
                                     <td>
-                                        <img class="partner-logo-thumb" src="<?= htmlspecialchars(partnerLogoSrc($partner['logo'])) ?>" alt="">
+                                        <?php if ($partner['logo']) : ?>
+                                            <img class="partner-logo-thumb" src="<?= htmlspecialchars(partnerLogoSrc($partner['logo'])) ?>" alt="">
+                                        <?php else : ?>
+                                            <span class="partner-logo-placeholder" aria-hidden="true"><?= htmlspecialchars(strtoupper(substr($partner['name'], 0, 2))) ?></span>
+                                        <?php endif; ?>
                                     </td>
                                     <td>
                                         <div class="partner-name"><?= htmlspecialchars($partner['name']) ?></div>

@@ -8,13 +8,16 @@
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/registrationData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and has access
     $account = requireStaff($conn);
     requireRole($account, ['Admin', 'Staff']);
 
     $isAdmin = $account['role'] === 'Admin';
-    $programmes = getRegistrationProgrammes($conn);
+    $programmes = staffPreviewEnabled()
+        ? ['Coding', 'Artificial Intelligence', 'Robotics', 'Hackathons']
+        : getRegistrationProgrammes($conn);
 
     // build a link back to this page that keeps the current filters
     function registrationsUrl(array $filters, array $overrides = [])
@@ -31,6 +34,9 @@
         if (($params['sort'] ?? '') === 'date' && !isset($params['dir'])) unset($params['sort']);
 
         $params = array_filter($params, fn($v) => $v !== '' && $v !== null);
+        if (staffPreviewEnabled()) {
+            $params['preview'] = '1';
+        }
 
         return 'registrations.php' . ($params ? '?' . http_build_query($params) : '');
     }
@@ -101,7 +107,9 @@
     // csv download of every registration matching the current view, filters and sort
     if (($_GET['export'] ?? '') === 'csv') {
         $exportFilters = readRegistrationFilters($_GET, $programmes);
-        $exportRows = getRegistrationsForExport($conn, $exportFilters);
+        $exportRows = staffPreviewEnabled()
+            ? staffPreviewFilteredRegistrations($exportFilters)
+            : getRegistrationsForExport($conn, $exportFilters);
         $exportArchived = $exportFilters['view'] === 'archived';
 
         // name the file after the programme when one is picked
@@ -152,17 +160,23 @@
 
         // record the download
         $exportCount = count($exportRows);
-        logActivity($conn, 'Registration', 'export', "Downloaded {$exportCount} "
-            . ($exportArchived ? 'archived ' : '')
-            . ($exportCount === 1 ? 'registration' : 'registrations')
-            . ($exportFilters['programme'] !== '' ? " for {$exportFilters['programme']}" : '') . ' as CSV');
+        if (!staffPreviewEnabled()) {
+            logActivity($conn, 'Registration', 'export', "Downloaded {$exportCount} "
+                . ($exportArchived ? 'archived ' : '')
+                . ($exportCount === 1 ? 'registration' : 'registrations')
+                . ($exportFilters['programme'] !== '' ? " for {$exportFilters['programme']}" : '') . ' as CSV');
+        }
         exit;
     }
 
     // fetch the filters, numbers and this page of registrations
     $filters = readRegistrationFilters($_GET, $programmes);
-    $stats = getRegistrationStats($conn);
-    $result = getRegistrations($conn, $filters);
+    $stats = staffPreviewEnabled()
+        ? staffPreviewRegistrationStats()
+        : getRegistrationStats($conn);
+    $result = staffPreviewEnabled()
+        ? staffPreviewRegistrationResult($filters)
+        : getRegistrations($conn, $filters);
     $filters['page'] = $result['page'];
 
     $isArchivedView = $filters['view'] === 'archived';

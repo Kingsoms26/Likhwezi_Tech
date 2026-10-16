@@ -1,9 +1,10 @@
 <?php
-    // dashboardNavbar.php is the staff navbar along the bottom of the screen, each link only shows for the roles that can use it
+    // dashboardNavbar.php is the shared staff top navigation; each link only shows for roles that can use it
     // staff see enquiries, registrations, campaigns and gallery, admin sees everything
     // hiding a link is not enough on its own so pages also call requireRole() in helpers/auth.php
     $navbarRole = $account['role'] ?? ($_SESSION['role'] ?? null);
     $navbarCounts = $navbarCounts ?? [];
+    $navbarFloating = $navbarFloating ?? false;
 
     // each link has a key, label, page, roles and icon, null roles means everyone
     $navbarLinks = [
@@ -20,14 +21,17 @@
     ];
     $navbarLinks = array_values(array_filter($navbarLinks, fn ($link) => $link[3] === null || in_array($navbarRole, $link[3], true)));
 
-    // on small screens only the first three links fit, the rest go in the more menu
-    $navbarExtra = count($navbarLinks) > 4 ? array_slice($navbarLinks, 3) : [];
+    // keep the primary links visible in the shared top navigation
+    $navbarPrimaryCount = $navbarFloating ? ($navbarRole === 'Admin' ? 4 : 5) : 3;
+    $navbarExtra = count($navbarLinks) > ($navbarFloating ? 5 : 4)
+        ? array_slice($navbarLinks, $navbarPrimaryCount)
+        : [];
 ?>
 
-<nav class="dashboard-navbar" aria-label="Dashboard navigation">
+<nav class="dashboard-navbar<?= $navbarFloating ? ' dashboard-navbar-floating' : '' ?>" aria-label="Dashboard navigation">
     <ul class="navbar-links">
         <?php foreach ($navbarLinks as $i => [$key, $label, $href, , $icon]) : ?>
-            <li class="<?= $navbarExtra && $i >= 3 ? 'navbar-extra' : '' ?>">
+            <li class="<?= $navbarExtra && $i >= $navbarPrimaryCount ? 'navbar-extra' : '' ?>">
                 <a class="navbar-link <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
                    <?= $activePage === $key ? 'aria-current="page"' : '' ?>>
                     <span class="navbar-icon">
@@ -41,7 +45,7 @@
             </li>
         <?php endforeach; ?>
 
-        <!-- more menu, only shows on small screens -->
+        <!-- More menu keeps additional role-specific destinations accessible -->
         <?php if ($navbarExtra) : ?>
             <?php $extraActive = in_array($activePage, array_column($navbarExtra, 0), true); ?>
             <li class="navbar-more dropup">

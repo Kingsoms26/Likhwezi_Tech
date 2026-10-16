@@ -13,6 +13,7 @@
     require __DIR__ . '/helpers/campaignData.php';
     require __DIR__ . '/helpers/galleryData.php';
     require __DIR__ . '/helpers/marketingData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // admin and staff can both add, edit and archive campaigns
     $account = requireStaff($conn);
@@ -177,6 +178,9 @@
 
     // fetch the campaigns and counts
     $campaigns = getAllCampaigns($conn);
+    if (staffPreviewEnabled()) {
+        $campaigns = staffPreviewCampaigns();
+    }
     $counts = getCampaignCounts($campaigns);
 
     // find one campaign by id
@@ -352,6 +356,22 @@
         <?php
         $photos = getCampaignPhotos($conn, $viewCampaign['campaignID']);
         $donations = getCampaignDonations($conn, $viewCampaign['campaignID']);
+        if (staffPreviewEnabled()) {
+            $photos = $viewCampaign['photoCount'] > 0
+                ? array_map(
+                    static fn ($index) => [
+                        'galleryItemID' => 99810 + $index,
+                        'image' => 'assets/images/home-img-2.webp',
+                    ],
+                    range(1, $viewCampaign['photoCount'])
+                )
+                : [];
+            $donations = [
+                ['donationID' => 99801, 'firstName' => 'Amina', 'lastName' => 'Nkosi', 'email' => 'amina@example.test', 'phoneNumber' => null, 'amount' => 2500.0, 'donationDate' => staffPreviewDate(1), 'paymentReference' => 'DEMO-99201-01', 'paymentStatus' => 'complete', 'isAnonymous' => false],
+                ['donationID' => 99802, 'firstName' => 'Anonymous', 'lastName' => 'Donor', 'email' => '', 'phoneNumber' => null, 'amount' => 1000.0, 'donationDate' => staffPreviewDate(3), 'paymentReference' => 'DEMO-99201-02', 'paymentStatus' => 'complete', 'isAnonymous' => true],
+                ['donationID' => 99803, 'firstName' => 'David', 'lastName' => 'Mokoena', 'email' => 'david@example.test', 'phoneNumber' => null, 'amount' => 750.0, 'donationDate' => staffPreviewDate(8), 'paymentReference' => 'DEMO-99201-03', 'paymentStatus' => 'pending', 'isAnonymous' => false],
+            ];
+        }
         ?>
 
         <!-- campaign summary -->

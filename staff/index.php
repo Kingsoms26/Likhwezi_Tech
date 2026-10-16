@@ -15,5 +15,9 @@ $dashboards = [
     'Staff' => 'staffDashboard.php',
 ];
 
-header('Location: ' . ($dashboards[$account['role']] ?? 'profile.php'));
+$destination = $dashboards[$account['role']] ?? 'profile.php';
+if (staffPreviewEnabled()) {
+    $destination .= '?preview=1';
+}
+header('Location: ' . $destination);
 exit;

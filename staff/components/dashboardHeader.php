@@ -15,9 +15,14 @@
         </span>
     </a>
 
+    <?php $navbarFloating = true; include __DIR__ . '/dashboardNavbar.php'; unset($navbarFloating); ?>
+
     <!-- notifications and profile menu -->
     <div class="dashboard-header-actions">
 
+        <time class="dashboard-clock" aria-label="Current date and time"></time>
+
+        <?php if ($activePage !== 'dashboard') : ?>
         <!-- notifications button -->
         <div class="dashboard-notifications">
             <button type="button" class="header-icon-button notifications-toggle"
@@ -56,6 +61,7 @@
                 </ul>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- profile menu -->
         <?php include __DIR__ . '/profileMenu.php'; ?>

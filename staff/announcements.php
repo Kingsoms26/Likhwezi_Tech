@@ -9,6 +9,7 @@
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/announcementData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and is an admin
     $account = requireStaff($conn);
@@ -89,6 +90,9 @@
 
     $flash = takeFlash();
     $announcements = getAllAnnouncements($conn);
+    if (staffPreviewEnabled()) {
+        $announcements = staffPreviewAnnouncements();
+    }
 
     // values for the dialog, what was typed after a failed save or the announcement being edited
     $dialogValues = $formInput;

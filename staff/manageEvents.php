@@ -11,6 +11,7 @@
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/eventData.php';
     require __DIR__ . '/helpers/galleryData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // admin and staff can both add, edit and archive events
     $account = requireStaff($conn);
@@ -148,11 +149,24 @@
 
     // fetch the events and counts
     $events = getAllEvents($conn);
+    if (staffPreviewEnabled()) {
+        $events = staffPreviewEvents();
+        if (isset($_GET['edit']) && ctype_digit($_GET['edit'])) {
+            foreach ($events as $event) {
+                if ($event['eventID'] === (int) $_GET['edit']) {
+                    $editingEvent = $event;
+                    break;
+                }
+            }
+        }
+        $form = $formInput ?? $editingEvent ?? ['name' => '', 'description' => '', 'eventDate' => '', 'dateToBeConfirmed' => false];
+    }
     $counts = getEventCounts($events);
 
     // photos grouped by event, oldest first so the cover comes first
     $photosByEvent = [];
-    foreach (getEventPhotos($conn) as $photo) {
+    $eventPhotos = staffPreviewEnabled() ? [] : getEventPhotos($conn);
+    foreach ($eventPhotos as $photo) {
         $photosByEvent[(int) $photo['eventID']][] = $photo;
     }
     $totalPhotos = array_sum(array_map('count', $photosByEvent));

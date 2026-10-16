@@ -9,6 +9,7 @@
     require __DIR__ . '/../config/dbConnection.php';
     require __DIR__ . '/helpers/auth.php';
     require __DIR__ . '/helpers/accountData.php';
+    require __DIR__ . '/helpers/previewData.php';
 
     // make sure the staff member is logged in and is an admin
     $account = requireStaff($conn);
@@ -198,6 +199,24 @@
 
     // fetch this page of accounts
     $result = getAccountList($conn, $search, $role, $status, $page);
+    if (staffPreviewEnabled()) {
+        $demoAccounts = [
+            ['accountID' => 99090, 'username' => 'mpho.dube', 'email' => 'mpho.dube@example.test', 'accountStatus' => 'active', 'dateCreated' => staffPreviewDate(120), 'isArchived' => false, 'archivedAt' => null, 'role' => 'Admin'],
+            ['accountID' => 99091, 'username' => 'nandi.m', 'email' => 'nandi.m@example.test', 'accountStatus' => 'active', 'dateCreated' => staffPreviewDate(62), 'isArchived' => false, 'archivedAt' => null, 'role' => 'Staff'],
+            ['accountID' => 99092, 'username' => 'sibusiso.k', 'email' => 'sibusiso.k@example.test', 'accountStatus' => 'active', 'dateCreated' => staffPreviewDate(34), 'isArchived' => false, 'archivedAt' => null, 'role' => 'Staff'],
+            ['accountID' => 99093, 'username' => 'zanele.m', 'email' => 'zanele.m@example.test', 'accountStatus' => 'inactive', 'dateCreated' => staffPreviewDate(210), 'isArchived' => false, 'archivedAt' => null, 'role' => 'Staff'],
+            ['accountID' => 99094, 'username' => 'thabo.p', 'email' => 'thabo.p@example.test', 'accountStatus' => 'active', 'dateCreated' => staffPreviewDate(365), 'isArchived' => true, 'archivedAt' => staffPreviewDate(18), 'role' => 'Staff'],
+        ];
+        $demoAccounts = array_values(array_filter($demoAccounts, function ($row) use ($search, $role, $status) {
+            if ($search !== '' && stripos($row['username'] . ' ' . $row['email'], $search) === false) return false;
+            if ($role !== 'all' && $row['role'] !== $role) return false;
+            if ($status === ACCOUNT_ARCHIVED_FILTER) return $row['isArchived'];
+            if ($row['isArchived']) return false;
+            return $status === 'all' || $row['accountStatus'] === $status;
+        }));
+        $result = ['rows' => $demoAccounts, 'total' => count($demoAccounts), 'page' => 1, 'pages' => 1];
+        $demoActiveAccountCount = 3;
+    }
     $visibleAccounts = $result['rows'];
     $page = $result['page'];
     $totalPages = $result['pages'];
@@ -252,7 +271,7 @@
     <section class="dashboard-cards accounts-summary">
         <?php
         $cardTitle = 'Active Accounts';
-        $cardValue = getActiveAccountCount($conn);
+        $cardValue = staffPreviewEnabled() ? $demoActiveAccountCount : getActiveAccountCount($conn);
         $cardMeta = 'Currently active employee accounts';
         $cardClass = 'active-accounts-card';
         include __DIR__ . '/components/dashboardCard.php';
