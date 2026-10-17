@@ -1,5 +1,5 @@
 <?php
-    // dashboardNavbar.php is the staff navbar along the bottom of the screen, each link only shows for the roles that can use it
+    // dashboardNavbar.php is the role-aware navigation inside the shared staff sidebar
     // staff see enquiries, registrations, campaigns and gallery, admin sees everything
     // hiding a link is not enough on its own so pages also call requireRole() in helpers/auth.php
     $navbarRole = $account['role'] ?? ($_SESSION['role'] ?? null);
@@ -20,7 +20,7 @@
     ];
     $navbarLinks = array_values(array_filter($navbarLinks, fn ($link) => $link[3] === null || in_array($navbarRole, $link[3], true)));
 
-    // on small screens only the first three links fit, the rest go in the more menu
+    // On compact screens, extra links are grouped under More to keep navigation usable.
     $navbarExtra = count($navbarLinks) > 4 ? array_slice($navbarLinks, 3) : [];
 ?>
 

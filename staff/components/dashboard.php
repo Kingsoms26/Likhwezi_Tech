@@ -10,6 +10,13 @@
     $activePage = $activePage ?? 'dashboard';
     $notifications = isset($conn, $account) ? getNotifications($conn, $account) : [];
     $navbarCounts = isset($conn, $account) ? getNavbarCounts($conn, $account) : [];
+
+    $dashboardName = trim((string) ($account['firstName'] ?? ''));
+    if ($dashboardName === '') {
+        $dashboardName = (string) ($account['username'] ?? 'there');
+    }
+    $dashboardHour = (int) date('G');
+    $dashboardGreeting = $dashboardHour < 12 ? 'Good morning' : ($dashboardHour < 18 ? 'Good afternoon' : 'Good evening');
 ?>
 
 <!DOCTYPE html>
@@ -41,22 +48,40 @@
     <!-- dashboard styles are kept separate from the public website css -->
     <!-- the version number changes with every edit so browsers fetch the new css -->
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboard.css') ?>">
+    <?php if ($activePage === 'dashboard') : ?>
+        <link rel="stylesheet" href="assets/css/dashboardHome.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboardHome.css') ?>">
+    <?php endif; ?>
 </head>
 
 <body>
 
     <div class="dashboard">
 
-        <!-- header -->
-        <?php include __DIR__ . '/dashboardHeader.php'; ?>
+        <!-- persistent sidebar with role-aware navigation -->
+        <aside class="dashboard-sidebar" aria-label="Staff portal sidebar">
+            <a class="dashboard-brand" href="index.php" aria-label="Likhwezi Technologies staff portal home">
+                <img src="assets/images/logo-branding.jpeg" alt="">
+                <span class="company-name">
+                    <span>Likhwezi</span>
+                    <span>Technologies</span>
+                </span>
+            </a>
 
-        <div class="dashboard-body">
-
-            <!-- navbar, fixed along the bottom of the screen -->
+            <p class="sidebar-section-label">WORKSPACE</p>
             <?php include __DIR__ . '/dashboardNavbar.php'; ?>
 
+            <a class="sidebar-logout" href="logout.php">
+                <i class="bi bi-box-arrow-left" aria-hidden="true"></i>
+                <span>Log out</span>
+            </a>
+        </aside>
+
+        <div class="dashboard-workspace">
+            <!-- compact top bar: notifications and account controls stay available on every page -->
+            <?php include __DIR__ . '/dashboardHeader.php'; ?>
+
             <!-- main area, the page fills this in -->
-            <main class="dashboard-main">
+            <main class="dashboard-main<?= $activePage === 'dashboard' ? ' dashboard-main-home' : '' ?>">
 
                 <!-- staff announcements from announcements.php, closing one also clears it from the bell -->
                 <?php foreach (array_filter($notifications, fn ($note) => $note['type'] === 'announcement') as $note) : ?>
@@ -75,6 +100,11 @@
                     </div>
                 <?php endforeach; ?>
 
-                <div class="dashboard-heading">
-                    <h1><?= htmlspecialchars($pageTitle) ?></h1>
-                </div>
+                <?php if ($activePage !== 'dashboard') : ?>
+                    <div class="dashboard-heading">
+                        <div class="dashboard-heading-copy">
+                            <p class="dashboard-date"><?= htmlspecialchars(date('l, j F Y')) ?></p>
+                            <h1><?= htmlspecialchars($pageTitle) ?></h1>
+                        </div>
+                    </div>
+                <?php endif; ?>
