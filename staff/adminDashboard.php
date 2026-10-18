@@ -1,6 +1,7 @@
 <?php
     // adminDashboard.php is the admin dashboard
     // contains the summary cards, open enquiries, registrations by interest and campaign progress
+    // styled by assets/css/dashboardGlass.css (.admin-glass), the data shown is unchanged
 
     require_once __DIR__ . '/../includes/security.php';
 
@@ -16,6 +17,12 @@
     // fetch the enquiries, campaigns, funds and registrations
     $stats = getDashboardStats($conn);
 
+    // name shown in the greeting and the header, read by components/profileMenu.php
+    $dashboardDisplayName = 'Mutshidzi Thenga';
+    $dashboardFirstName = explode(' ', $dashboardDisplayName)[0];
+    $hour = (int) date('G');
+    $greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good evening');
+
     $pageTitle = 'Dashboard';
     $activePage = 'dashboard';
 
@@ -24,7 +31,16 @@
 ?>
 
 <!-- admin content, the wrapper keeps the admin css scoped to this page -->
-<div class="admin-dashboard">
+<div class="admin-dashboard glass-dash admin-glass">
+
+    <!-- greeting -->
+    <header class="glass-hero">
+        <div>
+            <p class="glass-eyebrow"><?= htmlspecialchars(date('l, j F Y')) ?></p>
+            <p class="glass-greeting"><?= htmlspecialchars($greeting) ?>, <?= htmlspecialchars($dashboardFirstName) ?></p>
+            <p class="glass-sub">Realized imagination through insights.</p>
+        </div>
+    </header>
 
     <!-- summary cards -->
     <section class="dashboard-cards">
@@ -35,6 +51,7 @@
         $cardValue = $stats['activeEnquiries'];
         $cardMeta = 'Currently open';
         $cardClass = 'enquiries-card';
+        $cardIcon = 'envelope-open';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -44,6 +61,7 @@
         $cardValue = $stats['activeCampaigns'];
         $cardMeta = 'Currently active';
         $cardClass = 'campaigns-card';
+        $cardIcon = 'megaphone';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -53,6 +71,7 @@
         $cardValue = 'R' . number_format($stats['fundsRaised'], 2);
         $cardMeta = 'Across all campaigns';
         $cardClass = 'donations-card';
+        $cardIcon = 'cash-coin';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -77,31 +96,33 @@
                     <p>Open enquiries requiring attention</p>
                 </div>
 
-                <table class="dashboard-table">
-                    <thead>
-                        <tr>
-                            <th>Subject</th>
-                            <th>Customer</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <?php if (!$stats['recentEnquiries']) : ?>
+                <div class="dashboard-table-wrap">
+                    <table class="dashboard-table">
+                        <thead>
                             <tr>
-                                <td colspan="3">No open enquiries.</td>
+                                <th>Subject</th>
+                                <th>Customer</th>
+                                <th>Status</th>
                             </tr>
-                        <?php endif; ?>
+                        </thead>
 
-                        <?php foreach ($stats['recentEnquiries'] as $enquiry) : ?>
-                            <tr>
-                                <td><?= htmlspecialchars($enquiry['subject']) ?></td>
-                                <td><?= htmlspecialchars($enquiry['customer']) ?></td>
-                                <td><?= htmlspecialchars($enquiry['status']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        <tbody>
+                            <?php if (!$stats['recentEnquiries']) : ?>
+                                <tr>
+                                    <td colspan="3">No open enquiries.</td>
+                                </tr>
+                            <?php endif; ?>
+
+                            <?php foreach ($stats['recentEnquiries'] as $enquiry) : ?>
+                                <tr>
+                                    <td><?= htmlspecialchars($enquiry['subject']) ?></td>
+                                    <td><?= htmlspecialchars($enquiry['customer']) ?></td>
+                                    <td><span class="status-badge status-<?= htmlspecialchars(strtolower($enquiry['status'])) ?>"><?= htmlspecialchars($enquiry['status']) ?></span></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
 
             </div>
 

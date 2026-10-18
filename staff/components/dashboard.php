@@ -41,6 +41,7 @@
     <!-- dashboard styles are kept separate from the public website css -->
     <!-- the version number changes with every edit so browsers fetch the new css -->
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboard.css') ?>">
+    <link rel="stylesheet" href="assets/css/dashboardGlass.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboardGlass.css') ?>">
 </head>
 
 <body>

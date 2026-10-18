@@ -2,6 +2,7 @@
     // staffDashboard.php is the staff dashboard
     // contains the enquiry, registration, campaign, donation and event cards
     // then open enquiries, recent cym registrations, campaign progress and upcoming events
+    // styled by assets/css/dashboardGlass.css (.staff-glass), the data shown is unchanged
 
     require_once __DIR__ . '/../includes/security.php';
 
@@ -49,6 +50,12 @@
         return 'status-' . strtolower($status);
     }
 
+    // name shown in the greeting and the header, read by components/profileMenu.php
+    $dashboardDisplayName = 'Mutshidzi Thenga';
+    $dashboardFirstName = explode(' ', $dashboardDisplayName)[0];
+    $hour = (int) date('G');
+    $greeting = $hour < 12 ? 'Good morning' : ($hour < 18 ? 'Good afternoon' : 'Good evening');
+
     $pageTitle = 'Staff Dashboard';
     $activePage = 'dashboard';
 
@@ -57,7 +64,16 @@
 ?>
 
 <!-- staff content, the wrapper keeps the staff css scoped to this page -->
-<div class="staff-dashboard">
+<div class="staff-dashboard glass-dash staff-glass">
+
+    <!-- greeting -->
+    <header class="glass-hero">
+        <div>
+            <p class="glass-eyebrow"><?= htmlspecialchars(date('l, j F Y')) ?></p>
+            <p class="glass-greeting"><?= htmlspecialchars($greeting) ?>, <?= htmlspecialchars($dashboardFirstName) ?></p>
+            <p class="glass-sub">Here is how enquiries, registrations, campaigns and events are doing.</p>
+        </div>
+    </header>
 
     <!-- summary cards -->
     <section class="dashboard-cards">
@@ -68,6 +84,7 @@
         $cardValue = $enquiryStats['new'];
         $cardMeta = $enquiryStats['new'] === 1 ? 'New enquiry not yet contacted' : 'New enquiries not yet contacted';
         $cardClass = 'enquiries-awaiting-card';
+        $cardIcon = 'envelope-exclamation';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -77,6 +94,7 @@
         $cardValue = $enquiryStats['open'];
         $cardMeta = $enquiryStats['new'] . ' new, ' . $enquiryStats['contacted'] . ' contacted';
         $cardClass = 'enquiries-open-card';
+        $cardIcon = 'inbox';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -86,6 +104,7 @@
         $cardValue = $registrationStats['lastSevenDays'];
         $cardMeta = 'In the last 7 days';
         $cardClass = 'registrations-recent-card';
+        $cardIcon = 'person-plus';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -95,6 +114,7 @@
         $cardValue = $campaignStats['active'];
         $cardMeta = $campaignStats['draft'] . ' draft, ' . $campaignStats['closed'] . ' closed';
         $cardClass = 'campaigns-active-card';
+        $cardIcon = 'megaphone';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -104,6 +124,7 @@
         $cardValue = formatRand($campaignStats['fundsRaised']);
         $cardMeta = formatRand($campaignStats['raisedLast30Days']) . ' in the last 30 days';
         $cardClass = 'donations-card';
+        $cardIcon = 'cash-coin';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
@@ -113,6 +134,7 @@
         $cardValue = $eventCounts['upcoming'];
         $cardMeta = $eventCounts['soon'] . ' in the next ' . MARKETING_SOON_DAYS . ' days';
         $cardClass = 'events-upcoming-card';
+        $cardIcon = 'calendar-event';
         include __DIR__ . '/components/dashboardCard.php';
         ?>
 
