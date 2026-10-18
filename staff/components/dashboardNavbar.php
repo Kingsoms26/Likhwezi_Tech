@@ -25,43 +25,45 @@
 ?>
 
 <nav class="dashboard-navbar" aria-label="Dashboard navigation">
-    <ul class="navbar-links">
-        <?php foreach ($navbarLinks as $i => [$key, $label, $href, , $icon]) : ?>
-            <li class="<?= $navbarExtra && $i >= 3 ? 'navbar-extra' : '' ?>">
-                <a class="navbar-link <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
-                   <?= $activePage === $key ? 'aria-current="page"' : '' ?>>
-                    <span class="navbar-icon">
-                        <i class="bi bi-<?= $icon ?>" aria-hidden="true"></i>
-                        <?php if (!empty($navbarCounts[$key])) : ?>
-                            <span class="navbar-badge"><?= (int) $navbarCounts[$key] ?></span>
-                        <?php endif; ?>
-                    </span>
-                    <span class="navbar-label"><?= htmlspecialchars($label) ?></span>
-                </a>
-            </li>
-        <?php endforeach; ?>
+    <div class="navbar-inner">
+        <ul class="navbar-links">
+            <?php foreach ($navbarLinks as $i => [$key, $label, $href, , $icon]) : ?>
+                <li class="<?= $navbarExtra && $i >= 3 ? 'navbar-extra' : '' ?>">
+                    <a class="navbar-link <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
+                    <?= $activePage === $key ? 'aria-current="page"' : '' ?>>
+                        <span class="navbar-icon">
+                            <i class="bi bi-<?= $icon ?>" aria-hidden="true"></i>
+                            <?php if (!empty($navbarCounts[$key])) : ?>
+                                <span class="navbar-badge"><?= (int) $navbarCounts[$key] ?></span>
+                            <?php endif; ?>
+                        </span>
+                        <span class="navbar-label"><?= htmlspecialchars($label) ?></span>
+                    </a>
+                </li>
+            <?php endforeach; ?>
 
-        <!-- more menu, only shows on small screens -->
-        <?php if ($navbarExtra) : ?>
-            <?php $extraActive = in_array($activePage, array_column($navbarExtra, 0), true); ?>
-            <li class="navbar-more dropup">
-                <button type="button" class="navbar-link <?= $extraActive ? 'active' : '' ?>"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                    <span class="navbar-icon"><i class="bi bi-three-dots" aria-hidden="true"></i></span>
-                    <span class="navbar-label">More</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end navbar-more-menu">
-                    <?php foreach ($navbarExtra as [$key, $label, $href, , $icon]) : ?>
-                        <li>
-                            <a class="dropdown-item <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
-                               <?= $activePage === $key ? 'aria-current="page"' : '' ?>>
-                                <i class="bi bi-<?= $icon ?>" aria-hidden="true"></i>
-                                <?= htmlspecialchars($label) ?>
-                            </a>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </li>
-        <?php endif; ?>
-    </ul>
+            <!-- more menu, only shows on small screens -->
+            <?php if ($navbarExtra) : ?>
+                <?php $extraActive = in_array($activePage, array_column($navbarExtra, 0), true); ?>
+                <li class="navbar-more dropup">
+                    <button type="button" class="navbar-link <?= $extraActive ? 'active' : '' ?>"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="navbar-icon"><i class="bi bi-three-dots" aria-hidden="true"></i></span>
+                        <span class="navbar-label">More</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end navbar-more-menu">
+                        <?php foreach ($navbarExtra as [$key, $label, $href, , $icon]) : ?>
+                            <li>
+                                <a class="dropdown-item <?= $activePage === $key ? 'active' : '' ?>" href="<?= htmlspecialchars($href) ?>"
+                                <?= $activePage === $key ? 'aria-current="page"' : '' ?>>
+                                    <i class="bi bi-<?= $icon ?>" aria-hidden="true"></i>
+                                    <?= htmlspecialchars($label) ?>
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+            <?php endif; ?>
+        </ul>
+    </div>
 </nav>

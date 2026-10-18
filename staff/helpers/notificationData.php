@@ -120,7 +120,7 @@ function enquiryNotifications(mysqli $conn, array $account): array
             'level'  => 'warning',
             'title'  => $mine === 1 ? '1 claimed enquiry still new' : "$mine claimed enquiries still new",
             'detail' => 'Waiting for first contact',
-            'link'   => 'manageEnquiries.php#my-enquiries',
+            'link'   => 'manageEnquiries.php?view=mine',
         ];
     }
 
@@ -130,7 +130,7 @@ function enquiryNotifications(mysqli $conn, array $account): array
             'level'  => 'info',
             'title'  => $unassigned === 1 ? '1 unclaimed enquiry' : "$unassigned unclaimed enquiries",
             'detail' => 'Not yet claimed by Staff',
-            'link'   => 'manageEnquiries.php#unclaimed-enquiries',
+            'link'   => 'manageEnquiries.php?view=unclaimed',
         ];
     }
 

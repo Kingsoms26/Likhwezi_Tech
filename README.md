@@ -75,11 +75,16 @@ PAYFAST_SITE_URL=
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+
+# Verifalia (required to check email addresses on CYM registrations)
+VERIFALIA_USERNAME=
+VERIFALIA_PASSWORD=
 ```
 
 Never commit `.env`. It is already in `.gitignore`. On Render, these same values are set as environment variables instead.
 
 `PAYFAST_SITE_URL` is optional. Set it to a public address (for example an ngrok link) if you want PayFast to reach your local copy.
+Create a Verifalia standard user for the integration and set its credentials in `VERIFALIA_USERNAME` and `VERIFALIA_PASSWORD`. CYM registrations with an email address require a Verifalia result classified as deliverable; if verification is unavailable, the registrant can retry or register with a phone number instead. Email addresses are submitted to Verifalia for this check.
 
 ## Deploying
 

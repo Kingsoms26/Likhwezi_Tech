@@ -1,7 +1,7 @@
 <?php
-    // staffDashboard.php is the staff dashboard
-    // contains the enquiry, registration, campaign, donation and event cards
-    // then open enquiries, recent cym registrations, campaign progress and upcoming events
+    // staffDashboard.php is the staff dashboard overview
+    // shows the greeting, the donation totals and the enquiry, registration,
+    // campaign and event highlight cards, all fed from the database
 
     require_once __DIR__ . '/../includes/security.php';
 
@@ -15,41 +15,72 @@
     $account = requireStaff($conn);
     requireRole($account, ['Admin', 'Staff']);
 
-    // enquiry counts for the first two cards, open is new plus contacted
+    // the donation card shows a week, a month or a year
+    $donationPeriod = in_array($_GET['donationPeriod'] ?? '', ['week', 'month', 'year'], true)
+        ? $_GET['donationPeriod']
+        : 'week';
+
+    // greeting, morning before 12, afternoon before 17, evening after
+    $hour = (int) date('G');
+    $greeting = match (true) {
+        $hour < 12 => 'Good morning',
+        $hour < 17 => 'Good afternoon',
+        default    => 'Good evening',
+    };
+    $firstName = trim((string) ($account['firstName'] ?? '')) ?: ($account['username'] ?? 'there');
+
+    // enquiry counts, open is new plus contacted
     $enquiryStats = getEnquiryCounts($conn);
     $enquiryStats['open'] = $enquiryStats['new'] + $enquiryStats['contacted'];
 
-    // open enquiries, new first then contacted, at most five
-    $openEnquiries = array_filter(getEnquiries($conn), fn ($e) => $e['status'] !== 'closed');
-    usort($openEnquiries, fn ($a, $b) => ($a['status'] === 'new' ? 0 : 1) <=> ($b['status'] === 'new' ? 0 : 1)
-        ?: strcmp($b['dateCreated'], $a['dateCreated']));
-    $openEnquiries = array_slice($openEnquiries, 0, 5);
+    // the stacked bar shows all three statuses, so its own total includes closed
+    $enquiryBands = [
+        ['key' => 'new',       'label' => 'New',       'class' => 'stack-new',       'colour' => '#2563eb'],
+        ['key' => 'contacted', 'label' => 'Contacted', 'class' => 'stack-contacted', 'colour' => '#f59e0b'],
+        ['key' => 'closed',    'label' => 'Closed',    'class' => 'stack-closed',    'colour' => '#16a34a'],
+    ];
+    $enquiryBandTotal = $enquiryStats['new'] + $enquiryStats['contacted'] + $enquiryStats['closed'];
 
-    // registrations received in the last 7 days for the third card
-    $registrationStats = getRegistrationStats($conn);
+    // registrations over 30 days for the card and 7 days for the hero pill,
+    // both from one query each so the counts and their window always agree
+    $registrationStats = getRegistrationWindow($conn, 30);
+    $registrationWeek = getRegistrationWindow($conn, 7);
 
-    // latest five registrations, newest first
-    $recentRegistrations = getRecentRegistrations($conn, 5);
+    // the three programmes the card reports, matching the Cyber Young Minds programmes
+    $programmeSpec = [
+        ['label' => 'Coding',   'keys' => ['Coding']],
+        ['label' => 'Robotics', 'keys' => ['Robotics']],
+        ['label' => 'AI',       'keys' => ['Artificial Intelligence', 'AI']],
+    ];
+    $programmeCounts = array_map(function ($spec) use ($registrationStats) {
+        $total = 0;
+        foreach ($spec['keys'] as $key) {
+            $total += (int) ($registrationStats['byProgramme'][$key] ?? 0);
+        }
+        return ['label' => $spec['label'], 'total' => $total];
+    }, $programmeSpec);
 
-    // campaign counts and donation totals
-    $campaignStats = getCampaignStats($conn);
+    // donation totals for the chosen period, and the all-time total for comparison
+    $donations = getDonationTotals($conn, $donationPeriod);
 
-    // upcoming events and how many are this week
-    $eventCounts = getUpcomingEventCounts($conn);
+    // active campaigns in total, and the two closest to their goal
+    $campaignTotals = getActiveCampaignTotals($conn);
+    $campaignProgress = getActiveCampaignProgress($conn, 2);
 
-    // active campaigns closest to their goal, at most five
-    $campaignProgress = getActiveCampaignProgress($conn, 5);
+    // the next three events, including drafts whose date is still to be confirmed,
+    // and how many fall in the next week for the pill
+    $upcomingEvents = getUpcomingEvents($conn, 3);
+    $eventsNextWeek = getUpcomingDatedEventCount($conn, MARKETING_SOON_DAYS);
 
-    // next five upcoming events, soonest first
-    $upcomingEvents = getUpcomingEvents($conn, 5);
+    // donut geometry, the arc is the raised share of the combined goal
+    $goalPercentage = $campaignTotals['goal'] > 0
+        ? (int) round($campaignTotals['raised'] / $campaignTotals['goal'] * 100)
+        : 0;
+    $goalPercentage = max(0, min(100, $goalPercentage));
+    $donutCircumference = 2 * M_PI * 48;
+    $donutArc = $donutCircumference * $goalPercentage / 100;
 
-    // css class for each enquiry status badge
-    function enquiryStatusClass($status)
-    {
-        return 'status-' . strtolower($status);
-    }
-
-    $pageTitle = 'Staff Dashboard';
+    $pageTitle = 'Overview';
     $activePage = 'dashboard';
 
     // open the shared dashboard layout
@@ -59,261 +90,212 @@
 <!-- staff content, the wrapper keeps the staff css scoped to this page -->
 <div class="staff-dashboard">
 
-    <!-- summary cards -->
-    <section class="dashboard-cards">
+    <section class="overview-hero" aria-labelledby="overview-title">
+        <div class="overview-top">
+            <div class="overview-intro">
+                <h1 id="overview-title"><?= htmlspecialchars($greeting . ', ' . $firstName) ?></h1>
+                <p>Your team's activity and impact at a glance.</p>
 
-        <?php
-        // enquiries nobody has picked up yet, shown first as it needs the most attention
-        $cardTitle = 'Awaiting Response';
-        $cardValue = $enquiryStats['new'];
-        $cardMeta = $enquiryStats['new'] === 1 ? 'New enquiry not yet contacted' : 'New enquiries not yet contacted';
-        $cardClass = 'enquiries-awaiting-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php
-        // everything not yet closed
-        $cardTitle = 'Open Enquiries';
-        $cardValue = $enquiryStats['open'];
-        $cardMeta = $enquiryStats['new'] . ' new, ' . $enquiryStats['contacted'] . ' contacted';
-        $cardClass = 'enquiries-open-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php
-        // registrations received in the last 7 days
-        $cardTitle = 'New Registrations';
-        $cardValue = $registrationStats['lastSevenDays'];
-        $cardMeta = 'In the last 7 days';
-        $cardClass = 'registrations-recent-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php
-        // campaigns currently taking donations
-        $cardTitle = 'Active Campaigns';
-        $cardValue = $campaignStats['active'];
-        $cardMeta = $campaignStats['draft'] . ' draft, ' . $campaignStats['closed'] . ' closed';
-        $cardClass = 'campaigns-active-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php
-        // all donations to campaigns that are not archived
-        $cardTitle = 'Funds Raised';
-        $cardValue = formatRand($campaignStats['fundsRaised']);
-        $cardMeta = formatRand($campaignStats['raisedLast30Days']) . ' in the last 30 days';
-        $cardClass = 'donations-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php
-        // events dated today or later plus those to be confirmed
-        $cardTitle = 'Upcoming Events';
-        $cardValue = $eventCounts['upcoming'];
-        $cardMeta = $eventCounts['soon'] . ' in the next ' . MARKETING_SOON_DAYS . ' days';
-        $cardClass = 'events-upcoming-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-    </section>
-
-    <section class="dashboard-two-column">
-
-        <!-- open enquiries, new first then contacted -->
-        <section class="dashboard-panel enquiries-panel">
-            <div class="panel-header">
-                <h2>Enquiries Needing Attention</h2>
-                <a class="panel-button" href="manageEnquiries.php">View all enquiries</a>
+                <ul class="overview-pills">
+                    <li class="overview-pill">
+                        <strong><?= (int) $enquiryStats['new'] ?></strong> awaiting a response
+                    </li>
+                    <li class="overview-pill">
+                        <strong><?= (int) $registrationWeek['total'] ?></strong> sign-ups this week
+                    </li>
+                    <li class="overview-pill">
+                        <strong><?= (int) $eventsNextWeek ?></strong> events in the next <?= MARKETING_SOON_DAYS ?> days
+                    </li>
+                </ul>
             </div>
 
-            <div class="panel-body">
-                <?php if (!$openEnquiries) : ?>
-                    <div class="dashboard-empty">
-                        <p>No open enquiries. You're all caught up.</p>
+            <!-- donation totals, the period form reloads the page with another window -->
+            <section class="donations-glass" aria-labelledby="donations-title">
+                <div class="donations-heading">
+                    <div>
+                        <h3 id="donations-title">Donations</h3>
                     </div>
+                    <form class="donation-period-form" method="get" action="staffDashboard.php">
+                        <label class="visually-hidden" for="donation-period">Donation period</label>
+                        <select id="donation-period" name="donationPeriod" data-submit-on-change>
+                            <option value="week"<?= $donationPeriod === 'week' ? ' selected' : '' ?>>Weekly</option>
+                            <option value="month"<?= $donationPeriod === 'month' ? ' selected' : '' ?>>Monthly</option>
+                            <option value="year"<?= $donationPeriod === 'year' ? ' selected' : '' ?>>Yearly</option>
+                        </select>
+                    </form>
+                </div>
+
+                <div class="donation-figures">
+                    <div class="donation-figure">
+                        <span>Raised this period</span>
+                        <strong><?= htmlspecialchars(formatRand($donations['period'])) ?></strong>
+                    </div>
+                    <div class="donation-figure">
+                        <span>All-time total</span>
+                        <strong><?= htmlspecialchars(formatRand($donations['allTime'])) ?></strong>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- highlight cards, each one links through to its full page -->
+        <section class="overview-cards">
+
+            <article class="overview-card enquiries-overview-card">
+                <div class="overview-card-heading">
+                    <div>
+                        <p class="overview-card-kicker"><?= (int) $enquiryStats['open'] ?> open right now</p>
+                        <h3>Enquiries</h3>
+                    </div>
+                    <a class="overview-card-action" href="manageEnquiries.php" aria-label="View enquiries">
+                        <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <p class="card-figure">
+                    <strong><?= (int) $enquiryStats['open'] ?></strong>
+                    <span>open</span>
+                </p>
+
+                <?php if ($enquiryBandTotal > 0) : ?>
+                    <div class="enquiry-stack" role="img" aria-label="Enquiries by status">
+                        <?php foreach ($enquiryBands as $band) : ?>
+                            <span class="<?= $band['class'] ?>"
+                                  style="width: <?= number_format($enquiryStats[$band['key']] / $enquiryBandTotal * 100, 2, '.', '') ?>%"></span>
+                        <?php endforeach; ?>
+                    </div>
+
+                    <ul class="status-counts">
+                        <?php foreach ($enquiryBands as $band) : ?>
+                            <li>
+                                <i class="legend-dot" style="--cell-color: <?= $band['colour'] ?>"></i>
+                                <?= $band['label'] ?> <b><?= (int) $enquiryStats[$band['key']] ?></b>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php else : ?>
-                    <div class="dashboard-table-wrap">
-                        <table class="dashboard-table snapshot-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Meeting type</th>
-                                    <th scope="col">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($openEnquiries as $enquiry) : ?>
-                                    <tr>
-                                        <td>
-                                            <span class="snapshot-name"><?= htmlspecialchars($enquiry['name']) ?></span>
-                                            <?php if (($enquiry['companyName'] ?? '') !== '') : ?>
-                                                <span class="snapshot-sub"><?= htmlspecialchars($enquiry['companyName']) ?></span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td><?= htmlspecialchars(ucfirst($enquiry['meetingType'])) ?></td>
-                                        <td>
-                                            <span class="status-badge <?= enquiryStatusClass($enquiry['status']) ?>">
-                                                <?= htmlspecialchars(ucfirst($enquiry['status'])) ?>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
+                    <p class="chart-empty chart-empty-dark">No enquiries yet.</p>
+                <?php endif; ?>
+            </article>
+
+            <article class="overview-card registrations-overview-card">
+                <div class="overview-card-heading">
+                    <div>
+                        <p class="overview-card-kicker">Last 30 days</p>
+                        <h3>Registrations</h3>
+                    </div>
+                    <a class="overview-card-action" href="registrations.php" aria-label="View registrations">
+                        <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <p class="card-figure">
+                    <strong><?= (int) $registrationStats['total'] ?></strong>
+                    <span>sign-ups in 30 days</span>
+                </p>
+
+                <ul class="programme-counts">
+                    <?php foreach ($programmeCounts as $programme) : ?>
+                        <li>
+                            <span><?= htmlspecialchars($programme['label']) ?></span>
+                            <b><?= (int) $programme['total'] ?></b>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </article>
+
+            <article class="overview-card events-overview-card">
+                <div class="overview-card-heading">
+                    <div>
+                        <p class="overview-card-kicker">Next up</p>
+                        <h3>Upcoming Events</h3>
+                    </div>
+                    <a class="overview-card-action" href="manageEvents.php" aria-label="View events">
+                        <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                    </a>
+                </div>
+
+                <?php if ($upcomingEvents) : ?>
+                    <ul class="upcoming-events-list">
+                        <?php foreach ($upcomingEvents as $event) : ?>
+                            <?php $eventDate = $event['eventDate'] ? date_create($event['eventDate']) : null; ?>
+                            <li>
+                                <span class="event-date-tile<?= $eventDate ? '' : ' is-tbc' ?>">
+                                    <?php if ($eventDate) : ?>
+                                        <strong><?= htmlspecialchars($eventDate->format('d')) ?></strong>
+                                        <small><?= htmlspecialchars($eventDate->format('M')) ?></small>
+                                    <?php else : ?>
+                                        <strong>TBC</strong>
+                                    <?php endif; ?>
+                                </span>
+                                <span class="upcoming-event-copy">
+                                    <strong><?= htmlspecialchars($event['name']) ?></strong>
+                                    <small><?= htmlspecialchars($eventDate ? $eventDate->format('D, j M Y') : 'Date to be confirmed') ?></small>
+                                </span>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+
+                    <a class="upcoming-events-link" href="manageEvents.php">
+                        All events <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </a>
+                <?php else : ?>
+                    <div class="events-empty">
+                        <p>No upcoming events</p>
+                        <a class="upcoming-events-link" href="manageEvents.php">
+                            Create event <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        </a>
                     </div>
                 <?php endif; ?>
-            </div>
-        </section>
+            </article>
 
-        <!-- recent registrations, latest five -->
-        <section class="dashboard-panel recent-registrations-panel">
-            <div class="panel-header">
-                <h2>Recent Registrations</h2>
-                <a class="panel-button" href="registrations.php">View all registrations</a>
-            </div>
+            <article class="overview-card campaigns-overview-card">
+                <div class="overview-card-heading">
+                    <div>
+                        <p class="overview-card-kicker"><?= (int) $campaignTotals['campaigns'] ?> active</p>
+                        <h3>Campaign Progress</h3>
+                    </div>
+                    <a class="overview-card-action" href="manageCampaigns.php" aria-label="View campaigns">
+                        <i class="bi bi-arrow-up-right" aria-hidden="true"></i>
+                    </a>
+                </div>
 
-            <div class="panel-body">
-                <?php if (!$recentRegistrations) : ?>
-                    <div class="dashboard-empty">
-                        <p>No registrations yet. New sign-ups will appear here.</p>
-                    </div>
-                <?php else : ?>
-                    <div class="dashboard-table-wrap">
-                        <table class="dashboard-table snapshot-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Programme</th>
-                                    <th scope="col">Age</th>
-                                    <th scope="col">Registered</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($recentRegistrations as $registration) : ?>
-                                    <tr>
-                                        <td>
-                                            <span class="snapshot-name"><?= htmlspecialchars($registration['firstName'] . ' ' . $registration['lastName']) ?></span>
-                                        </td>
-                                        <td><?= htmlspecialchars($registration['programme']) ?></td>
-                                        <td class="snapshot-nowrap">
-                                            <?= htmlspecialchars($registration['age']) ?>
-                                            <?php if ($registration['isMinor']) : ?>
-                                                <span class="minor-badge">Minor</span>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td class="snapshot-nowrap">
-                                            <?= htmlspecialchars(date('j M Y', strtotime($registration['registeredAt']))) ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="campaign-donut-wrap">
+                    <svg class="campaign-donut" viewBox="0 0 120 120" role="img"
+                         aria-label="<?= $goalPercentage ?>% of the goal raised across active campaigns">
+                        <circle cx="60" cy="60" r="48" fill="none" stroke="#04113b" stroke-width="12"></circle>
+                        <circle cx="60" cy="60" r="48" fill="none" stroke="#f97316" stroke-width="12"
+                                stroke-linecap="round"
+                                stroke-dasharray="<?= number_format($donutArc, 2, '.', '') ?> <?= number_format($donutCircumference, 2, '.', '') ?>"
+                                transform="rotate(-90 60 60)"></circle>
+                        <text class="campaign-donut-value" x="60" y="57" text-anchor="middle"><?= $goalPercentage ?>%</text>
+                        <text class="campaign-donut-caption" x="60" y="75" text-anchor="middle">of goal</text>
+                    </svg>
+                </div>
+
+                <p class="campaign-summary">
+                    <?= htmlspecialchars(formatRand($campaignTotals['raised'])) ?> of <?= htmlspecialchars(formatRand($campaignTotals['goal'])) ?>
+                    across <?= (int) $campaignTotals['campaigns'] ?> active campaign<?= $campaignTotals['campaigns'] === 1 ? '' : 's' ?>
+                </p>
+
+                <?php if ($campaignProgress) : ?>
+                    <ul class="campaign-mini-list">
+                        <?php foreach ($campaignProgress as $campaign) : ?>
+                            <li class="campaign-mini">
+                                <div class="campaign-mini-top">
+                                    <span class="campaign-mini-name"><?= htmlspecialchars($campaign['name']) ?></span>
+                                    <span class="campaign-mini-pct"><?= (int) $campaign['percentage'] ?>%</span>
+                                </div>
+                                <div class="campaign-mini-track">
+                                    <span class="campaign-mini-fill" style="width: <?= max(0, min(100, (int) $campaign['percentage'])) ?>%"></span>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                 <?php endif; ?>
-            </div>
+            </article>
+
         </section>
-
-    </section>
-
-    <section class="dashboard-two-column">
-
-        <!-- campaign progress, closest to their goal first -->
-        <section class="dashboard-panel campaigns-panel">
-            <div class="panel-header">
-                <h2>Campaign Progress</h2>
-                <a class="panel-button" href="manageCampaigns.php">View all campaigns</a>
-            </div>
-
-            <div class="panel-body">
-                <?php if (!$campaignProgress) : ?>
-                    <div class="dashboard-empty">
-                        <p>No active campaigns. Active campaigns and their progress will appear here.</p>
-                    </div>
-                <?php else : ?>
-                    <div class="dashboard-table-wrap">
-                        <table class="dashboard-table snapshot-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Campaign</th>
-                                    <th scope="col">Raised</th>
-                                    <th scope="col">Progress</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($campaignProgress as $campaign) : ?>
-                                    <tr>
-                                        <td>
-                                            <span class="snapshot-name"><?= htmlspecialchars($campaign['name']) ?></span>
-                                            <span class="snapshot-sub">
-                                                <?= $campaign['donations'] === 1 ? '1 donation' : $campaign['donations'] . ' donations' ?>
-                                            </span>
-                                        </td>
-                                        <td class="snapshot-nowrap">
-                                            <?= htmlspecialchars(formatRand($campaign['raised'])) ?>
-                                            <span class="snapshot-sub">of <?= htmlspecialchars(formatRand($campaign['goal'])) ?></span>
-                                        </td>
-                                        <td class="campaign-progress-cell">
-                                            <span class="campaign-progress-value"><?= $campaign['percentage'] ?>%</span>
-                                            <div class="progress-track" role="progressbar" aria-label="<?= htmlspecialchars($campaign['name']) ?> progress"
-                                                 aria-valuemin="0" aria-valuemax="100" aria-valuenow="<?= $campaign['percentage'] ?>">
-                                                <div class="progress-fill" style="width: <?= $campaign['percentage'] ?>%;"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </section>
-
-        <!-- upcoming events, next five soonest first -->
-        <section class="dashboard-panel upcoming-events-panel">
-            <div class="panel-header">
-                <h2>Upcoming Events</h2>
-                <a class="panel-button" href="manageEvents.php">View all events</a>
-            </div>
-
-            <div class="panel-body">
-                <?php if (!$upcomingEvents) : ?>
-                    <div class="dashboard-empty">
-                        <p>No upcoming events. Scheduled events will appear here.</p>
-                    </div>
-                <?php else : ?>
-                    <div class="dashboard-table-wrap">
-                        <table class="dashboard-table snapshot-table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Event</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">When</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($upcomingEvents as $event) : ?>
-                                    <tr>
-                                        <td>
-                                            <span class="snapshot-name"><?= htmlspecialchars($event['name']) ?></span>
-                                        </td>
-                                        <td class="snapshot-nowrap">
-                                            <?= $event['eventDate'] ? htmlspecialchars(date('j M Y', strtotime($event['eventDate']))) : '—' ?>
-                                        </td>
-                                        <td class="snapshot-nowrap">
-                                            <span class="when-badge<?= in_array($event['when'], ['Today', 'Tomorrow'], true) ? ' when-soon' : '' ?>">
-                                                <?= htmlspecialchars($event['when']) ?>
-                                            </span>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </section>
-
     </section>
 
 </div>

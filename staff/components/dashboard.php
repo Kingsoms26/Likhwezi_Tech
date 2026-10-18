@@ -41,6 +41,9 @@
     <!-- dashboard styles are kept separate from the public website css -->
     <!-- the version number changes with every edit so browsers fetch the new css -->
     <link rel="stylesheet" href="assets/css/dashboard.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboard.css') ?>">
+
+    <!-- shared navy and blue theme for every staff page except the dashboards -->
+    <link rel="stylesheet" href="assets/css/dashboardTheme.css?v=<?= filemtime(__DIR__ . '/../assets/css/dashboardTheme.css') ?>">
 </head>
 
 <body>

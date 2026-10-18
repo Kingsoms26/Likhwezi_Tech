@@ -18,9 +18,9 @@
     --header-bg: #04113B;
     --header-height: 64px;
     --navbar-height: 68px;
+    --navbar-radius: 14px;
     --page-bg: #f5f8fd;
     --surface: #ffffff;
-    --navbar-border: #cfd6e2;
     --border: #d2d8e2;
     --text: #141a26;
     --muted: #687286;
@@ -28,6 +28,11 @@
     --accent-strong: #1e4fb3;
     --accent-soft: #eaf1ff;
     --track: #dbe7f8;
+    /* content boxes: small corners, shadow instead of a border */
+    --radius: 6px;
+    --radius-sm: 4px;
+    --shadow: 0 1px 2px rgba(4, 17, 59, 0.06), 0 2px 8px rgba(4, 17, 59, 0.06);
+    --shadow-hover: 0 2px 4px rgba(4, 17, 59, 0.08), 0 8px 20px rgba(4, 17, 59, 0.1);
 }
 
 /* Basic reset for predictable sizing. */
@@ -202,8 +207,7 @@ a {
     overflow-y: auto;
     background: var(--surface);
     color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     box-shadow: 0 10px 30px rgba(7, 22, 63, 0.15);
 }
 
@@ -354,7 +358,7 @@ a {
 
 .dashboard-body {
     min-height: calc(100vh - var(--header-height));
-    padding-bottom: calc(var(--navbar-height) + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--navbar-height) + 16px + env(safe-area-inset-bottom));
 }
 
 /* Bottom dashboard navigation, stays on screen while the page scrolls. */
@@ -365,33 +369,70 @@ a {
     bottom: 0;
     left: 0;
     z-index: 40;
+    display: flex;
+    justify-content: center;
+    padding: 0 24px;
     background: var(--surface);
-    border-top: 1px solid var(--navbar-border);
     box-shadow: 0 -6px 20px rgba(7, 22, 63, 0.06);
-    padding-bottom: env(safe-area-inset-bottom);
     font-family: "Public Sans", Arial, Helvetica, sans-serif;
+}
+
+.navbar-inner {
+    display: flex;
+    min-width: 0;
+    padding: 0 16px env(safe-area-inset-bottom);
+    border-radius: var(--navbar-radius) var(--navbar-radius) 0 0;
+    background: var(--header-bg);
 }
 
 .navbar-links {
     display: flex;
-    justify-content: center;
-    gap: 4px;
+    min-width: 0;
     height: var(--navbar-height);
-    margin: 0 auto;
-    padding: 0 12px;
+    margin: 0;
+    padding: 0;
     list-style: none;
 }
 
 .navbar-links > li {
     display: flex;
-    flex: 0 1 120px;
+    flex: 0 1 96px;
     min-width: 0;
+}
+
+.navbar-links > li:has(> .navbar-link.active) {
+    position: relative;
+    margin-bottom: 6px;
+    padding: 0 6px;
+    border-radius: 0 0 var(--navbar-radius) var(--navbar-radius);
+    background: var(--surface);
+}
+
+.navbar-links > li:has(> .navbar-link.active)::before,
+.navbar-links > li:has(> .navbar-link.active)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: var(--navbar-radius);
+    height: var(--navbar-radius);
+    pointer-events: none;
+}
+
+.navbar-links > li:has(> .navbar-link.active)::before {
+    left: calc(-1 * var(--navbar-radius));
+    background: radial-gradient(circle at 0 100%, transparent calc(var(--navbar-radius) - 0.5px), var(--surface) var(--navbar-radius));
+}
+
+.navbar-links > li:has(> .navbar-link.active)::after {
+    right: calc(-1 * var(--navbar-radius));
+    background: radial-gradient(circle at 100% 100%, transparent calc(var(--navbar-radius) - 0.5px), var(--surface) var(--navbar-radius));
 }
 
 /* One navigation item: icon tile above its label. */
 
 .navbar-link {
     position: relative;
+    z-index: 1;
     display: flex;
     flex: 1;
     flex-direction: column;
@@ -403,7 +444,7 @@ a {
     border: 0;
     border-radius: 10px;
     background: transparent;
-    color: var(--muted);
+    color: rgba(255, 255, 255, 0.72);
     text-decoration: none;
     font: inherit;
     font-size: 12px;
@@ -447,12 +488,12 @@ a {
 }
 
 .navbar-link:hover {
-    color: var(--text);
+    color: #fff;
 }
 
 .navbar-link:hover .navbar-icon {
-    background: var(--accent-soft);
-    color: var(--accent-strong);
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
 }
 
 .navbar-link:focus-visible {
@@ -462,7 +503,8 @@ a {
 
 /* Currently selected navigation item. */
 
-.navbar-link.active {
+.navbar-link.active,
+.navbar-link.active:hover {
     color: var(--text);
     font-weight: 700;
 }
@@ -481,8 +523,8 @@ a {
 .navbar-more-menu {
     min-width: 220px;
     padding: 6px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border: 0;
+    border-radius: var(--radius);
     box-shadow: 0 10px 30px rgba(7, 22, 63, 0.15);
     font-family: "Public Sans", Arial, Helvetica, sans-serif;
 }
@@ -492,7 +534,7 @@ a {
     align-items: center;
     gap: 12px;
     padding: 9px 10px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     color: var(--text);
     font-size: 15px;
 }
@@ -515,6 +557,11 @@ a {
     .navbar-more {
         display: flex !important;
     }
+
+    .dashboard-navbar {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
 }
 
 /* Main page content area. */
@@ -525,6 +572,25 @@ a {
     padding: 30px 34px 44px;
 }
 
+/* The overview owns the whole content area on the dashboard, so its hero runs
+   edge to edge and the shared page padding is cancelled around it only. */
+.dashboard-main:has(.staff-dashboard .overview-hero) {
+    padding: 0;
+}
+
+/* The overview fills the viewport height: the body and main become flex columns
+   so the hero can stretch past its content and reach the bottom navigation. */
+.dashboard:has(.staff-dashboard) .dashboard-body,
+.dashboard:has(.staff-dashboard) .dashboard-main {
+    display: flex;
+    flex-direction: column;
+}
+
+/* The hero carries the page title, so the shared heading above it is not repeated. */
+.dashboard-main:has(.staff-dashboard .overview-hero) .dashboard-heading {
+    display: none;
+}
+
 .dashboard-heading h1 {
     margin: 0 0 28px;
     font-size: 20px;
@@ -532,6 +598,778 @@ a {
     font-weight: 500;
     color: #000;
 }
+
+/* =====================================================================
+   OVERVIEW (staffDashboard.php)
+   Scoped to .staff-dashboard so no other staff page is affected.
+   ===================================================================== */
+
+.staff-dashboard {
+    --overview-navy: #04113b;
+    --overview-blue: #2f66d3;
+    --overview-blue-deep: #173f8f;
+    --overview-blue-mid: #5b8ee6;
+    --overview-blue-light: #8bb0ed;
+    --overview-blue-pale: #c9dcf9;
+    --overview-ink: #101828;
+    --overview-muted: #697386;
+    --overview-hair: #e4e9f2;
+    --overview-warm: #b26a12;
+    --overview-good: #1a7f52;
+    --overview-bad: #b04242;
+    color: var(--overview-ink);
+    /* stretches to the full height left between the header and the bottom navigation */
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+/* ---------- hero ---------- */
+
+.staff-dashboard .overview-hero {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    /* greeting sits at the top, the highlight cards along the bottom */
+    justify-content: space-between;
+    gap: 34px;
+    padding: 38px clamp(20px, 3vw, 44px) 40px;
+    background-color: #10233f;
+    background-image:
+        linear-gradient(160deg, rgba(4, 17, 59, .88), rgba(6, 26, 62, .78) 46%, rgba(4, 17, 59, .9)),
+        url("../images/dashboard-bg.png");
+    background-position: center;
+    background-size: cover;
+    color: #fff;
+}
+
+.staff-dashboard .overview-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(340px, 42%);
+    align-items: start;
+    gap: 30px;
+}
+
+.staff-dashboard .overview-intro h1 {
+    margin: 0;
+    font-family: 'Public Sans', Arial, sans-serif;
+    font-size: clamp(34px, 3.6vw, 48px);
+    font-weight: 500;
+    letter-spacing: -.04em;
+    line-height: 1.08;
+    color: #fff;
+}
+
+.staff-dashboard .overview-intro > p:last-child {
+    max-width: 38ch;
+    margin: 12px 0 0;
+    color: rgba(255, 255, 255, .82);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Donation panel. The tint stays dark enough for white text to hold contrast
+   against the photograph behind it. */
+.staff-dashboard .donations-glass {
+    padding: 20px 22px 18px;
+    border: 1px solid rgba(255, 255, 255, .26);
+    border-radius: 22px;
+    background: rgba(4, 17, 59, .52);
+    box-shadow: 0 18px 44px rgba(2, 10, 32, .4);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+.staff-dashboard .donations-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.staff-dashboard .donations-heading h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: -.02em;
+}
+
+.staff-dashboard .donation-period-form select {
+    max-width: 118px;
+    padding: 8px 30px 8px 12px;
+    border: 1px solid rgba(255, 255, 255, .34);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.staff-dashboard .donation-period-form select:hover {
+    background: rgba(255, 255, 255, .26);
+}
+
+.staff-dashboard .donation-period-form option {
+    color: var(--overview-ink);
+}
+
+.staff-dashboard .weekly-chart {
+    height: 108px;
+    margin: 16px 0 4px;
+}
+
+.staff-dashboard .chart-empty {
+    margin: 26px 0;
+    color: rgba(255, 255, 255, .78);
+    font-size: 13px;
+    text-align: center;
+}
+
+.staff-dashboard .donation-totals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 26px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+}
+
+.staff-dashboard .donation-totals span {
+    display: block;
+    margin-bottom: 3px;
+    color: rgba(255, 255, 255, .74);
+    font-size: 11px;
+}
+
+.staff-dashboard .donation-totals strong {
+    color: #fff;
+    font-size: 21px;
+    font-weight: 600;
+    letter-spacing: -.03em;
+}
+
+/* ---------- highlight cards ---------- */
+
+.staff-dashboard .overview-cards {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.staff-dashboard .overview-card {
+    display: flex;
+    min-width: 0;
+    min-height: 236px;
+    flex-direction: column;
+    padding: 18px 18px 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, .95);
+    box-shadow: 0 14px 34px rgba(2, 10, 32, .26);
+}
+
+.staff-dashboard .overview-card-heading {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.staff-dashboard .overview-card-kicker {
+    margin: 0 0 4px;
+    color: var(--overview-muted);
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.staff-dashboard .overview-card h3 {
+    margin: 0;
+    color: var(--overview-ink);
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+}
+
+.staff-dashboard .overview-card-action {
+    display: grid;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--overview-blue);
+    color: #fff;
+    font-size: 15px;
+    text-decoration: none;
+    transition: background .16s ease, transform .16s ease;
+}
+
+.staff-dashboard .overview-card-action:hover {
+    background: var(--overview-blue-deep);
+    transform: translateY(-2px);
+}
+
+.staff-dashboard .overview-card-action:focus-visible {
+    outline: 2px solid var(--overview-blue-deep);
+    outline-offset: 2px;
+}
+
+/* Enquiry status bar. The stripes keep the three segments readable for
+   colour-blind viewers as well as by colour. */
+.staff-dashboard .enquiry-segments {
+    display: flex;
+    height: 58px;
+    gap: 3px;
+    margin: 16px 0 14px;
+    overflow: hidden;
+    border-radius: 15px;
+    background: var(--track);
+}
+
+.staff-dashboard .enquiry-segments span {
+    min-width: 8px;
+    background-image: repeating-linear-gradient(130deg, transparent 0 6px, rgba(255, 255, 255, .16) 6px 7px);
+}
+
+.staff-dashboard .segment-new { background-color: var(--overview-blue-deep); }
+.staff-dashboard .segment-contacted { background-color: var(--overview-blue); }
+.staff-dashboard .segment-closed { background-color: var(--overview-blue-light); }
+
+.staff-dashboard .overview-legend {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    margin-top: auto;
+    color: var(--overview-muted);
+    font-size: 11px;
+}
+
+.staff-dashboard .overview-legend > span {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+    gap: 5px;
+}
+
+.staff-dashboard .overview-legend b {
+    color: var(--overview-ink);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.staff-dashboard .legend-dot {
+    display: inline-block;
+    flex: 0 0 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cell-color, currentColor);
+}
+
+/* Registrations honeycomb */
+
+.staff-dashboard .honeycomb-chart {
+    display: grid;
+    width: max-content;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+    justify-content: center;
+    margin: 18px auto 14px;
+}
+
+.staff-dashboard .honeycomb-cell {
+    width: 22px;
+    height: 20px;
+    background: var(--cell-color);
+    clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+}
+
+/* stagger alternate rows so the cells read as a honeycomb */
+.staff-dashboard .honeycomb-cell:nth-child(14n + 8),
+.staff-dashboard .honeycomb-cell:nth-child(14n + 9),
+.staff-dashboard .honeycomb-cell:nth-child(14n + 10),
+.staff-dashboard .honeycomb-cell:nth-child(14n + 11),
+.staff-dashboard .honeycomb-cell:nth-child(14n + 12),
+.staff-dashboard .honeycomb-cell:nth-child(14n + 13),
+.staff-dashboard .honeycomb-cell:nth-child(14n + 14) {
+    transform: translateX(5px);
+}
+
+.staff-dashboard .registration-legend {
+    justify-content: center;
+    max-height: 60px;
+    overflow: hidden;
+}
+
+.staff-dashboard .registration-legend > span {
+    max-width: 48%;
+}
+
+/* Upcoming events */
+
+.staff-dashboard .upcoming-events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 16px 0 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.staff-dashboard .upcoming-events-list li {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+}
+
+.staff-dashboard .event-date-tile {
+    display: grid;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 44px;
+    place-items: center;
+    align-content: center;
+    border-radius: 11px;
+    background: var(--overview-blue-deep);
+    color: #fff;
+    line-height: 1.05;
+}
+
+.staff-dashboard .event-date-tile strong {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.staff-dashboard .event-date-tile small {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    opacity: .85;
+}
+
+/* draft events have no date yet, so the tile is a lighter outlined chip */
+.staff-dashboard .event-date-tile.is-tbc {
+    border: 1px dashed var(--overview-blue-mid);
+    background: #eef3fb;
+    color: var(--overview-blue-deep);
+}
+
+.staff-dashboard .event-date-tile.is-tbc strong {
+    font-size: 12px;
+    letter-spacing: .02em;
+}
+
+.staff-dashboard .upcoming-event-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.staff-dashboard .upcoming-event-copy strong {
+    overflow: hidden;
+    color: var(--overview-ink);
+    font-size: 13px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.staff-dashboard .upcoming-event-copy small {
+    color: var(--overview-muted);
+    font-size: 11px;
+}
+
+.staff-dashboard .upcoming-events-empty {
+    margin: 28px 0 16px;
+    color: var(--overview-muted);
+}
+
+.staff-dashboard .upcoming-events-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: auto;
+    color: var(--overview-blue-deep);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.staff-dashboard .upcoming-events-link:hover {
+    color: var(--overview-blue);
+    text-decoration: underline;
+}
+
+/* Campaign progress bars */
+
+.staff-dashboard .campaign-bars {
+    display: flex;
+    height: 130px;
+    align-items: stretch;
+    justify-content: space-around;
+    gap: 6px;
+    margin: 16px 0 0;
+    padding: 0 2px;
+    border-bottom: 1px solid var(--overview-hair);
+}
+
+.staff-dashboard .campaign-bar-item {
+    display: flex;
+    min-width: 0;
+    flex: 1 1 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.staff-dashboard .campaign-bar-value {
+    color: var(--overview-muted);
+    font-size: 9px;
+    font-weight: 600;
+}
+
+.staff-dashboard .campaign-bar {
+    display: block;
+    width: min(100%, 30px);
+    height: var(--bar-height);
+    min-height: 8px;
+    border-radius: 8px 8px 4px 4px;
+    background: var(--bar-color);
+    background-image: repeating-linear-gradient(135deg, transparent 0 6px, rgba(255, 255, 255, .16) 6px 7px);
+    transition: filter .15s ease;
+}
+
+.staff-dashboard .campaign-bar-item:hover .campaign-bar {
+    filter: brightness(1.1);
+}
+
+.staff-dashboard .campaign-bar-label {
+    width: 100%;
+    overflow: hidden;
+    color: var(--overview-muted);
+    font-size: 9px;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.staff-dashboard .campaign-chart-caption {
+    margin: 10px 0 0;
+    color: var(--overview-muted);
+    font-size: 11px;
+    text-align: center;
+}
+
+.staff-dashboard .campaign-empty {
+    margin: 52px 0 30px;
+    color: var(--overview-muted);
+    text-align: center;
+}
+
+/* ---------- hero greeting and pills ---------- */
+
+.staff-dashboard .overview-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.staff-dashboard .overview-pill {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    padding: 8px 15px;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .14);
+    color: rgba(255, 255, 255, .92);
+    font-size: 12.5px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.staff-dashboard .overview-pill strong {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* ---------- donation totals ---------- */
+
+.staff-dashboard .donation-figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.staff-dashboard .donation-figure {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 5px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, .2);
+}
+
+.staff-dashboard .donation-figure span {
+    color: rgba(255, 255, 255, .74);
+    font-size: 11px;
+}
+
+.staff-dashboard .donation-figure strong {
+    color: #fff;
+    font-size: clamp(24px, 2.4vw, 30px);
+    font-weight: 600;
+    letter-spacing: -.03em;
+    line-height: 1.1;
+}
+
+/* ---------- highlight card figures ---------- */
+
+.staff-dashboard .card-figure {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 16px 0 14px;
+}
+
+.staff-dashboard .card-figure strong {
+    color: var(--overview-ink);
+    font-size: clamp(30px, 3vw, 40px);
+    font-weight: 600;
+    letter-spacing: -.04em;
+    line-height: 1;
+}
+
+.staff-dashboard .card-figure span {
+    color: var(--overview-muted);
+    font-size: 12px;
+}
+
+/* ---------- enquiries stacked bar ---------- */
+
+.staff-dashboard .enquiry-stack {
+    display: flex;
+    height: 14px;
+    margin: 0 0 14px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--track);
+}
+
+.staff-dashboard .enquiry-stack span {
+    display: block;
+    height: 100%;
+}
+
+.staff-dashboard .stack-new { background: #2563eb; }
+.staff-dashboard .stack-contacted { background: #f59e0b; }
+.staff-dashboard .stack-closed { background: #16a34a; }
+
+.staff-dashboard .status-counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--overview-muted);
+    font-size: 11px;
+}
+
+.staff-dashboard .status-counts li {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.staff-dashboard .status-counts b {
+    color: var(--overview-ink);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* ---------- registration programmes ---------- */
+
+.staff-dashboard .programme-counts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.staff-dashboard .programme-counts li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid var(--overview-hair);
+    color: var(--overview-muted);
+    font-size: 12.5px;
+}
+
+.staff-dashboard .programme-counts li:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.staff-dashboard .programme-counts b {
+    color: var(--overview-ink);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.staff-dashboard .chart-empty-dark {
+    margin: 26px 0;
+    color: var(--overview-muted);
+    text-align: center;
+}
+
+/* ---------- campaign donut and mini bars ---------- */
+
+.staff-dashboard .campaign-donut-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 12px;
+}
+
+.staff-dashboard .campaign-donut {
+    width: 128px;
+    height: 128px;
+}
+
+.staff-dashboard .campaign-donut-value {
+    fill: var(--overview-navy);
+    font-family: 'Public Sans', Arial, sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -.03em;
+}
+
+.staff-dashboard .campaign-donut-caption {
+    fill: var(--overview-muted);
+    font-family: 'Public Sans', Arial, sans-serif;
+    font-size: 11px;
+}
+
+.staff-dashboard .campaign-summary {
+    margin: 0 0 14px;
+    color: var(--overview-muted);
+    font-size: 11.5px;
+    text-align: center;
+}
+
+.staff-dashboard .campaign-mini-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.staff-dashboard .campaign-mini-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.staff-dashboard .campaign-mini-name {
+    color: var(--overview-ink);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    /* full names wrap instead of being cut off */
+    overflow-wrap: anywhere;
+}
+
+.staff-dashboard .campaign-mini-pct {
+    flex: 0 0 auto;
+    color: var(--overview-muted);
+    font-size: 11.5px;
+    font-weight: 600;
+}
+
+.staff-dashboard .campaign-mini-track {
+    height: 6px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--track);
+}
+
+.staff-dashboard .campaign-mini-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: #f97316;
+}
+
+/* ---------- events empty state ---------- */
+
+.staff-dashboard .events-empty {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: auto 0 0;
+}
+
+.staff-dashboard .events-empty p {
+    margin: 0;
+    color: var(--overview-muted);
+    font-size: 13px;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 1180px) {
+    .staff-dashboard .overview-top {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .staff-dashboard .overview-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 680px) {
+    .staff-dashboard .overview-hero {
+        padding: 26px 16px 30px;
+    }
+
+    .staff-dashboard .overview-cards {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .staff-dashboard .overview-card {
+        min-height: 212px;
+    }
+
+    .staff-dashboard .registration-legend > span {
+        max-width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .staff-dashboard .overview-card-action,
+    .staff-dashboard .campaign-bar {
+        transition: none;
+    }
+}
+
 
 /* Grid containing the small statistic cards. */
 
@@ -548,9 +1386,8 @@ a {
     min-height: 140px;
     padding: 22px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent);
-    border-radius: 14px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
 .dashboard-card h2 {
@@ -575,7 +1412,7 @@ a {
     display: block;
     color: inherit;
     text-decoration: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: box-shadow 0.15s ease;
 }
 
 .dashboard-card-link h2 {
@@ -613,8 +1450,7 @@ a {
 
 .dashboard-card-link:hover,
 .dashboard-card-link:focus-visible {
-    border-color: var(--accent);
-    box-shadow: 0 4px 14px rgba(47, 102, 211, 0.12);
+    box-shadow: var(--shadow-hover);
 }
 
 /* Supporting text below a card value. */
@@ -638,9 +1474,8 @@ a {
 
 .dashboard-panel {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent-soft);
-    border-radius: 14px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     overflow: hidden;
 }
 
@@ -902,8 +1737,8 @@ a {
 .dashboard-alert {
     margin-bottom: 24px;
     padding: 12px 16px;
-    border: 1px solid;
-    border-radius: 10px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
     font-size: 14px;
 }
 
@@ -914,13 +1749,11 @@ a {
 
 .alert-success {
     background: #ecf8f0;
-    border-color: #b9e2c6;
     color: #1d6b3a;
 }
 
 .alert-error {
     background: #fdeeee;
-    border-color: #f1c2c2;
     color: #a12828;
 }
 
@@ -1210,15 +2043,14 @@ button.panel-button {
 }
 
 /* ---- Dialog (popover form over a dimmed page) ----
- * Uses the same surface, border and shadow as the header popovers. */
+ * Uses the same surface and shadow as the header popovers. */
 
 .dashboard-dialog {
     width: min(540px, calc(100vw - 32px));
     max-height: calc(100vh - 48px);
     padding: 0;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent-soft);
-    border-radius: 14px;
+    border: 0;
+    border-radius: var(--radius);
     background: var(--surface);
     color: var(--text);
     box-shadow: 0 20px 50px rgba(7, 22, 63, 0.25);
@@ -1463,8 +2295,7 @@ button.panel-button {
     max-width: calc(100vw - 32px);
     background: var(--surface);
     color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     box-shadow: 0 10px 30px rgba(7, 22, 63, 0.15);
     animation: popover-in 0.14s ease-out;
 }
@@ -1657,20 +2488,17 @@ button.panel-button {
 .password-soon {
     --reminder-colour: #b26a00;
     --reminder-bg: #fff4e0;
-    --reminder-border: #f2d49b;
 }
 
 .password-overdue {
     --reminder-colour: #a12828;
     --reminder-bg: #fdeeee;
-    --reminder-border: #f1c2c2;
 }
 
 .password-reminder {
     margin: 0;
     padding: 10px 14px;
-    border: 1px solid var(--reminder-border, var(--border));
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--reminder-bg, var(--page-bg));
     color: var(--reminder-colour, var(--text));
     font-size: 14px;
@@ -1711,7 +2539,7 @@ button.panel-button {
     min-height: 230px;
     padding: 28px 20px;
     border: 2px dashed var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius);
     background: var(--surface);
     text-align: center;
     transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -1915,7 +2743,7 @@ button.panel-button {
 .enquiry-message {
     margin: 0;
     padding: 14px 16px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--page-bg);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -1929,21 +2757,6 @@ button.panel-button {
 .enquiry-row-archived td {
     color: var(--muted);
     background: var(--page-bg);
-}
-
-/* Up to five summary cards here, so let them wrap instead of a fixed 3 columns. */
-.enquiries-page .dashboard-cards {
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-}
-
-/* Unclaimed / My Enquiries / All Enquiries stacked with a gap. */
-.enquiries-page .enquiries-panel + .enquiries-panel {
-    margin-top: 28px;
-}
-
-.enquiries-new-card,
-.enquiries-mine-card {
-    border-top-color: var(--accent-strong);
 }
 
 .enquiry-handler {
@@ -2009,24 +2822,65 @@ button.panel-button {
     font-family: 'Public Sans', sans-serif;
 }
 
-/* Summary cards: narrow enough minimum that all of them stay on one row until phone size. */
-.enquiries-page .dashboard-cards {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 18px;
+.enquiry-tabs-nav {
+    max-width: 100%;
+    margin-bottom: 24px;
+    overflow-x: auto;
 }
 
-.enquiries-page .dashboard-card {
-    min-height: 0;
-    padding: 18px 20px;
-    border-radius: 12px;
+.enquiry-tabs {
+    display: inline-flex;
+    gap: 2px;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: var(--surface);
+    border-radius: 999px;
+    box-shadow: var(--shadow);
 }
 
-.enquiries-page .dashboard-card h2 {
-    margin-bottom: 8px;
+.enquiry-tabs a {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.enquiries-page .dashboard-card-value {
-    margin-bottom: 4px;
+.enquiry-tabs a:hover {
+    background: var(--page-bg);
+    color: var(--text);
+}
+
+.enquiry-tabs a[aria-current="page"] {
+    background: var(--accent);
+    color: #fff;
+}
+
+.enquiry-tab-count {
+    min-width: 22px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--page-bg);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.enquiry-tabs a[aria-current="page"] .enquiry-tab-count {
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+}
+
+.enquiries-page #all-enquiries .panel-header {
+    justify-content: flex-end;
 }
 
 /* Sections: a heading above a grid of cards, not a boxed table. */
@@ -2081,9 +2935,9 @@ button.panel-button {
 .enquiries-table .enquiries-empty {
     display: block;
     padding: 22px 16px;
-    border: 1px dashed var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius);
     background: var(--surface);
+    box-shadow: var(--shadow);
     font-size: 14px;
 }
 
@@ -2102,15 +2956,9 @@ button.panel-button {
     gap: 12px 14px;
     padding: 18px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid #0389E1;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(4, 17, 59, 0.05);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
-
-/* The left edge shows the status at a glance. */
-.enquiries-table .enquiry-status-contacted { border-left-color: #d89614; }
-.enquiries-table .enquiry-status-closed    { border-left-color: #2e8b57; }
 
 .enquiries-table .enquiry-row td {
     display: block;
@@ -2145,7 +2993,7 @@ button.panel-button {
 
 .enquiries-table .enquiry-message-cell {
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--page-bg);
     font-size: 14px;
     line-height: 1.45;
@@ -2300,19 +3148,10 @@ button.panel-button {
 .page-notice {
     margin-bottom: 24px;
     padding: 13px 16px;
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--accent);
-    border-radius: 8px;
+    border-radius: var(--radius);
     background: var(--surface);
+    box-shadow: var(--shadow);
     font-size: 15px;
-}
-
-.page-notice-success {
-    border-left-color: var(--success);
-}
-
-.page-notice-error {
-    border-left-color: var(--danger);
 }
 
 /* Button variants used with .panel-button. */
@@ -2728,9 +3567,9 @@ button.panel-button {
 }
 
 .registration-modal .modal-content {
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent);
-    border-radius: 14px;
+    border: 0;
+    border-radius: var(--radius);
+    box-shadow: 0 20px 50px rgba(7, 22, 63, 0.25);
     background: var(--surface);
     color: var(--text);
 }
@@ -3067,7 +3906,6 @@ button.panel-button {
 .manage-page .dashboard-card {
     min-height: 0;
     padding: 18px 20px;
-    border-radius: 12px;
 }
 
 .manage-page .dashboard-card h2 {
@@ -3076,10 +3914,6 @@ button.panel-button {
 
 .manage-page .dashboard-card-value {
     margin-bottom: 4px;
-}
-
-.events-upcoming-card {
-    border-top-color: var(--accent-strong);
 }
 
 /* Sections: a heading above a grid of cards, not a boxed table. */
@@ -3133,9 +3967,9 @@ button.panel-button {
     grid-column: 1 / -1;
     margin: 0;
     padding: 22px 16px;
-    border: 1px dashed var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius);
     background: var(--surface);
+    box-shadow: var(--shadow);
     color: var(--muted);
     font-size: 14px;
     text-align: center;
@@ -3159,18 +3993,11 @@ button.panel-button {
     gap: 12px;
     padding: 18px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 4px solid #0389E1;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(4, 17, 59, 0.05);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
-/* The left edge shows the timing at a glance. */
-.event-manage-card.timing-past { border-left-color: #2e8b57; }
-.event-manage-card.is-tbc      { border-left-color: #d89614; }
-
 .manage-card.is-archived {
-    border-left-color: var(--muted);
     opacity: 0.7;
 }
 
@@ -3180,7 +4007,7 @@ button.panel-button {
     justify-content: center;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--page-bg);
     color: var(--muted);
     font-size: 13px;
@@ -3210,7 +4037,7 @@ button.panel-button {
 .manage-card-text {
     margin: 0;
     padding: 10px 12px;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--page-bg);
     font-size: 14px;
     line-height: 1.45;
@@ -3474,10 +4301,9 @@ button.panel-button {
     margin: 0;
     aspect-ratio: 4 / 3;
     overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    border-radius: var(--radius);
     background: var(--page-bg);
-    box-shadow: 0 2px 8px rgba(4, 17, 59, 0.05);
+    box-shadow: var(--shadow);
 }
 
 .gallery-photo > a,
@@ -3539,7 +4365,7 @@ button.panel-button {
     gap: 10px;
     padding: 24px 20px;
     border: 2px dashed var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius);
     background: var(--surface);
     text-align: center;
     transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -3689,10 +4515,6 @@ button.panel-button {
  * dialogs above; only the campaign-specific parts live here.
  * ===================================================================== */
 
-/* The left edge shows the status at a glance: active blue (default), draft amber, closed green. */
-.campaign-manage-card.campaign-status-draft  { border-left-color: #d89614; }
-.campaign-manage-card.campaign-status-closed { border-left-color: #2e8b57; }
-
 /* Raised so far against the goal. */
 .campaign-progress {
     display: flex;
@@ -3750,8 +4572,8 @@ button.panel-button {
 /* Donations table on the campaign view. */
 .campaign-donations-table {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
 }
 
 .campaign-donations-table td,
@@ -4079,8 +4901,7 @@ button.panel-button {
     gap: 10px;
     margin: 0 22px 14px;
     padding: 10px 14px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     background: var(--accent-soft);
 }
 
@@ -4406,10 +5227,9 @@ a.table-action {
     gap: 12px;
     margin-bottom: 16px;
     padding: 12px 12px 12px 16px;
-    border: 1px solid #c9daf8;
-    border-left: 4px solid var(--accent);
-    border-radius: 10px;
+    border-radius: var(--radius);
     background: var(--accent-soft);
+    box-shadow: var(--shadow);
     font-size: 14px;
 }
 

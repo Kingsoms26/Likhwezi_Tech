@@ -144,3 +144,107 @@ function formatRand(float $amount): string
 {
     return 'R' . number_format($amount, 2);
 }
+
+// paid donations for the overview card
+// the all-time total and the period total come from the same query with the same filters,
+// so the period figure can never exceed the all-time figure
+function getDonationTotals(mysqli $conn, string $period = 'week'): array
+{
+    $days = match ($period) {
+        'year'  => 365,
+        'month' => 30,
+        default => 7,
+    };
+
+    $stmt = $conn->prepare(
+        "SELECT COALESCE(SUM(d.amount), 0) AS all_time,
+                COALESCE(SUM(CASE WHEN d.donationDate >= CURDATE() - INTERVAL ? DAY THEN d.amount END), 0) AS period
+         FROM Donation d
+         JOIN Campaign c ON c.campaignID = d.campaignID
+         WHERE c.isArchived = FALSE AND d.paymentStatus = 'complete'"
+    );
+    if (!$stmt) {
+        error_log('getDonationTotals failed: ' . $conn->error);
+        return ['allTime' => 0.0, 'period' => 0.0, 'days' => $days];
+    }
+
+    $stmt->bind_param("i", $days);
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+
+    $allTime = (float) ($row['all_time'] ?? 0);
+
+    return [
+        // the clamp keeps the invariant even if the two figures ever drift apart again
+        'allTime' => $allTime,
+        'period'  => min((float) ($row['period'] ?? 0), $allTime),
+        'days'    => $days,
+    ];
+}
+
+// active campaigns and what they have raised against their combined goal
+function getActiveCampaignTotals(mysqli $conn): array
+{
+    $stmt = $conn->prepare(
+        "SELECT
+            (SELECT COUNT(*) FROM Campaign WHERE isArchived = FALSE AND status = 'active') AS campaigns,
+            (SELECT COALESCE(SUM(goal), 0) FROM Campaign WHERE isArchived = FALSE AND status = 'active') AS goal,
+            (SELECT COALESCE(SUM(d.amount), 0)
+               FROM Donation d
+               JOIN Campaign c ON c.campaignID = d.campaignID
+              WHERE c.isArchived = FALSE AND c.status = 'active' AND d.paymentStatus = 'complete') AS raised"
+    );
+    if (!$stmt) {
+        error_log('getActiveCampaignTotals failed: ' . $conn->error);
+        return ['campaigns' => 0, 'raised' => 0.0, 'goal' => 0.0];
+    }
+
+    $stmt->execute();
+    $row = $stmt->get_result()->fetch_assoc();
+
+    return [
+        'campaigns' => (int) ($row['campaigns'] ?? 0),
+        'raised'    => (float) ($row['raised'] ?? 0),
+        'goal'      => (float) ($row['goal'] ?? 0),
+    ];
+}
+
+// how many events fall in the next few days, for the hero pill
+function getUpcomingDatedEventCount(mysqli $conn, int $days = 7): int
+{
+    $stmt = $conn->prepare(
+        "SELECT COUNT(*) AS total
+         FROM Event
+         WHERE isArchived = FALSE AND eventDate >= CURDATE() AND eventDate <= CURDATE() + INTERVAL ? DAY"
+    );
+    if (!$stmt) {
+        error_log('getUpcomingDatedEventCount failed: ' . $conn->error);
+        return 0;
+    }
+
+    $stmt->bind_param("i", $days);
+    $stmt->execute();
+
+    return (int) ($stmt->get_result()->fetch_assoc()['total'] ?? 0);
+}
+function getEventsWithinDays(mysqli $conn, int $days = 30): array
+{
+    $stmt = $conn->prepare(
+        "SELECT eventID, name, eventDate, DATEDIFF(eventDate, CURDATE()) AS daysAway
+         FROM Event
+         WHERE isArchived = FALSE AND eventDate >= CURDATE() AND eventDate <= CURDATE() + INTERVAL ? DAY
+         ORDER BY eventDate, eventID"
+    );
+    if (!$stmt) {
+        error_log('getEventsWithinDays failed: ' . $conn->error);
+        return [];
+    }
+
+    $stmt->bind_param("i", $days);
+    $stmt->execute();
+
+    return array_map(function ($row) {
+        $row['daysAway'] = (int) $row['daysAway'];
+       return $row;
+   }, $stmt->get_result()->fetch_all(MYSQLI_ASSOC));
+}

@@ -1,0 +1,601 @@
+/* =====================================================================
+ * DASHBOARD GLASS THEME
+ * Loaded after dashboard.css. Only the two dashboards use it:
+ *   .admin-glass  dark navy glass, big numbers, asymmetric layout
+ *   .staff-glass  light frosted glass, colour coded tiles, 3 x 2 grid
+ * Both sit on the "Realized Imagination Through Insights" picture
+ * (assets/images/dashboard-bg.png). Other staff pages are untouched
+ * because every rule is scoped with body:has(.glass-dash).
+ * ===================================================================== */
+
+/* ---------- shared: background, header, floating navbar ---------- */
+
+body:has(.glass-dash) {
+    background: #04113B url("../images/dashboard-bg.png") center / cover fixed no-repeat;
+}
+
+/* tinted veil over the picture so text stays readable */
+body:has(.glass-dash)::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body:has(.admin-glass)::before {
+    background: linear-gradient(160deg, rgba(4, 17, 59, .66), rgba(15, 60, 122, .40) 55%, rgba(4, 17, 59, .72));
+}
+
+body:has(.staff-glass)::before {
+    background: linear-gradient(160deg, rgba(255, 255, 255, .78), rgba(234, 241, 255, .55) 60%, rgba(255, 255, 255, .78));
+}
+
+body:has(.glass-dash) .dashboard {
+    position: relative;
+    z-index: 1;
+}
+
+/* the greeting replaces the page heading, kept for screen readers */
+body:has(.glass-dash) .dashboard-heading {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+body:has(.glass-dash) .dashboard-main {
+    max-width: 1320px;
+    margin: 0 auto;
+}
+
+/* header */
+body:has(.glass-dash) .dashboard-header {
+    background: rgba(4, 17, 59, .55);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    border-bottom: 1px solid rgba(255, 255, 255, .16);
+}
+
+/* bottom navigation becomes a floating glass dock */
+body:has(.glass-dash) .dashboard-navbar {
+    left: 50%;
+    right: auto;
+    bottom: 14px;
+    width: min(1120px, calc(100% - 24px));
+    transform: translateX(-50%);
+    border: 1px solid rgba(255, 255, 255, .28);
+    border-radius: 24px;
+    background: rgba(4, 17, 59, .58);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    box-shadow: 0 18px 40px rgba(4, 17, 59, .35);
+}
+
+body:has(.glass-dash) .navbar-link {
+    color: rgba(255, 255, 255, .72);
+}
+
+body:has(.glass-dash) .navbar-link:hover,
+body:has(.glass-dash) .navbar-link.active {
+    color: #fff;
+}
+
+body:has(.glass-dash) .navbar-link:hover .navbar-icon {
+    background: rgba(255, 255, 255, .16);
+    color: #fff;
+}
+
+body:has(.glass-dash) .navbar-link.active .navbar-icon {
+    background: linear-gradient(135deg, #0389E1, #2f66d3);
+    box-shadow: 0 6px 16px rgba(3, 137, 225, .55);
+}
+
+/* card icon badge, set with $cardIcon in components/dashboardCard.php */
+.glass-dash .dashboard-card {
+    position: relative;
+}
+
+.dashboard-card-icon {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    font-size: 20px;
+}
+
+/* gentle entrance */
+.glass-dash .dashboard-card,
+.glass-dash .dashboard-panel,
+.glass-dash .glass-hero {
+    animation: glass-rise .5s ease both;
+}
+
+.glass-dash .dashboard-cards .dashboard-card:nth-child(2) { animation-delay: .06s; }
+.glass-dash .dashboard-cards .dashboard-card:nth-child(3) { animation-delay: .12s; }
+.glass-dash .dashboard-cards .dashboard-card:nth-child(4) { animation-delay: .18s; }
+.glass-dash .dashboard-cards .dashboard-card:nth-child(5) { animation-delay: .24s; }
+.glass-dash .dashboard-cards .dashboard-card:nth-child(6) { animation-delay: .30s; }
+
+@keyframes glass-rise {
+    from { opacity: 0; transform: translateY(14px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .glass-dash .dashboard-card,
+    .glass-dash .dashboard-panel,
+    .glass-dash .glass-hero {
+        animation: none;
+    }
+}
+
+/* greeting block */
+.glass-hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 6px 0 26px;
+}
+
+.glass-eyebrow {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.glass-greeting {
+    margin: 6px 0 6px;
+    font-size: clamp(28px, 4vw, 46px);
+    font-weight: 700;
+    line-height: 1.1;
+}
+
+.glass-sub {
+    margin: 0;
+    font-size: 16px;
+}
+
+/* =====================================================================
+ * ADMIN: dark navy glass
+ * ===================================================================== */
+
+.admin-glass {
+    --glass: rgba(8, 24, 70, .52);
+    --glass-line: rgba(255, 255, 255, .2);
+    --ink: #fff;
+    --ink-soft: rgba(255, 255, 255, .7);
+    color: var(--ink);
+}
+
+.admin-glass .glass-hero {
+    text-shadow: 0 2px 18px rgba(4, 17, 59, .55);
+}
+
+.admin-glass .glass-eyebrow {
+    color: #7fd0ff;
+}
+
+.admin-glass .glass-sub {
+    color: var(--ink-soft);
+}
+
+/* three big stat cards */
+.admin-glass .dashboard-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.admin-glass .dashboard-card {
+    --tone: #0389E1;
+    min-height: 172px;
+    padding: 26px;
+    overflow: hidden;
+    border: 1px solid var(--glass-line);
+    border-radius: 24px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 18px 40px rgba(4, 17, 59, .3), inset 0 1px 0 rgba(255, 255, 255, .22);
+    color: var(--ink);
+}
+
+/* glowing line along the top edge */
+.admin-glass .dashboard-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 26px;
+    right: 26px;
+    height: 3px;
+    border-radius: 0 0 6px 6px;
+    background: var(--tone);
+    box-shadow: 0 0 18px var(--tone);
+}
+
+.admin-glass .campaigns-card { --tone: #f5b83d; }
+.admin-glass .donations-card { --tone: #38d39f; }
+
+.admin-glass .dashboard-card h2 {
+    margin-bottom: 14px;
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.admin-glass .dashboard-card-value {
+    margin-bottom: 8px;
+    font-size: clamp(34px, 4vw, 48px);
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.admin-glass .dashboard-card-meta {
+    color: var(--ink-soft);
+}
+
+.admin-glass .dashboard-card-icon {
+    background: rgba(255, 255, 255, .12);
+    color: var(--tone);
+}
+
+/* panels */
+.admin-glass .dashboard-two-column {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.admin-glass .dashboard-panel {
+    border: 1px solid var(--glass-line);
+    border-radius: 24px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: 0 18px 40px rgba(4, 17, 59, .3), inset 0 1px 0 rgba(255, 255, 255, .2);
+    color: var(--ink);
+}
+
+.admin-glass .panel-header {
+    min-height: 68px;
+    padding: 0 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, .14);
+}
+
+.admin-glass .panel-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.admin-glass .panel-button {
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .1);
+    color: #fff;
+    transition: background .15s ease, border-color .15s ease;
+}
+
+.admin-glass .panel-button:hover {
+    border-color: #7fd0ff;
+    background: rgba(3, 137, 225, .55);
+    color: #fff;
+}
+
+/* open enquiries summary and table */
+.admin-glass .panel-summary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 16px;
+    padding: 20px 22px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, .14);
+}
+
+.admin-glass .summary-value {
+    font-size: 44px;
+    font-weight: 700;
+    color: #7fd0ff;
+}
+
+.admin-glass .panel-summary p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 15px;
+}
+
+.admin-glass .dashboard-table th {
+    color: var(--ink-soft);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.admin-glass .dashboard-table th,
+.admin-glass .dashboard-table td {
+    padding: 14px 22px;
+    border-top: 1px solid rgba(255, 255, 255, .12);
+    vertical-align: middle;
+}
+
+.admin-glass .dashboard-table tbody tr:hover {
+    background: rgba(255, 255, 255, .07);
+}
+
+.admin-glass .status-badge {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-glass .status-new       { background: rgba(3, 137, 225, .35);  color: #cfeaff; }
+.admin-glass .status-contacted { background: rgba(245, 184, 61, .3);  color: #ffe6a8; }
+
+/* progress bars */
+.admin-glass .panel-padding {
+    padding: 22px;
+}
+
+.admin-glass .interest-item {
+    margin-bottom: 18px;
+}
+
+.admin-glass .interest-heading,
+.admin-glass .campaign-header {
+    color: var(--ink);
+    font-size: 15px;
+}
+
+.admin-glass .interest-heading span:last-child,
+.admin-glass .campaign-header span:last-child {
+    color: #7fd0ff;
+    font-weight: 600;
+}
+
+.admin-glass .progress-track {
+    height: 9px;
+    background: rgba(255, 255, 255, .16);
+}
+
+.admin-glass .progress-fill {
+    background: linear-gradient(90deg, #0389E1, #7fd0ff);
+    box-shadow: 0 0 12px rgba(127, 208, 255, .6);
+}
+
+/* campaigns become tiles */
+.admin-glass .campaigns-panel .panel-body {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.admin-glass .campaign-row {
+    margin: 0;
+    padding: 16px 18px;
+    border: 1px solid rgba(255, 255, 255, .14);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, .07);
+}
+
+.admin-glass .campaigns-panel .panel-body > p {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+/* =====================================================================
+ * STAFF: light frosted glass with colour coded tiles
+ * ===================================================================== */
+
+.staff-glass {
+    --glass: rgba(255, 255, 255, .64);
+    --glass-line: rgba(255, 255, 255, .85);
+    --ink: #0b1b45;
+    --ink-soft: #4c5b7a;
+    color: var(--ink);
+}
+
+/* greeting is a frosted banner */
+.staff-glass .glass-hero {
+    position: relative;
+    overflow: hidden;
+    align-items: center;
+    padding: 28px 32px;
+    border: 1px solid var(--glass-line);
+    border-radius: 26px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 14px 34px rgba(15, 60, 122, .16);
+}
+
+.staff-glass .glass-hero::after {
+    content: "";
+    position: absolute;
+    right: -70px;
+    top: -90px;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    border: 36px solid rgba(3, 137, 225, .12);
+    pointer-events: none;
+}
+
+.staff-glass .glass-eyebrow {
+    color: #0F3C7A;
+}
+
+.staff-glass .glass-sub {
+    color: var(--ink-soft);
+}
+
+.staff-glass .glass-greeting {
+    color: #04113B;
+}
+
+/* six tiles, three across */
+.staff-glass .dashboard-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.staff-glass .dashboard-card {
+    --tone: #2f66d3;
+    --tone-soft: rgba(47, 102, 211, .16);
+    min-height: 150px;
+    padding: 22px 24px;
+    border: 1px solid var(--glass-line);
+    border-radius: 22px;
+    background: linear-gradient(145deg, var(--tone-soft), rgba(255, 255, 255, .68) 70%);
+    -webkit-backdrop-filter: blur(16px) saturate(160%);
+    backdrop-filter: blur(16px) saturate(160%);
+    box-shadow: 0 12px 28px rgba(15, 60, 122, .13);
+    color: var(--ink);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.staff-glass .dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(15, 60, 122, .2);
+}
+
+.staff-glass .enquiries-awaiting-card  { --tone: #d98e04; --tone-soft: rgba(245, 184, 61, .3); }
+.staff-glass .enquiries-open-card      { --tone: #2f66d3; --tone-soft: rgba(47, 102, 211, .2); }
+.staff-glass .registrations-recent-card{ --tone: #12897f; --tone-soft: rgba(24, 175, 160, .24); }
+.staff-glass .campaigns-active-card    { --tone: #c2336b; --tone-soft: rgba(224, 85, 140, .2); }
+.staff-glass .donations-card           { --tone: #e0661a; --tone-soft: rgba(245, 132, 56, .24); }
+.staff-glass .events-upcoming-card     { --tone: #1d7a46; --tone-soft: rgba(56, 177, 105, .22); }
+
+.staff-glass .dashboard-card h2 {
+    margin-bottom: 12px;
+    color: var(--ink-soft);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.staff-glass .dashboard-card-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: #04113B;
+}
+
+.staff-glass .dashboard-card-meta {
+    color: var(--ink-soft);
+    font-size: 14px;
+}
+
+.staff-glass .dashboard-card-icon {
+    background: #fff;
+    color: var(--tone);
+    box-shadow: 0 6px 14px rgba(15, 60, 122, .14);
+}
+
+/* panels in a 2 x 2 grid */
+.staff-glass .dashboard-two-column {
+    gap: 22px;
+    margin-bottom: 22px;
+}
+
+.staff-glass .dashboard-panel {
+    border: 1px solid var(--glass-line);
+    border-radius: 24px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: 0 14px 34px rgba(15, 60, 122, .14);
+}
+
+.staff-glass .panel-header {
+    min-height: 66px;
+    border-bottom: 1px solid rgba(15, 60, 122, .1);
+}
+
+.staff-glass .panel-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #0F3C7A;
+}
+
+.staff-glass .panel-button {
+    border: 1px solid rgba(15, 60, 122, .2);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .7);
+    color: #0F3C7A;
+}
+
+.staff-glass .snapshot-table th {
+    background: rgba(255, 255, 255, .4);
+}
+
+.staff-glass .snapshot-table th,
+.staff-glass .snapshot-table td {
+    border-top: 1px solid rgba(15, 60, 122, .09);
+}
+
+.staff-glass .snapshot-table tbody tr:hover {
+    background: rgba(255, 255, 255, .55);
+}
+
+.staff-glass .progress-track {
+    background: rgba(15, 60, 122, .12);
+}
+
+.staff-glass .progress-fill {
+    background: linear-gradient(90deg, #0389E1, #2f66d3);
+}
+
+.staff-glass .dashboard-empty {
+    color: var(--ink-soft);
+}
+
+/* ---------- fallbacks and small screens ---------- */
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .admin-glass { --glass: rgba(8, 24, 70, .92); }
+    .staff-glass { --glass: rgba(255, 255, 255, .94); }
+    body:has(.glass-dash) .dashboard-navbar { background: rgba(4, 17, 59, .95); }
+}
+
+@media (max-width: 1100px) {
+    .staff-glass .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .admin-glass .dashboard-cards,
+    .admin-glass .dashboard-two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 780px) {
+    .staff-glass .dashboard-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .staff-glass .glass-hero {
+        padding: 22px;
+    }
+
+    body:has(.glass-dash) .dashboard-navbar {
+        bottom: 8px;
+        width: calc(100% - 16px);
+        border-radius: 20px;
+    }
+}

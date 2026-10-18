@@ -1,0 +1,887 @@
+/* =====================================================================
+ * DASHBOARD THEME
+ *
+ * Loaded after dashboard.css on every staff page.
+ *
+ * Purpose: bring the other staff pages (enquiries, registrations,
+ * campaigns, gallery & events, pages & site info, announcements,
+ * accounts, archive, activity log, profile) onto the same navy and
+ * blue identity as the rebuilt staff dashboard, without moving the
+ * page structure around. Nearly every rule only changes colour,
+ * surface, border, shadow and corner radius, and all of it is flat:
+ * no gradients anywhere. Colour is carried by edge lines instead, so a
+ * coloured border, a line along the top of a card or a flat wash on a
+ * chip is what marks a page or a state apart.
+ *
+ * The two dashboards keep their own look, so everything here is scoped
+ * with body:not(:has(.staff-dashboard)). Only the shared chrome is
+ * touched, which is why one file covers every page at once.
+ * ===================================================================== */
+
+body:not(:has(.staff-dashboard)) {
+
+    /* Brand structure: the deep navy and its blue action family. */
+    --ui-navy: #04113b;
+    --ui-navy-2: #0f2a63;
+
+    /* Ink and the muted text tinted from the navy hue, never plain grey. */
+    --ui-ink: #101828;
+    --ui-muted: #5b6b85;
+    --ui-hair: #e8eef8;
+    --ui-line: #d9e2f0;
+
+    /* Action, focus and selection. */
+    --ui-blue: #2f66d3;
+    --ui-blue-deep: #1e4fb3;
+    --ui-blue-wash: #eaf1ff;
+
+    /* Semantic roles. */
+    --ui-good: #1d7a46;
+    --ui-warm: #b26a12;
+    --ui-danger: #b42318;
+
+    /* Elevated surface and its shadow. */
+    --ui-surface: #ffffff;
+    --ui-shadow: 0 1px 2px rgba(4, 17, 59, .05), 0 14px 34px rgba(4, 17, 59, .07);
+    --ui-shadow-sm: 0 1px 2px rgba(4, 17, 59, .05), 0 6px 18px rgba(4, 17, 59, .06);
+    --ui-shadow-pop: 0 2px 6px rgba(4, 17, 59, .08), 0 20px 46px rgba(4, 17, 59, .14);
+
+    /* Remap the shared tokens so every component that reads them follows. */
+    --page-bg: #f4f7fc;
+    --surface: #ffffff;
+    --border: #d9e2f0;
+    --text: #101828;
+    --muted: #5b6b85;
+    --accent: #2f66d3;
+    --accent-strong: #1e4fb3;
+    --accent-soft: #eaf1ff;
+    --track: #e2ebf9;
+    --radius: 14px;
+    --radius-sm: 9px;
+    --shadow: 0 1px 2px rgba(4, 17, 59, .05), 0 6px 18px rgba(4, 17, 59, .06);
+    --shadow-hover: 0 2px 6px rgba(4, 17, 59, .08), 0 20px 46px rgba(4, 17, 59, .14);
+}
+
+/* ---------- canvas, type and browser surfaces ---------- */
+
+body:not(:has(.staff-dashboard)) {
+    font-family: 'Public Sans', Arial, Helvetica, sans-serif;
+    color: var(--ui-ink);
+    background: #f2f6fc;
+}
+
+/* Text selection and the caret belong to the palette. */
+body:not(:has(.staff-dashboard)) ::selection {
+    background: var(--ui-blue);
+    color: #fff;
+}
+
+body:not(:has(.staff-dashboard)) :focus-visible {
+    outline: 2px solid var(--ui-blue);
+    outline-offset: 2px;
+}
+
+/* The wide tables keep a scrollbar, so make it quiet and on-brand. */
+body:not(:has(.staff-dashboard)) .dashboard-table-wrap {
+    scrollbar-width: thin;
+    scrollbar-color: #c2d2ee transparent;
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-table-wrap::-webkit-scrollbar {
+    height: 10px;
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-table-wrap::-webkit-scrollbar-thumb {
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: #c2d2ee;
+    background-clip: content-box;
+}
+
+/* ---------- page heading ---------- */
+
+body:not(:has(.staff-dashboard)) .dashboard-heading h1 {
+    color: var(--ui-navy);
+    font-weight: 600;
+    letter-spacing: -.02em;
+}
+
+/* A short blue rule gives the heading a home without adding a box. */
+body:not(:has(.staff-dashboard)) .dashboard-heading h1::after {
+    content: "";
+    display: block;
+    width: 46px;
+    height: 3px;
+    margin-top: 12px;
+    border-radius: 999px;
+    background: var(--ui-blue);
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-main:has(.enquiries-page) .dashboard-heading h1::after,
+body:not(:has(.staff-dashboard)) .dashboard-main:has(.manage-page) .dashboard-heading h1::after {
+    margin-bottom: 2px;
+}
+
+/* ---------- panels ---------- */
+
+body:not(:has(.staff-dashboard)) .dashboard-panel {
+    border: 1px solid var(--ui-line);
+    border-radius: var(--radius);
+    background: var(--ui-surface);
+    box-shadow: var(--ui-shadow);
+}
+
+body:not(:has(.staff-dashboard)) .panel-header {
+    border-bottom: 1px solid var(--ui-line);
+    background: #f8fafe;
+}
+
+body:not(:has(.staff-dashboard)) .panel-header h2 {
+    color: var(--ui-navy-2);
+    font-weight: 600;
+    letter-spacing: -.01em;
+}
+
+/* The enquiries, gallery and campaigns pages use headings above a grid
+   instead of a boxed panel, so keep those headers open and unboxed. */
+body:not(:has(.staff-dashboard)) .manage-page .manage-section,
+body:not(:has(.staff-dashboard)) .enquiries-page .enquiries-panel {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+body:not(:has(.staff-dashboard)) .manage-page .panel-header,
+body:not(:has(.staff-dashboard)) .enquiries-page .panel-header {
+    border-bottom: 0;
+    background: transparent;
+}
+
+body:not(:has(.staff-dashboard)) .manage-page .panel-header h2,
+body:not(:has(.staff-dashboard)) .enquiries-page .panel-header h2 {
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .panel-intro,
+body:not(:has(.staff-dashboard)) .panel-empty,
+body:not(:has(.staff-dashboard)) .empty-state,
+body:not(:has(.staff-dashboard)) .manage-empty,
+body:not(:has(.staff-dashboard)) .dashboard-empty {
+    color: var(--ui-muted);
+}
+
+body:not(:has(.staff-dashboard)) .manage-empty,
+body:not(:has(.staff-dashboard)) .enquiries-table .enquiries-empty {
+    border: 1px solid var(--ui-line);
+    background: var(--ui-surface);
+}
+
+/* ---------- statistic cards ---------- */
+
+body:not(:has(.staff-dashboard)) .dashboard-card {
+    /* Default tone; the per-page classes below recolour the edge and the value. */
+    --tone: var(--ui-blue);
+    --tone-line: #cddcfa;
+
+    border: 1px solid var(--tone-line);
+    border-radius: 16px;
+    background: var(--ui-surface);
+    /* the page tone is carried by a line along the top edge, not a fill */
+    box-shadow: inset 0 3px 0 0 var(--tone), var(--ui-shadow-sm);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+/* Only cards that open something lift, so a plain stat card stays flat. */
+body:not(:has(.staff-dashboard)) .dashboard-card-link:hover {
+    transform: translateY(-3px);
+    box-shadow: inset 0 3px 0 0 var(--tone), var(--ui-shadow);
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-card h2 {
+    color: var(--ui-navy-2);
+    font-weight: 600;
+}
+
+/* The value carries the page colour, so the same card shape reads
+   differently page to page without a swatch scattered anywhere. */
+body:not(:has(.staff-dashboard)) .dashboard-card-value {
+    color: var(--tone);
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-card-meta {
+    color: var(--ui-muted);
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-card-link h2::after {
+    border-color: var(--tone);
+}
+
+/* Per-page tones, from the existing $cardClass hooks. */
+body:not(:has(.staff-dashboard)) .registrations-total-card { --tone: #2f66d3; --tone-line: #cddcfa; }
+body:not(:has(.staff-dashboard)) .registrations-month-card { --tone: #12897f; --tone-line: #bfe6e0; }
+body:not(:has(.staff-dashboard)) .registrations-minors-card { --tone: #b26a12; --tone-line: #f0dcbb; }
+
+body:not(:has(.staff-dashboard)) .events-upcoming-card { --tone: #2f66d3; --tone-line: #cddcfa; }
+body:not(:has(.staff-dashboard)) .events-past-card { --tone: #566274; --tone-line: #d5dce7; }
+body:not(:has(.staff-dashboard)) .events-archived-card { --tone: #566274; --tone-line: #d5dce7; }
+body:not(:has(.staff-dashboard)) .gallery-photos-card { --tone: #5b3aa6; --tone-line: #ddd0f4; }
+
+body:not(:has(.staff-dashboard)) .campaigns-raised-card { --tone: #12897f; --tone-line: #bfe6e0; }
+body:not(:has(.staff-dashboard)) .campaigns-donations-card { --tone: #c2336b; --tone-line: #f4cfe0; }
+
+body:not(:has(.staff-dashboard)) .active-accounts-card { --tone: #12897f; --tone-line: #bfe6e0; }
+
+body:not(:has(.staff-dashboard)) .archived-items-card { --tone: #566274; --tone-line: #d5dce7; }
+
+body:not(:has(.staff-dashboard)) .partners-total-card { --tone: #2f66d3; --tone-line: #cddcfa; }
+body:not(:has(.staff-dashboard)) .partners-active-card { --tone: #12897f; --tone-line: #bfe6e0; }
+body:not(:has(.staff-dashboard)) .partners-archived-card { --tone: #566274; --tone-line: #d5dce7; }
+
+/* One authored entrance, staggered across the row. */
+body:not(:has(.staff-dashboard)) .dashboard-cards .dashboard-card {
+    animation: theme-rise .45s cubic-bezier(.22, .61, .36, 1) both;
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-cards .dashboard-card:nth-child(2) { animation-delay: .05s; }
+body:not(:has(.staff-dashboard)) .dashboard-cards .dashboard-card:nth-child(3) { animation-delay: .1s; }
+body:not(:has(.staff-dashboard)) .dashboard-cards .dashboard-card:nth-child(4) { animation-delay: .15s; }
+
+@keyframes theme-rise {
+    from { opacity: 0; transform: translateY(10px); }
+}
+
+/* ---------- buttons ---------- */
+
+body:not(:has(.staff-dashboard)) .panel-button,
+body:not(:has(.staff-dashboard)) .form-button,
+body:not(:has(.staff-dashboard)) .manage-action-button,
+body:not(:has(.staff-dashboard)) .table-action,
+body:not(:has(.staff-dashboard)) .enquiry-action-button {
+    border-radius: 9px;
+    font-weight: 500;
+}
+
+/* Secondary actions: white at rest, blue wash on hover. */
+body:not(:has(.staff-dashboard)) .panel-button:not(.button-primary):not(.button-danger):not(.confirm-submit):not(.account-modal-primary),
+body:not(:has(.staff-dashboard)) .manage-action-button:not(.is-danger),
+body:not(:has(.staff-dashboard)) .table-action:not(.table-action-danger),
+body:not(:has(.staff-dashboard)) .enquiry-action-button:not(.enquiry-claim) {
+    border: 1px solid var(--ui-line);
+    background: #fff;
+    color: var(--ui-navy-2);
+    transition: background .15s ease, border-color .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+body:not(:has(.staff-dashboard)) .panel-button:not(.button-primary):not(.button-danger):not(.confirm-submit):not(.account-modal-primary):hover,
+body:not(:has(.staff-dashboard)) .manage-action-button:not(.is-danger):hover,
+body:not(:has(.staff-dashboard)) .table-action:not(.table-action-danger):hover,
+body:not(:has(.staff-dashboard)) .enquiry-action-button:not(.enquiry-claim):hover {
+    border-color: var(--ui-blue);
+    background: var(--ui-blue-wash);
+    color: var(--ui-blue-deep);
+    box-shadow: 0 6px 16px rgba(47, 102, 211, .16);
+}
+
+/* Primary actions: the one place the blue spends its weight. */
+body:not(:has(.staff-dashboard)) .button-primary,
+body:not(:has(.staff-dashboard)) .account-modal-primary,
+body:not(:has(.staff-dashboard)) .form-button {
+    border: 1px solid var(--ui-blue-deep);
+    background: var(--ui-blue);
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(47, 102, 211, .22);
+}
+
+body:not(:has(.staff-dashboard)) .button-primary:hover,
+body:not(:has(.staff-dashboard)) .account-modal-primary:hover,
+body:not(:has(.staff-dashboard)) .form-button:hover {
+    border-color: #1b47a6;
+    background: var(--ui-blue-deep);
+    color: #fff;
+}
+
+body:not(:has(.staff-dashboard)) .form-button:disabled {
+    opacity: .55;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+/* Destructive actions: soft red at rest, solid only when it is the point. */
+body:not(:has(.staff-dashboard)) .button-danger,
+body:not(:has(.staff-dashboard)) .table-action-danger,
+body:not(:has(.staff-dashboard)) .manage-action-button.is-danger {
+    border: 1px solid #f0c6c2;
+    background: #fff;
+    color: var(--ui-danger);
+}
+
+body:not(:has(.staff-dashboard)) .button-danger:hover,
+body:not(:has(.staff-dashboard)) .table-action-danger:hover,
+body:not(:has(.staff-dashboard)) .manage-action-button.is-danger:hover {
+    border-color: #c0322a;
+    background: #c0322a;
+    color: #fff;
+}
+
+/* In a confirm dialog the red is the main action, so it is filled. */
+body:not(:has(.staff-dashboard)) .registration-confirm-modal .button-danger {
+    border-color: #97201a;
+    background: #b3241c;
+    color: #fff;
+    box-shadow: 0 8px 18px rgba(180, 35, 24, .24);
+}
+
+body:not(:has(.staff-dashboard)) .registration-confirm-modal .button-danger:hover {
+    border-color: #97201a;
+    background: #97201a;
+    color: #fff;
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-claim {
+    border: 1px solid var(--ui-blue-deep);
+    background: var(--ui-blue);
+    color: #fff;
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-claim:hover {
+    border-color: #1b47a6;
+    background: var(--ui-blue-deep);
+    color: #fff;
+}
+
+/* ---------- tables ---------- */
+
+body:not(:has(.staff-dashboard)) .dashboard-table th,
+body:not(:has(.staff-dashboard)) .dashboard-table td {
+    border-top: 1px solid var(--ui-hair);
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-table th {
+    padding-top: 13px;
+    padding-bottom: 13px;
+    border-top: 0;
+    border-bottom: 1px solid var(--ui-line);
+    background: #f3f7fe;
+    color: var(--ui-navy-2);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-table td {
+    color: var(--ui-ink);
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-table tbody tr:hover {
+    background: #f7faff;
+}
+
+/* The enquiries table renders each row as a card, so give it the same edge. */
+body:not(:has(.staff-dashboard)) .enquiries-table .enquiry-row {
+    border: 1px solid var(--ui-line);
+}
+
+/* Sortable headings sit inside the tinted header, so keep them on-brand. */
+body:not(:has(.staff-dashboard)) .sort-link {
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .sort-link:hover,
+body:not(:has(.staff-dashboard)) .sort-link.sort-asc,
+body:not(:has(.staff-dashboard)) .sort-link.sort-desc {
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-table a {
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .registrant-name {
+    color: var(--ui-navy-2);
+}
+
+/* ---------- tabs and view toggles ---------- */
+
+body:not(:has(.staff-dashboard)) .view-toggle,
+body:not(:has(.staff-dashboard)) .content-tabs {
+    border: 1px solid var(--ui-line);
+    border-radius: 11px;
+    background: #eef3fb;
+}
+
+body:not(:has(.staff-dashboard)) .content-tabs {
+    box-shadow: var(--ui-shadow-sm);
+}
+
+body:not(:has(.staff-dashboard)) .view-toggle a,
+body:not(:has(.staff-dashboard)) .content-tab {
+    border-radius: 8px;
+    color: var(--ui-muted);
+    font-weight: 500;
+}
+
+body:not(:has(.staff-dashboard)) .view-toggle a:hover,
+body:not(:has(.staff-dashboard)) .content-tab:hover {
+    background: #fff;
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .view-toggle a.active,
+body:not(:has(.staff-dashboard)) .content-tab.active {
+    background: var(--ui-blue);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(47, 102, 211, .2);
+}
+
+body:not(:has(.staff-dashboard)) .view-toggle a + a {
+    margin-left: 3px;
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-tabs {
+    background: #eef3fb;
+    border: 1px solid var(--ui-line);
+    box-shadow: var(--ui-shadow-sm);
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-tabs a:hover {
+    background: #fff;
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-tabs a[aria-current="page"] {
+    background: var(--ui-blue);
+    color: #fff;
+    box-shadow: 0 6px 14px rgba(47, 102, 211, .2);
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-tab-count {
+    background: #fff;
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .enquiry-tabs a[aria-current="page"] .enquiry-tab-count,
+body:not(:has(.staff-dashboard)) .view-toggle a.active .view-count {
+    background: rgba(255, 255, 255, .24);
+    color: #fff;
+}
+
+body:not(:has(.staff-dashboard)) .view-count {
+    background: #fff;
+    color: var(--ui-navy-2);
+}
+
+/* ---------- forms and filters ---------- */
+
+body:not(:has(.staff-dashboard)) .form-field input[type="text"],
+body:not(:has(.staff-dashboard)) .form-field input[type="url"],
+body:not(:has(.staff-dashboard)) .form-field input[type="email"],
+body:not(:has(.staff-dashboard)) .form-field input[type="tel"],
+body:not(:has(.staff-dashboard)) .form-field input[type="password"],
+body:not(:has(.staff-dashboard)) .form-field input[type="date"],
+body:not(:has(.staff-dashboard)) .form-field select,
+body:not(:has(.staff-dashboard)) .form-field textarea,
+body:not(:has(.staff-dashboard)) .filter-field input,
+body:not(:has(.staff-dashboard)) .filter-field select,
+body:not(:has(.staff-dashboard)) .account-form-field input,
+body:not(:has(.staff-dashboard)) .account-form-field select,
+body:not(:has(.staff-dashboard)) .account-form-field textarea,
+body:not(:has(.staff-dashboard)) .enquiry-status-select {
+    border: 1px solid var(--ui-line);
+    border-radius: 9px;
+    background: #fff;
+    color: var(--ui-ink);
+}
+
+body:not(:has(.staff-dashboard)) .form-field input:focus,
+body:not(:has(.staff-dashboard)) .form-field select:focus,
+body:not(:has(.staff-dashboard)) .form-field textarea:focus,
+body:not(:has(.staff-dashboard)) .filter-field input:focus,
+body:not(:has(.staff-dashboard)) .filter-field select:focus,
+body:not(:has(.staff-dashboard)) .account-form-field input:focus,
+body:not(:has(.staff-dashboard)) .account-form-field select:focus,
+body:not(:has(.staff-dashboard)) .account-form-field textarea:focus,
+body:not(:has(.staff-dashboard)) .enquiry-status-select:focus {
+    outline: none;
+    border-color: var(--ui-blue);
+    box-shadow: 0 0 0 3px rgba(47, 102, 211, .18);
+}
+
+body:not(:has(.staff-dashboard)) .form-field label,
+body:not(:has(.staff-dashboard)) .account-form-field label,
+body:not(:has(.staff-dashboard)) .filter-field label {
+    color: var(--ui-navy-2);
+    font-weight: 600;
+}
+
+body:not(:has(.staff-dashboard)) .registration-filters {
+    border-bottom: 1px solid var(--ui-line);
+    background: #f7faff;
+}
+
+body:not(:has(.staff-dashboard)) .field-hint {
+    color: var(--ui-muted);
+}
+
+/* Radio-choice cards (event status, campaign status). */
+body:not(:has(.staff-dashboard)) .event-undated-option:has(input:checked) {
+    border-color: var(--ui-blue);
+    background: var(--ui-blue-wash);
+}
+
+/* ---------- status chips and badges ---------- */
+
+body:not(:has(.staff-dashboard)) .status-badge {
+    padding: 4px 10px;
+    font-weight: 600;
+}
+
+body:not(:has(.staff-dashboard)) .status-active {
+    background: #e3f5ea;
+    color: #14663a;
+}
+
+body:not(:has(.staff-dashboard)) .status-archived {
+    background: #eef1f6;
+    color: #566274;
+}
+
+body:not(:has(.staff-dashboard)) .status-scheduled {
+    background: #fdf3e3;
+    color: #8a5210;
+}
+
+body:not(:has(.staff-dashboard)) .minor-badge {
+    background: #fdf3e3;
+    color: #8a5210;
+}
+
+body:not(:has(.staff-dashboard)) .when-badge {
+    background: #eef1f6;
+    color: #566274;
+}
+
+body:not(:has(.staff-dashboard)) .when-soon {
+    background: #fdf3e3;
+    color: #8a5210;
+}
+
+body:not(:has(.staff-dashboard)) .donation-status-complete {
+    background: #e3f5ea;
+    color: #14663a;
+}
+
+body:not(:has(.staff-dashboard)) .donation-status-pending {
+    background: #fdf3e3;
+    color: #8a5210;
+}
+
+body:not(:has(.staff-dashboard)) .donation-status-cancelled,
+body:not(:has(.staff-dashboard)) .donation-status-failed {
+    background: #eef1f6;
+    color: #566274;
+}
+
+body:not(:has(.staff-dashboard)) .account-role.role-admin {
+    background: #e2eaff;
+    color: #1e4fb3;
+}
+
+body:not(:has(.staff-dashboard)) .account-role.role-staff {
+    background: #e7f7f5;
+    color: #0e6b6e;
+}
+
+body:not(:has(.staff-dashboard)) .account-status.status-active {
+    background: #e3f5ea;
+    color: #14663a;
+}
+
+body:not(:has(.staff-dashboard)) .account-status.status-suspended {
+    background: #fdeceb;
+    color: #9a1f17;
+}
+
+body:not(:has(.staff-dashboard)) .account-status.status-deactivated,
+body:not(:has(.staff-dashboard)) .account-status.status-archived {
+    background: #eef1f6;
+    color: #566274;
+}
+
+body:not(:has(.staff-dashboard)) .archive-type {
+    background: var(--ui-blue-wash);
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .archive-type-registration { background: #e7f7f5; color: #0e6b6e; }
+body:not(:has(.staff-dashboard)) .archive-type-partner      { background: #f1ecfb; color: #4f2f96; }
+body:not(:has(.staff-dashboard)) .archive-type-campaign     { background: #fdf3e3; color: #8a5210; }
+body:not(:has(.staff-dashboard)) .archive-type-event        { background: #e3f5ea; color: #14663a; }
+
+body:not(:has(.staff-dashboard)) .activity-category {
+    background: var(--ui-blue-wash);
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .activity-category-login {
+    background: #e7f7f5;
+    color: #0e6b6e;
+}
+
+body:not(:has(.staff-dashboard)) .activity-category-account,
+body:not(:has(.staff-dashboard)) .activity-category-archive {
+    background: #fdf3e3;
+    color: #8a5210;
+}
+
+body:not(:has(.staff-dashboard)) .activity-archived-tag {
+    background: #eef1f6;
+    color: #566274;
+}
+
+body:not(:has(.staff-dashboard)) .gallery-cover-badge {
+    background: var(--ui-blue);
+    box-shadow: 0 4px 10px rgba(4, 17, 59, .26);
+}
+
+/* ---------- content cards (gallery, campaigns, partners) ---------- */
+
+body:not(:has(.staff-dashboard)) .manage-card {
+    border: 1px solid var(--ui-line);
+    border-radius: 16px;
+    background: var(--ui-surface);
+    box-shadow: var(--ui-shadow-sm);
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+body:not(:has(.staff-dashboard)) .manage-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--ui-shadow);
+}
+
+body:not(:has(.staff-dashboard)) .manage-card.is-archived {
+    opacity: .68;
+}
+
+body:not(:has(.staff-dashboard)) .manage-card-cover {
+    border-radius: 10px;
+    background: #eef3fb;
+}
+
+body:not(:has(.staff-dashboard)) .manage-card-title strong {
+    color: var(--ui-navy);
+}
+
+body:not(:has(.staff-dashboard)) .manage-card-text {
+    border-radius: 9px;
+    background: #f5f8fd;
+}
+
+body:not(:has(.staff-dashboard)) .manage-card-actions {
+    border-top: 1px solid var(--ui-hair);
+}
+
+body:not(:has(.staff-dashboard)) .gallery-photo {
+    border-radius: 12px;
+    background: #eef3fb;
+    box-shadow: var(--ui-shadow-sm);
+}
+
+body:not(:has(.staff-dashboard)) .campaign-progress-heading strong {
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .progress-track {
+    background: var(--track);
+}
+
+body:not(:has(.staff-dashboard)) .progress-fill {
+    background: var(--ui-blue);
+}
+
+body:not(:has(.staff-dashboard)) .campaign-donations-table {
+    border: 1px solid var(--ui-line);
+    border-radius: var(--radius);
+    box-shadow: var(--ui-shadow-sm);
+}
+
+/* ---------- alerts, notices and announcements ---------- */
+
+body:not(:has(.staff-dashboard)) .dashboard-alert,
+body:not(:has(.staff-dashboard)) .page-notice {
+    border-radius: 12px;
+    box-shadow: var(--ui-shadow-sm);
+    font-weight: 500;
+}
+
+body:not(:has(.staff-dashboard)) .alert-success,
+body:not(:has(.staff-dashboard)) .page-notice-success {
+    border: 1px solid #bfe6cd;
+    background: #eaf8f0;
+    color: #14663a;
+}
+
+body:not(:has(.staff-dashboard)) .alert-error,
+body:not(:has(.staff-dashboard)) .page-notice-error {
+    border: 1px solid #f2cbc7;
+    background: #fdeeed;
+    color: #9a1f17;
+}
+
+body:not(:has(.staff-dashboard)) .staff-announcement {
+    border: 1px solid #cddcfa;
+    border-radius: 14px;
+    background: var(--ui-blue-wash);
+    box-shadow: var(--ui-shadow-sm);
+}
+
+body:not(:has(.staff-dashboard)) .staff-announcement-icon {
+    color: var(--ui-blue);
+}
+
+body:not(:has(.staff-dashboard)) .staff-announcement-text a {
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .archive-confirm-warning {
+    border: 1px solid #f2cbc7;
+    background: #fdeeed;
+    color: #9a1f17;
+}
+
+body:not(:has(.staff-dashboard)) .archive-bulk-bar {
+    background: var(--ui-blue-wash);
+}
+
+/* ---------- dialogs ---------- */
+
+body:not(:has(.staff-dashboard)) .dashboard-dialog {
+    border: 1px solid var(--ui-line);
+    border-radius: 16px;
+    box-shadow: var(--ui-shadow-pop);
+    /* the header is tinted, so keep it inside the rounded dialog */
+    overflow: hidden;
+}
+
+body:not(:has(.staff-dashboard)) .dialog-header {
+    border-bottom: 1px solid var(--ui-line);
+    background: #f8fafe;
+}
+
+body:not(:has(.staff-dashboard)) .dialog-header h2 {
+    color: var(--ui-navy-2);
+    font-weight: 600;
+}
+
+body:not(:has(.staff-dashboard)) .dialog-footer {
+    border-top: 1px solid var(--ui-hair);
+    background: #f7faff;
+}
+
+body:not(:has(.staff-dashboard)) .dashboard-dialog::backdrop {
+    background: rgba(4, 17, 59, .5);
+}
+
+body:not(:has(.staff-dashboard)) .modal-backdrop.show {
+    background: rgba(4, 17, 59, .5);
+}
+
+body:not(:has(.staff-dashboard)) .registration-modal .modal-content {
+    border: 1px solid var(--ui-line);
+    border-radius: 16px;
+    /* the header is tinted, so keep it inside the rounded dialog */
+    overflow: hidden;
+}
+
+body:not(:has(.staff-dashboard)) .registration-modal .modal-header {
+    border-bottom: 1px solid var(--ui-line);
+    background: #f8fafe;
+}
+
+body:not(:has(.staff-dashboard)) .registration-modal .modal-title {
+    color: var(--ui-navy-2);
+    font-weight: 600;
+}
+
+body:not(:has(.staff-dashboard)) .registration-modal .modal-footer {
+    border-top: 1px solid var(--ui-hair);
+}
+
+body:not(:has(.staff-dashboard)) .detail-section h3,
+body:not(:has(.staff-dashboard)) .account-modal-kicker {
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .detail-guardian {
+    background: #fdf8ee;
+}
+
+body:not(:has(.staff-dashboard)) .account-managed-name {
+    border: 1px solid var(--ui-line);
+    background: #f7faff;
+}
+
+/* ---------- misc surfaces ---------- */
+
+body:not(:has(.staff-dashboard)) .enquiry-message-cell,
+body:not(:has(.staff-dashboard)) .enquiry-message {
+    background: #f5f8fd;
+}
+
+body:not(:has(.staff-dashboard)) .enquiries-back-link,
+body:not(:has(.staff-dashboard)) .manage-back-link,
+body:not(:has(.staff-dashboard)) .back-link a {
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .campaign-goal-input span {
+    border-color: var(--ui-line);
+    background: #f5f8fd;
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .content-service-icon {
+    background: var(--ui-blue-wash);
+    color: var(--ui-blue-deep);
+}
+
+body:not(:has(.staff-dashboard)) .temporary-password code {
+    border: 1px solid var(--ui-line);
+    background: #f7faff;
+    color: var(--ui-navy-2);
+}
+
+body:not(:has(.staff-dashboard)) .profile-name {
+    color: var(--ui-navy);
+}
+
+body:not(:has(.staff-dashboard)) .detail-list dt {
+    color: var(--ui-muted);
+}
+
+/* ---------- motion and small screens ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    body:not(:has(.staff-dashboard)) .dashboard-cards .dashboard-card {
+        animation: none;
+    }
+
+    body:not(:has(.staff-dashboard)) .dashboard-card,
+    body:not(:has(.staff-dashboard)) .manage-card {
+        transition: none;
+    }
+
+    body:not(:has(.staff-dashboard)) .dashboard-card:hover,
+    body:not(:has(.staff-dashboard)) .manage-card:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 780px) {
+    body:not(:has(.staff-dashboard)) .dashboard-heading h1::after {
+        margin-top: 9px;
+    }
+}

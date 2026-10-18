@@ -25,10 +25,14 @@
 
     // fetch the closed enquiries
     $flash = takeFlash();
+    $enquiries = getEnquiries($conn, $showArchived);
     $closedEnquiries = array_values(array_filter(
-        getEnquiries($conn, $showArchived),
+        $enquiries,
         fn ($e) => $e['status'] === 'closed'
     ));
+
+    $enquiryTabs = getEnquiryTabs($enquiries, $account);
+    $activeTab = 'closed';
 
     $pageTitle = 'Closed Enquiries';
     $activePage = 'enquiries';
@@ -38,6 +42,8 @@
 ?>
 
 <div class="enquiries-page">
+
+    <?php include __DIR__ . '/components/enquiryTabs.php'; ?>
 
     <!-- back link and archived toggle, the page title already names the page so the panel has no heading -->
     <div class="enquiries-toolbar">

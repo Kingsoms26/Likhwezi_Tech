@@ -7,20 +7,66 @@ function getEnquiryCounts(mysqli $conn): array
 {
     $counts = ['new' => 0, 'contacted' => 0, 'closed' => 0];
 
-    $result = $conn->query(
+    $stmt = $conn->prepare(
         "SELECT status, COUNT(*) AS total
          FROM Enquiry
          WHERE isArchived = FALSE
          GROUP BY status"
     );
+    if (!$stmt) {
+        error_log('getEnquiryCounts failed: ' . $conn->error);
+        return $counts;
+    }
 
-    if ($result) {
-        while ($row = $result->fetch_assoc()) {
-            $counts[$row['status']] = (int) $row['total'];
-        }
+    $stmt->execute();
+
+    foreach ($stmt->get_result()->fetch_all(MYSQLI_ASSOC) as $row) {
+        $counts[$row['status']] = (int) $row['total'];
     }
 
     return $counts;
+}
+
+function getEnquiryTabs(array $enquiries, array $account): array
+{
+    $active = array_filter($enquiries, fn ($e) => !$e['isArchived']);
+    $count = fn (callable $match) => count(array_filter($active, $match));
+    $accountID = (int) $account['accountID'];
+
+    $tabs = [
+        'new' => [
+            'label' => 'New Enquiries',
+            'href' => 'manageEnquiries.php',
+            'count' => $count(fn ($e) => $e['status'] === 'new'),
+        ],
+        'unclaimed' => [
+            'label' => 'Unclaimed Enquiries',
+            'href' => 'manageEnquiries.php?view=unclaimed',
+            'count' => $count(fn ($e) => $e['handledBy'] === null && $e['status'] === 'new'),
+        ],
+    ];
+
+    if ($account['role'] === 'Staff') {
+        $tabs['mine'] = [
+            'label' => 'My Enquiries',
+            'href' => 'manageEnquiries.php?view=mine',
+            'count' => $count(fn ($e) => (int) $e['handledBy'] === $accountID && $e['status'] !== 'closed'),
+        ];
+    } else {
+        $tabs['all'] = [
+            'label' => 'All Enquiries',
+            'href' => 'manageEnquiries.php?view=all',
+            'count' => count($active),
+        ];
+    }
+
+    $tabs['closed'] = [
+        'label' => 'Closed Enquiries',
+        'href' => 'closedEnquiries.php',
+        'count' => $count(fn ($e) => $e['status'] === 'closed'),
+    ];
+
+    return $tabs;
 }
 
 // all enquiries newest first with the name of whoever claimed it, archived ones only when asked

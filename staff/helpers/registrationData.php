@@ -57,6 +57,36 @@ function getRegistrationStats(mysqli $conn): array
     return $stats;
 }
 
+// registrations in the last few days, in total and broken down by programme
+// one query so the programme counts always add up to the total and share its window
+function getRegistrationWindow(mysqli $conn, int $days = 30): array
+{
+    $stmt = $conn->prepare(
+        "SELECT programme, COUNT(*) AS total
+         FROM Registration
+         WHERE isArchived = FALSE AND dateCreated >= CURDATE() - INTERVAL ? DAY
+         GROUP BY programme
+         ORDER BY total DESC, programme"
+    );
+    if (!$stmt) {
+        error_log('getRegistrationWindow failed: ' . $conn->error);
+        return ['total' => 0, 'byProgramme' => []];
+    }
+
+    $stmt->bind_param("i", $days);
+    $stmt->execute();
+
+    $total = 0;
+    $byProgramme = [];
+    foreach ($stmt->get_result()->fetch_all(MYSQLI_ASSOC) as $row) {
+        $count = (int) $row['total'];
+        $byProgramme[$row['programme']] = $count;
+        $total += $count;
+    }
+
+    return ['total' => $total, 'byProgramme' => $byProgramme];
+}
+
 // columns the table can be sorted by and the direction used when one is first clicked
 function getRegistrationSortColumns()
 {
@@ -392,4 +422,47 @@ function setRegistrationArchived(mysqli $conn, int $registrationID, bool $archiv
     }
 
     return $conn->commit();
+}
+
+function getRegistrationsPerDay(mysqli $conn, int $days = 14): array
+{
+    // Use the database date so chart labels align with the registration date filter.
+    $back = max(0, $days - 1);
+    $stmt = $conn->prepare(
+        "SELECT DATEDIFF(CURDATE(), DATE(dateCreated)) AS daysAgo, COUNT(*) AS total
+         FROM Registration
+         WHERE isArchived = FALSE AND dateCreated >= CURDATE() - INTERVAL ? DAY
+         GROUP BY daysAgo"
+    );
+
+    if (!$stmt) {
+        error_log('getRegistrationsPerDay failed: ' . $conn->error);
+        return [];
+    }
+
+    $stmt->bind_param('i', $back);
+    if (!$stmt->execute()) {
+        error_log('getRegistrationsPerDay failed: ' . $stmt->error);
+        return [];
+    }
+
+    $totals = array_column($stmt->get_result()->fetch_all(MYSQLI_ASSOC), 'total', 'daysAgo');
+    $today = $conn->query('SELECT CURDATE() AS today');
+
+    if (!$today) {
+        error_log('getRegistrationsPerDay failed: ' . $conn->error);
+        return [];
+    }
+
+    $todayDate = new DateTimeImmutable($today->fetch_assoc()['today']);
+    $perDay = [];
+
+    for ($daysAgo = $back; $daysAgo >= 0; $daysAgo--) {
+        $perDay[] = [
+            'label' => $todayDate->modify("-$daysAgo days")->format('j M'),
+            'total' => (int) ($totals[$daysAgo] ?? 0),
+        ];
+    }
+
+    return $perDay;
 }

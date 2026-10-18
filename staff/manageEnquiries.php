@@ -27,7 +27,6 @@
 
     // fetch the enquiries and counts
     $flash = takeFlash();
-    $counts = getEnquiryCounts($conn);
     $enquiries = getEnquiries($conn, $showArchived);
 
     // split the enquiries into unclaimed and mine
@@ -41,6 +40,13 @@
         $activeEnquiries,
         fn ($e) => (int) $e['handledBy'] === (int) $account['accountID'] && $e['status'] !== 'closed'
     ));
+    $newEnquiries = array_values(array_filter($activeEnquiries, fn ($e) => $e['status'] === 'new'));
+
+    $enquiryTabs = getEnquiryTabs($enquiries, $account);
+    $activeTab = $_GET['view'] ?? 'new';
+    if (!isset($enquiryTabs[$activeTab]) || $activeTab === 'closed') {
+        $activeTab = 'new';
+    }
 
     $pageTitle = 'Enquiries';
     $activePage = 'enquiries';
@@ -55,70 +61,34 @@
     <?php include __DIR__ . '/components/dashboardAlerts.php'; ?>
 
     <!-- enquiry count cards -->
-    <section class="dashboard-cards">
+    <?php include __DIR__ . '/components/enquiryTabs.php'; ?>
 
-        <?php
-        // new and unclaimed are one card, a new enquiry stops counting here once claimed
-        $cardTitle = 'New';
-        $cardValue = count($unclaimedEnquiries);
-        $cardMeta = 'Not yet claimed';
-        $cardClass = 'enquiries-new-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php if ($isStaff) : ?>
-            <?php
-            $cardTitle = 'My Enquiries';
-            $cardValue = count($myEnquiries);
-            $cardMeta = 'Claimed by you, still open';
-            $cardClass = 'enquiries-mine-card';
-            include __DIR__ . '/components/dashboardCard.php';
-            ?>
-        <?php endif; ?>
-
-        <?php
-        $cardTitle = 'Contacted';
-        $cardValue = $counts['contacted'];
-        $cardMeta = 'Response sent, in progress';
-        $cardClass = 'enquiries-contacted-card';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-        <?php
-        $cardTitle = 'Closed';
-        $cardValue = $counts['closed'];
-        $cardMeta = 'Resolved';
-        $cardClass = 'enquiries-closed-card';
-        $cardLink = 'closedEnquiries.php';
-        include __DIR__ . '/components/dashboardCard.php';
-        ?>
-
-    </section>
-
-    <!-- unclaimed enquiries -->
-    <section class="dashboard-panel enquiries-panel" id="unclaimed-enquiries">
-        <div class="panel-header">
-            <h2>Unclaimed Enquiries</h2>
-        </div>
-        <div class="panel-body">
-            <?php
-            $tableEnquiries = $unclaimedEnquiries;
-            $tableEmpty = 'No unclaimed enquiries. Everything new has been picked up.';
-            include __DIR__ . '/components/enquiryTable.php';
-            ?>
-        </div>
-    </section>
-
-    <!-- my enquiries for staff, all enquiries for everyone else -->
-    <?php if ($isStaff) : ?>
-        <section class="dashboard-panel enquiries-panel" id="my-enquiries">
-            <div class="panel-header">
-                <h2>My Enquiries</h2>
+    <?php if ($activeTab === 'new') : ?>
+        <section class="dashboard-panel enquiries-panel" id="new-enquiries">
+            <div class="panel-body">
+                <?php
+                $tableEnquiries = $newEnquiries;
+                $tableEmpty = 'No new enquiries.';
+                include __DIR__ . '/components/enquiryTable.php';
+                ?>
             </div>
+        </section>
+    <?php elseif ($activeTab === 'unclaimed') : ?>
+        <section class="dashboard-panel enquiries-panel" id="unclaimed-enquiries">
+            <div class="panel-body">
+                <?php
+                $tableEnquiries = $unclaimedEnquiries;
+                $tableEmpty = 'No unclaimed enquiries. Everything new has been picked up.';
+                include __DIR__ . '/components/enquiryTable.php';
+                ?>
+            </div>
+        </section>
+    <?php elseif ($activeTab === 'mine') : ?>
+        <section class="dashboard-panel enquiries-panel" id="my-enquiries">
             <div class="panel-body">
                 <?php
                 $tableEnquiries = $myEnquiries;
-                $tableEmpty = 'You have no open enquiries. Claim one from Unclaimed above.';
+                $tableEmpty = 'You have no open enquiries. Claim one from Unclaimed Enquiries.';
                 include __DIR__ . '/components/enquiryTable.php';
                 ?>
             </div>
@@ -127,8 +97,7 @@
         <section class="dashboard-panel enquiries-panel" id="all-enquiries">
 
             <div class="panel-header">
-                <h2>All Enquiries</h2>
-                <a class="panel-button" href="manageEnquiries.php<?= $showArchived ? '' : '?showArchived=1' ?>#all-enquiries">
+                <a class="panel-button" href="manageEnquiries.php?view=all<?= $showArchived ? '' : '&showArchived=1' ?>">
                     <?= $showArchived ? 'Hide archived' : 'Show archived' ?>
                 </a>
             </div>

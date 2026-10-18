@@ -215,6 +215,28 @@
             $respond(['ok' => false, 'errors' => $errors, 'message' => 'Please check the highlighted fields.'], 422);
         }
 
+        if ($v['email'] !== '') {
+            if (time() - ($_SESSION['lastEmailVerificationAt'] ?? 0) < REGISTRATION_COOLDOWN_SECONDS) {
+                $respond(['ok' => false, 'message' => 'Please wait a moment before checking this email address again.'], 429);
+            }
+            $_SESSION['lastEmailVerificationAt'] = time();
+            require_once __DIR__ . '/includes/helpers/verifalia.php';
+            $verification = verifyCymEmailWithVerifalia($v['email']);
+            if ($verification['status'] === 'invalid') {
+                $respond([
+                    'ok' => false,
+                    'errors' => ['email' => 'This email address could not be verified as deliverable. Please check it or register using a phone number instead.'],
+                    'message' => 'Please check the highlighted fields.',
+                ], 422);
+            }
+            if ($verification['status'] !== 'verified') {
+                $respond([
+                    'ok' => false,
+                    'message' => 'We could not verify the email address right now. Please try again later, or remove the email and register using a phone number.',
+                ], 503);
+            }
+        }
+
         // save the registration, guardian details are only kept for under 18s
         $saved = isset($conn) && !$conn->connect_error && save_registration($conn, [
             'firstName' => $v['firstName'],
@@ -434,7 +456,7 @@
                                 <input type="number" id="register-age" name="age" placeholder="Enter your age" min="0" required>
                             </div>
                             <div class="form-field">
-                                <label for="reg-email">Email <span class="field-note">(optional if phone is provided)</span></label>
+                                <label for="reg-email">Email <span class="field-note">(checked for deliverability; optional if phone is provided)</span></label>
                                 <input type="email" id="reg-email" name="email" placeholder="you@email.com">
                             </div>
                         </div>

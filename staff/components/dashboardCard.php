@@ -6,10 +6,16 @@
     $cardClass = $cardClass ?? '';
     // optional link that makes the whole card clickable
     $cardLink = $cardLink ?? '';
+    // optional bootstrap icon name without the bi- prefix, like envelope or megaphone
+    $cardIcon = $cardIcon ?? '';
     $cardTag = $cardLink !== '' ? 'a' : 'article';
 ?>
 
 <<?= $cardTag ?> class="dashboard-card <?= $cardLink !== '' ? 'dashboard-card-link' : '' ?> <?= htmlspecialchars($cardClass) ?>"<?= $cardLink !== '' ? ' href="' . htmlspecialchars($cardLink) . '"' : '' ?>>
+    <?php if ($cardIcon !== '') : ?>
+        <i class="bi bi-<?= htmlspecialchars($cardIcon) ?> dashboard-card-icon" aria-hidden="true"></i>
+    <?php endif; ?>
+
     <h2><?= htmlspecialchars($cardTitle) ?></h2>
     <div class="dashboard-card-value"><?= htmlspecialchars($cardValue) ?></div>
 
@@ -18,5 +24,5 @@
     <?php endif; ?>
 </<?= $cardTag ?>>
 
-<!-- clear the link so it does not carry over to the next card -->
-<?php unset($cardLink); ?>
+
+

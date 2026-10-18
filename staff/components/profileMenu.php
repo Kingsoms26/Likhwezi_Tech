@@ -11,7 +11,7 @@
         'profileImageURL' => $_SESSION['profileImage'] ?? null,
     ];
 
-    $menuName = accountDisplayName($menuAccount);
+    $menuName = $dashboardDisplayName ?? accountDisplayName($menuAccount);
     $menuRole = $menuAccount['role'] ?? 'No role assigned';
 
     // format a date the same way profile.php does
@@ -112,3 +112,4 @@
 </div>
 
 <script src="assets/js/profileMenu.js?v=<?= filemtime(__DIR__ . '/../assets/js/profileMenu.js') ?>"></script>
+
