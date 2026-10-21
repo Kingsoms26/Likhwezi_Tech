@@ -640,11 +640,7 @@ a {
     gap: 34px;
     padding: 38px clamp(20px, 3vw, 44px) 40px;
     background-color: #10233f;
-    background-image:
-        linear-gradient(160deg, rgba(4, 17, 59, .88), rgba(6, 26, 62, .78) 46%, rgba(4, 17, 59, .9)),
-        url("../images/dashboard-bg.png");
-    background-position: center;
-    background-size: cover;
+    background-image: linear-gradient(160deg, rgba(4, 17, 59, .88), rgba(6, 26, 62, .78) 46%, rgba(4, 17, 59, .9));
     color: #fff;
 }
 
