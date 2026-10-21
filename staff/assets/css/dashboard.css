@@ -586,6 +586,10 @@ a {
     flex-direction: column;
 }
 
+.dashboard:has(.staff-dashboard) .dashboard-body {
+    padding-bottom: calc(var(--navbar-height) + env(safe-area-inset-bottom));
+}
+
 /* The hero carries the page title, so the shared heading above it is not repeated. */
 .dashboard-main:has(.staff-dashboard .overview-hero) .dashboard-heading {
     display: none;
