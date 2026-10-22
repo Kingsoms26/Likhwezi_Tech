@@ -457,7 +457,7 @@
                                     <span class="input-group-text">R</span>
                                     <input type="number" class="form-control<?= donation_field_class($donationErrors, 'amount') ?>" id="customAmount" name="customAmount" min="<?= DONATION_MIN ?>" max="<?= DONATION_MAX ?>" step="0.01" inputmode="decimal" placeholder="Enter your own amount" aria-label="Enter your own amount" value="<?= donation_value($donationInput, 'customAmount') ?>" <?= $selectedPreset === 'custom' ? '' : 'disabled' ?>>
                                 </div>
-                                <div class="invalid-feedback" id="amountError"><?= htmlspecialchars($donationErrors['amount'] ?? 'Please select or enter a donation amount greater than zero.') ?></div>
+                                <div class="invalid-feedback" id="amountError"><?= htmlspecialchars($donationErrors['amount'] ?? 'Please select or enter a donation amount greater than R5.') ?></div>
                             </fieldset>
 
                             <!-- donor details -->
