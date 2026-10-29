@@ -33,10 +33,10 @@
 
                 <div class="btn-group">
                     <div class="p-1">
-                        <a href="services.php" class="btn btn-primary btn-sm">View our Services</a>
+                        <a href="services.php" class="btn btn-primary btn-sm">View Our Services</a>
                     </div>
                     <div class="p-1">
-                        <a href="about.php" class="btn btn-ghost btn-sm">View Our Story</a>
+                        <a href="about.php" class="btn btn-ghost btn-sm">Our Story</a>
                     </div>
                 </div>
             </div>

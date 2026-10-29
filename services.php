@@ -1,6 +1,6 @@
 <?php
     // services.php is the services page
-    // contains the hero section with the services wheel, the service cards and the consulting package
+    // contains the services bento hero, service cards and consulting package
     require_once __DIR__ . '/includes/security.php';
 ?>
 
@@ -13,7 +13,7 @@
         <?php include 'includes/components/navBar.php'; ?>
 
         <!-- hero section -->
-        <div class="hero hero-wheel">
+        <div class="hero hero-wheel hero-services">
             <div class="hero-content d-grid gap-3 row-gap-3">
                 <div>
                     <h1>Our Services</h1>
@@ -52,7 +52,6 @@
                         echo "<div class=\"service-tile-body\">";
                         echo "<span class=\"service-tile-eyebrow\">" . htmlspecialchars($service['eyebrow']) . "</span>";
                         echo "<h3 class=\"service-tile-title\">" . htmlspecialchars($service['name']) . "</h3>";
-                        echo "<p class=\"service-tile-description\">" . htmlspecialchars($service['description']) . "</p>";
                         if (!empty($service['tags'])) {
                             echo "<ul class=\"service-tile-tags\">";
                             foreach ($service['tags'] as $tag) {

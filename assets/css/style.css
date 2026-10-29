@@ -3894,6 +3894,206 @@ body.modal-open{
 }
 /* Services page wheel styles end */
 
+/* Services page bento hero */
+.hero-services {
+    align-items: center;
+    gap: clamp(32px, 4vw, 64px);
+    padding-top: clamp(80px, 7vw, 104px);
+    padding-bottom: clamp(80px, 7vw, 104px);
+}
+
+.hero-services .hero-content {
+    flex: 0 1 36%;
+    width: auto;
+    max-width: 440px;
+    margin: 0;
+    text-align: left;
+}
+
+.hero-services .hero-content > div:first-child {
+    margin: 0;
+}
+
+.hero-services .btn-group {
+    justify-content: flex-start;
+    margin: 0;
+}
+
+.hero-services .service-bento {
+    flex: 1 1 64%;
+    width: auto;
+    max-width: 760px;
+    grid-template-columns: 1.15fr 1fr 1fr;
+    grid-auto-rows: minmax(100px, auto);
+    gap: 10px;
+    padding: 0;
+    margin: 0;
+}
+
+.hero-services .service-tile {
+    min-height: 100px;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 18px;
+    background: linear-gradient(145deg, #0789df, #0f3c7a);
+    box-shadow: 0 16px 36px rgba(4, 17, 59, 0.16);
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero-services .service-tile:not(.is-featured) {
+    background: linear-gradient(145deg, #0789df, #126fb3);
+}
+
+.hero-services .service-tile:hover,
+.hero-services .service-tile:focus-visible {
+    background: linear-gradient(145deg, #0f3c7a, #04113b);
+    box-shadow: 0 22px 44px rgba(4, 17, 59, 0.24);
+}
+
+.hero-services .service-tile:hover .service-tile-link,
+.hero-services .service-tile:focus-visible .service-tile-link {
+    color: #ffffff;
+}
+
+.hero-services .service-tile:focus-visible {
+    outline: 3px solid #f6c453;
+    outline-offset: 3px;
+}
+
+.hero-services .service-tile-icon {
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.16);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+    font-size: 22px;
+}
+
+.hero-services .service-tile.is-featured {
+    min-height: 0;
+}
+
+.hero-services .service-tile.is-featured .service-tile-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+}
+
+.hero-services .service-tile-description {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    margin-bottom: 6px;
+}
+
+.hero-services .service-tile-tags {
+    display: none;
+}
+
+.hero-services .service-tile-eyebrow {
+    margin-bottom: 4px;
+}
+
+.hero-services .service-tile-title {
+    margin-bottom: 4px;
+}
+
+@media (max-width: 1199px) {
+    .hero-services {
+        flex-direction: column;
+        align-items: stretch;
+        gap: clamp(28px, 5vw, 52px);
+    }
+
+    .hero-services .hero-content {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 860px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .hero-services .hero-content > div:first-child {
+        max-width: 760px;
+        margin: 0 auto;
+    }
+
+    .hero-services .btn-group {
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+    .hero-services .service-bento {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 900px;
+        align-self: center;
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: minmax(125px, auto);
+        gap: 12px;
+    }
+
+    .hero-services .service-tile.is-featured {
+        grid-column: span 2;
+        grid-row: auto;
+        min-height: 155px;
+    }
+
+    .hero-services .service-tile {
+        min-height: 125px;
+        padding: 16px 20px;
+    }
+}
+
+@media (max-width: 767px) {
+    .hero-services {
+        flex-wrap: nowrap;
+    }
+
+    .hero-services .hero-content {
+        flex: 0 0 auto;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero-services .service-bento {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+        gap: 16px;
+    }
+
+    .hero-services .service-tile {
+        min-height: 115px;
+    }
+
+    .hero-services .service-tile.is-featured {
+        grid-column: auto;
+        min-height: 160px;
+        padding: 16px;
+    }
+}
+
+.hero-services .service-tile.is-featured .service-tile-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-services .service-tile {
+        transition: none;
+    }
+
+    .hero-services .service-tile:hover {
+        transform: none;
+    }
+}
+
 /* Services page stacked cards styles start */
 .service-stack {
     padding: 48px var(--section-gutter);
