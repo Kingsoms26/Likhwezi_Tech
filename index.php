@@ -33,7 +33,7 @@
 
                 <div class="btn-group">
                     <div class="p-1">
-                        <a href="contact.php" class="btn btn-primary btn-sm">Book a Consultation</a>
+                        <a href="services.php" class="btn btn-primary btn-sm">View our Services</a>
                     </div>
                     <div class="p-1">
                         <a href="about.php" class="btn btn-ghost btn-sm">View Our Story</a>

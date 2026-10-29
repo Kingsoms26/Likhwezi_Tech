@@ -31,32 +31,39 @@
                 </div>
             </div>
 
-            <!-- rotating services wheel -->
-            <div class="services-wheel-wrap" aria-label="Services we offer">
-                <div class="services-wheel">
-                    <?php
-                        // place each service evenly around the wheel
-                        $wheelServices = [
-                            ['icon' => 'bi-diagram-3', 'name' => 'Enterprise Architecture'],
-                            ['icon' => 'bi-compass', 'name' => 'Strategic Advisory'],
-                            ['icon' => 'bi-database', 'name' => 'Data Management'],
-                            ['icon' => 'bi-clipboard-check', 'name' => 'Data Testing'],
-                            ['icon' => 'bi-rocket-takeoff', 'name' => 'Solution Delivery'],
-                        ];
-                        $wheelCount = count($wheelServices);
-                        foreach ($wheelServices as $i => $service) {
-                            $angle = (360 / $wheelCount) * $i;
-                            echo "<div class=\"wheel-item\" style=\"--angle: {$angle}deg\">";
-                            echo "<div class=\"wheel-item-inner\">";
-                            echo "<i class=\"bi {$service['icon']}\"></i>";
-                            echo "<span>" . htmlspecialchars($service['name']) . "</span>";
-                            echo "</div></div>";
+            <div class="service-bento">
+                <?php
+                    // define the services offered by Likhwezi Technologies, each with an icon, eyebrow text, name, description, and optional tags.
+                    $services = [
+                        ['icon' => 'bi-diagram-3', 'eyebrow' => "Tomorrow's Direction", 'name' => 'Enterprise Architecture', 'description' => 'Analyse, design, plan and implement enterprise analysis to successfully execute on business strategies.', 'tags' => ['Business', 'Application', 'Data', 'Technology']],
+                        ['icon' => 'bi-compass', 'eyebrow' => 'The Game Plan', 'name' => 'Strategic Advisory', 'description' => 'Unbiased advice on high-level decisions.'],
+                        ['icon' => 'bi-database', 'eyebrow' => 'Drive Efficiency', 'name' => 'Data Management', 'description' => 'Deliver, protect and enhance the value of data.'],
+                        ['icon' => 'bi-clipboard-check', 'eyebrow' => '20/20 Sight', 'name' => 'Data Testing', 'description' => 'Accurate, quality, fit-for-purpose data.'],
+                        ['icon' => 'bi-rocket-takeoff', 'eyebrow' => 'Span the Enterprise', 'name' => 'Solution Delivery', 'description' => 'Transition to new states and realise the benefits.'],
+                    ];
+
+                    // loop through the services and display each as a tile in the bento grid
+                    foreach ($services as $i => $service) {
+                        $class = $i === 0 ? 'service-tile is-featured' : 'service-tile';
+                        // each tile opens services.php on that service's card
+                        $slug = strtolower(str_replace(' ', '-', $service['name']));
+                        echo "<a href=\"services.php#{$slug}\" class=\"{$class}\">";
+                        echo "<i class=\"bi {$service['icon']} service-tile-icon\" aria-hidden=\"true\"></i>";
+                        echo "<div class=\"service-tile-body\">";
+                        echo "<span class=\"service-tile-eyebrow\">" . htmlspecialchars($service['eyebrow']) . "</span>";
+                        echo "<h3 class=\"service-tile-title\">" . htmlspecialchars($service['name']) . "</h3>";
+                        echo "<p class=\"service-tile-description\">" . htmlspecialchars($service['description']) . "</p>";
+                        if (!empty($service['tags'])) {
+                            echo "<ul class=\"service-tile-tags\">";
+                            foreach ($service['tags'] as $tag) {
+                                echo "<li>" . htmlspecialchars($tag) . "</li>";
+                            }
+                            echo "</ul>";
                         }
-                    ?>
-                </div>
-                <div class="wheel-hub">
-                    <img src="assets/images/logo/logo-branding.webp" alt="Likhwezi Technologies" class="wheel-hub-logo">
-                </div>
+                        echo "<span class=\"service-tile-link\">Learn more</span>";
+                        echo "</div></a>";
+                    }
+                ?>
             </div>
         </div>
 
